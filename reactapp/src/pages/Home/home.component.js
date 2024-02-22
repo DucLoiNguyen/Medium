@@ -1,23 +1,23 @@
 function Home() {
     return (
         <>
-            <div className="sticky top-0 mt-10 border-b-2 bg-white pt-4">
-                <div className="mx-6 flex place-items-center">
-                    <div className="mr-6 pb-4">
+            <div className="sticky top-0 pt-4 mt-10 bg-white border-b-2">
+                <div className="flex mx-6 place-items-center">
+                    <div className="pb-4 mr-6">
                         <a className="rounded-full text-[#6b6b6b] hover:text-black" href="/#">
                             <p>
                                 <svg width="19" height="19" fill="currentColor"><path d="M9 9H3v1h6v6h1v-6h6V9h-6V3H9v6z" fillRule="evenodd"></path></svg>
                             </p>
                         </a>
                     </div>
-                    <div className="mr-8 border-b-2 border-black pb-4">
+                    <div className="pb-4 mr-8 border-b-2 border-black">
                         <a className="text-[#6b6b6b] hover:text-black" href="/#">
-                            <p>For you</p>
+                            <p className="text-sm">For you</p>
                         </a>
                     </div>
-                    <div className="mr-12 border-b-2 border-black pb-4">
+                    <div className="pb-4 mr-12 border-b-2 border-black">
                         <a className="text-[#6b6b6b] hover:text-black" href="/#">
-                            <p>Following</p>
+                            <p className="text-sm">Following</p>
                         </a>
                     </div>
                 </div>
@@ -32,7 +32,7 @@ function Home() {
                             </div>
                         </a>
                     </div>
-                    <div className="mt-3 flex">
+                    <div className="flex mt-3">
                         <div>
                             <div>
                                 <a href="/#">
@@ -43,7 +43,7 @@ function Home() {
                             </div>
                             <div>
                                 <a href="/#">
-                                    <p className="overflow-hidden whitespace-nowrap overflow-ellipsis w-96 h-20">
+                                    <p className="h-20 overflow-hidden whitespace-nowrap overflow-ellipsis w-96">
                                         Improve your life and get ahead of your peers in 10 simple steps —  The concept of habits became extremely popular in the recent years, mostly due to the personal development wave brought up by the Gen Z culture. Also, due to the books that appeared in the recent years, out of which, the most famous and a favorite of mine, Atomic Habits. Mostly…
                                     </p>
                                 </a>
