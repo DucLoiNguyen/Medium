@@ -33,7 +33,7 @@ function Home() {
                         </a>
                     </div>
                     <div className="flex mt-3">
-                        <div>
+                        <div className="max-w-lg">
                             <div>
                                 <a href="/#">
                                     <h2 className="font-bold">
@@ -41,15 +41,15 @@ function Home() {
                                     </h2>
                                 </a>
                             </div>
-                            <div>
+                            <div className="">
                                 <a href="/#">
-                                    <p className="h-20 overflow-hidden whitespace-nowrap overflow-ellipsis w-96">
+                                    <p className="h-20 line-clamp-3 max-w-96">
                                         Improve your life and get ahead of your peers in 10 simple steps —  The concept of habits became extremely popular in the recent years, mostly due to the personal development wave brought up by the Gen Z culture. Also, due to the books that appeared in the recent years, out of which, the most famous and a favorite of mine, Atomic Habits. Mostly…
                                     </p>
                                 </a>
                             </div>
                         </div>
-                        <div className="ml-14">
+                        <div className="hidden ml-14 md:block">
                             <img alt="Poseidon" src="./conetnt1.jpg" width="112" height="112" loading="lazy" />
                         </div>
                     </div>
