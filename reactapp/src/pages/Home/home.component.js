@@ -36,6 +36,7 @@ function Home() {
             </div>
             <div className="mt-12">
                 <div className="mx-6">
+                
                     {/* For you */}
                     {activeTab === '1' &&
                         <div>

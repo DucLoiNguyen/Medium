@@ -2,10 +2,7 @@ import clsx from "clsx";
 import header from "./header.module.scss";
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
-
-function classNamess(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
+import { ClassNames } from '~/util'
 
 function Header() {
     const classNames = clsx(header.svg);
@@ -47,14 +44,13 @@ function Header() {
                             leaveFrom="transform opacity-100 scale-100"
                             leaveTo="transform opacity-0 scale-95"
                         >
-                            <Menu.Items className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-
+                            <Menu.Items className="absolute right-0 z-10 w-56 mt-2 origin-top-right bg-white divide-y rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none divide-solid">
                                 <div className="px-2 py-4">
                                     <Menu.Item className="flex">
                                         {({ active }) => (
                                             <a
                                                 href="/#"
-                                                className={classNamess(
+                                                className={ClassNames(
                                                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                     'block px-4 py-2 text-sm'
                                                 )}
@@ -70,12 +66,12 @@ function Header() {
                                         {({ active }) => (
                                             <a
                                                 href="/#"
-                                                className={classNamess(
+                                                className={ClassNames(
                                                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                     'block px-4 py-2 text-sm'
                                                 )}
                                             >
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Lists"><path d="M6.44 6.69h0a1.5 1.5 0 0 1 1.06-.44h9c.4 0 .78.16 1.06.44l.35-.35-.35.35c.28.28.44.66.44 1.06v14l-5.7-4.4-.3-.23-.3.23-5.7 4.4v-14c0-.4.16-.78.44-1.06z" stroke="currentColor"></path><path d="M12.5 2.75h-8a2 2 0 0 0-2 2v11.5" stroke="currentColor" stroke-linecap="round"></path></svg>
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Lists"><path d="M6.44 6.69h0a1.5 1.5 0 0 1 1.06-.44h9c.4 0 .78.16 1.06.44l.35-.35-.35.35c.28.28.44.66.44 1.06v14l-5.7-4.4-.3-.23-.3.23-5.7 4.4v-14c0-.4.16-.78.44-1.06z" stroke="currentColor"></path><path d="M12.5 2.75h-8a2 2 0 0 0-2 2v11.5" stroke="currentColor" strokeLinecap="round"></path></svg>
                                                 <div className="flex ml-4">
                                                     <p className="text-sm max-h-5">Library</p>
                                                 </div>
@@ -86,23 +82,23 @@ function Header() {
                                         {({ active }) => (
                                             <a
                                                 href="/#"
-                                                className={classNamess(
+                                                className={ClassNames(
                                                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                     'block px-4 py-2 text-sm'
                                                 )}
                                             >
-                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Stories"><path d="M4.75 21.5h14.5c.14 0 .25-.11.25-.25V2.75a.25.25 0 0 0-.25-.25H4.75a.25.25 0 0 0-.25.25v18.5c0 .14.11.25.25.25z" stroke="currentColor"></path><path d="M8 8.5h8M8 15.5h5M8 12h8" stroke="currentColor" stroke-linecap="round"></path></svg>
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-label="Stories"><path d="M4.75 21.5h14.5c.14 0 .25-.11.25-.25V2.75a.25.25 0 0 0-.25-.25H4.75a.25.25 0 0 0-.25.25v18.5c0 .14.11.25.25.25z" stroke="currentColor"></path><path d="M8 8.5h8M8 15.5h5M8 12h8" stroke="currentColor" strokeLinecap="round"></path></svg>
                                                 <div className="flex ml-4">
                                                     <p className="text-sm max-h-5">Stories</p>
                                                 </div>
                                             </a>
                                         )}
                                     </Menu.Item>
-                                    <Menu.Item className="flex">
+                                    <Menu.Item className="flex md:hidden">
                                         {({ active }) => (
                                             <a
                                                 href="/#"
-                                                className={classNamess(
+                                                className={ClassNames(
                                                     active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                     'block px-4 py-2 text-sm'
                                                 )}
@@ -121,7 +117,7 @@ function Header() {
                                             {({ active }) => (
                                                 <button
                                                     type="submit"
-                                                    className={classNamess(
+                                                    className={ClassNames(
                                                         active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                         'block w-full px-4 py-2 text-left text-sm'
                                                     )}
