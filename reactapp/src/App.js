@@ -9,7 +9,7 @@ function App() {
         <Routes>
           {
             publicRoutes.map((route, index) => {
-              const Layout = DefaultLayout;
+              const Layout = Startlayout;
               const Page = route.component;
               return <Route key={index} path={route.path} element={<Layout><Page/></Layout>}/>
             })
