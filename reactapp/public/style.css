@@ -1174,6 +1174,14 @@ video {
   width: 100%;
 }
 
+.w-\[112px\] {
+  width: 112px;
+}
+
+.min-w-\[112px\] {
+  min-width: 112px;
+}
+
 .max-w-96 {
   max-width: 24rem;
 }
@@ -1694,6 +1702,10 @@ video {
 }
 
 @media (min-width: 1280px) {
+  .xl\:block {
+    display: block;
+  }
+
   .xl\:w-full {
     width: 100%;
   }

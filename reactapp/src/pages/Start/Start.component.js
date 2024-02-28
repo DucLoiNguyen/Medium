@@ -39,7 +39,7 @@ function Start() {
           </div>
         </div>
       </div>
-      <div className="mt-12">
+      <div className="flex justify-center mt-12">
         <div className="py-4">
           <div className="mx-6 mt-8">
             <div>
@@ -67,7 +67,7 @@ function Start() {
                   </a>
                 </div>
               </div>
-              <div className="hidden ml-14 md:block">
+              <div className="hidden ml-14 md:block min-w-[112px]">
                 <img alt="Poseidon" src="./conetnt1.jpg" width="112" height="112" loading="lazy" />
               </div>
             </div>
