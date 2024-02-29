@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import sidebar from "./sidebar.module.scss"
+import sidebar from "./sidebar.module.scss";
 
 function Sidebar() {
     const classNames = clsx(sidebar.sidebar, 'lg:block hidden h-full sticky top-0');
@@ -17,7 +17,7 @@ function Sidebar() {
                             <div className="mb-2">
                                 <a href="/#">
                                     <div className="flex">
-                                        <img alt="Poseidon" className="rounded-full" src="./ava.png" width="20" height="20" loading="lazy" />
+                                        <img alt="Poseidon" className="rounded-full" src="/ava.png" width="20" height="20" loading="lazy" />
                                         <div className="ml-2"><h4 className="text-xs">Riikka livanainen</h4></div>
                                     </div>
                                 </a>
@@ -34,7 +34,7 @@ function Sidebar() {
                             <div className="mb-2">
                                 <a href="/#">
                                     <div className="flex">
-                                        <img alt="Poseidon" className="rounded-full" src="./ava.png" width="20" height="20" loading="lazy" />
+                                        <img alt="Poseidon" className="rounded-full" src="/ava.png" width="20" height="20" loading="lazy" />
                                         <div className="ml-2"><h4 className="text-xs">Riikka livanainen</h4></div>
                                     </div>
                                 </a>
@@ -68,7 +68,7 @@ function Sidebar() {
                         <div className="flex mr-2">
                             <a href="/#">
                                 <div className="w-8 h-auto">
-                                    <img alt="Poseidon" className="rounded-full" src="./ava.png" width="32" height="32" loading="lazy" />
+                                    <img alt="Poseidon" className="rounded-full" src="/ava.png" width="32" height="32" loading="lazy" />
                                 </div>
                             </a>
                             <div className="ml-4 mr-2">
@@ -82,7 +82,7 @@ function Sidebar() {
                         <div className="flex mr-2">
                             <a href="/#">
                                 <div className="w-8 h-auto">
-                                    <img alt="Poseidon" className="rounded-full" src="./ava.png" width="32" height="32" loading="lazy" />
+                                    <img alt="Poseidon" className="rounded-full" src="/ava.png" width="32" height="32" loading="lazy" />
                                 </div>
                             </a>
                             <div className="ml-4 mr-2">
@@ -96,7 +96,7 @@ function Sidebar() {
                         <div className="flex mr-2">
                             <a href="/#">
                                 <div className="w-8 h-auto">
-                                    <img alt="Poseidon" className="rounded-full" src="./ava.png" width="32" height="32" loading="lazy" />
+                                    <img alt="Poseidon" className="rounded-full" src="/ava.png" width="32" height="32" loading="lazy" />
                                 </div>
                             </a>
                             <div className="ml-4 mr-2">

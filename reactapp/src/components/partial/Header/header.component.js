@@ -31,7 +31,7 @@ function Header() {
                     <Menu as="div" className="relative inline-block text-left">
                         <div>
                             <Menu.Button className="justify-center bg-white rounded-full shadow-sm">
-                                <div className="w-8"><img alt="Poseidon" className="rounded-full" src="./ava.png" width="32" height="32" loading="lazy" /></div>
+                                <div className="w-8"><img alt="Poseidon" className="rounded-full" src="/ava.png" width="32" height="32" loading="lazy" /></div>
                             </Menu.Button>
                         </div>
 

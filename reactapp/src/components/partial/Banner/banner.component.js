@@ -13,7 +13,7 @@ function Banner() {
                     </div>
                 </div>
             </div> */}
-      <div className="relative w-full">
+      <div className="relative w-full bg-[#ffc017]">
         <div className="absolute right-0 hidden lg:block">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 585 462" width="585" height="462" preserveAspectRatio="xMidYMid meet" className="width: 100% height: 100% transform: translate3d(0px, 0px, 0px) content-visibility: visible"><defs><clipPath id="__lottie_element_2"><rect width="585" height="462" x="0" y="0"></rect></clipPath></defs><g clipPath="url(#__lottie_element_2)"><g fill="rgb(0,0,0)" fontSize="22" fontFamily="Shne" font-classname="normal" fontWeight="normal" aria-label=" M M M M M M M M M M M M M M
  M M M M M M M M M M M M M M M M M M M M M
