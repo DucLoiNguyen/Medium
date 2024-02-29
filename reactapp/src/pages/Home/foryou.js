@@ -21,7 +21,7 @@ function Foryou() {
             </div>
             <div className="">
               <a href="/#">
-                <p className="h-20 line-clamp-3 max-w-96">
+                <p className="h-[78px] line-clamp-3 max-w-96">
                   Improve your life and get ahead of your peers in 10 simple steps —  The concept of habits became extremely popular in the recent years, mostly due to the personal development wave brought up by the Gen Z culture. Also, due to the books that appeared in the recent years, out of which, the most famous and a favorite of mine, Atomic Habits. Mostly…
                 </p>
               </a>

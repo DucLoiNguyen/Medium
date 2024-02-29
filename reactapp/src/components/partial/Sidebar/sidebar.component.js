@@ -60,11 +60,11 @@ function Sidebar() {
                         <div className="rounded-full bg-[#f2f2f2] w-fit px-4 py-2 mb-3 mr-2"><a className="text-sm" href="/#">Relationships</a></div>
                         <div className="rounded-full bg-[#f2f2f2] w-fit px-4 py-2 mb-3 mr-2"><a className="text-sm" href="/#">Machine Learning</a></div>
                     </div>
-                    <p className="text-sm pt-3"><a className="text-[#419d3f] hover:text-black" href="/#">See more topics</a></p>
+                    <p className="pt-3 text-sm"><a className="text-[#419d3f] hover:text-black" href="/#">See more topics</a></p>
                 </div>
                 <div className="mt-10">
                     <div className=""><h2 className="text-base font-bold">who to follow</h2></div>
-                    <div className="pt-4 flex place-items-center">
+                    <div className="flex pt-4 place-items-center">
                         <div className="flex mr-2">
                             <a href="/#">
                                 <div className="w-8 h-auto">
@@ -73,12 +73,12 @@ function Sidebar() {
                             </a>
                             <div className="ml-4 mr-2">
                                 <div><a href="/#"><h2 className="text-base font-bold">Jordan Shapiro</h2></a></div>
-                                <div><a href="/#"><p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis w-40">Author of Father Figure: How to Be a Feminist Dad...</p></a></div>
+                                <div><a href="/#"><p className="w-40 overflow-hidden text-sm whitespace-nowrap overflow-ellipsis">Author of Father Figure: How to Be a Feminist Dad...</p></a></div>
                             </div>
                         </div>
                         <button className="border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm">Follow</button>
                     </div>
-                    <div className="pt-4 flex place-items-center">
+                    <div className="flex pt-4 place-items-center">
                         <div className="flex mr-2">
                             <a href="/#">
                                 <div className="w-8 h-auto">
@@ -87,12 +87,12 @@ function Sidebar() {
                             </a>
                             <div className="ml-4 mr-2">
                                 <div><a href="/#"><h2 className="text-base font-bold">Jordan Shapiro</h2></a></div>
-                                <div><a href="/#"><p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis w-40">Author of Father Figure: How to Be a Feminist Dad (www.FeministDadBook.com) Twitter: @jordosh</p></a></div>
+                                <div><a href="/#"><p className="w-40 overflow-hidden text-sm whitespace-nowrap overflow-ellipsis">Author of Father Figure: How to Be a Feminist Dad (www.FeministDadBook.com) Twitter: @jordosh</p></a></div>
                             </div>
                         </div>
                         <button className="border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm">Follow</button>
                     </div>
-                    <div className="pt-4 flex place-items-center">
+                    <div className="flex pt-4 place-items-center">
                         <div className="flex mr-2">
                             <a href="/#">
                                 <div className="w-8 h-auto">
@@ -101,12 +101,12 @@ function Sidebar() {
                             </a>
                             <div className="ml-4 mr-2">
                                 <div><a href="/#"><h2 className="text-base font-bold">Jordan Shapiro</h2></a></div>
-                                <div><a href="/#"><p className="text-sm overflow-hidden whitespace-nowrap overflow-ellipsis w-40">Author of Father Figure: How to Be a Feminist Dad...</p></a></div>
+                                <div><a href="/#"><p className="w-40 overflow-hidden text-sm whitespace-nowrap overflow-ellipsis">Author of Father Figure: How to Be a Feminist Dad...</p></a></div>
                             </div>
                         </div>
                         <button className="border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm">Follow</button>
                     </div>
-                    <p className="text-sm pt-5"><a className="text-[#419d3f] hover:text-black" href="/#">See more suggestions</a></p>
+                    <p className="pt-6 text-sm"><a className="text-[#419d3f] hover:text-black" href="/#">See more suggestions</a></p>
                 </div>
             </div>
         </>

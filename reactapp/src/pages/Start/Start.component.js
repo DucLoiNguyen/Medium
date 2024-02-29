@@ -67,8 +67,8 @@ function Start() {
                   </a>
                 </div>
               </div>
-              <div className="hidden ml-14 md:block min-w-[112px]">
-                <img alt="Poseidon" src="./conetnt1.jpg" width="112" height="112" loading="lazy" />
+              <div className="hidden ml-14 md:block min-w-[200px]">
+              <img alt="Everything I Know About Creating Buzz, I Learned From Taylor Swift" src="./content2.jpg" width="200" height="134" loading="lazy"/>
               </div>
             </div>
           </div>
