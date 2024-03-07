@@ -2,10 +2,12 @@ import Home from '~/pages/Home/home.component';
 import Account from '~/pages/Account/account.component';
 import Start from '~/pages/Start/Start.component'
 import Notification from '~/pages/Notifi/notification.component';
+import Profile from '~/pages/Profile/profile.component';
 import { DefaultLayout, Startlayout } from '~/components/layouts';
 
 // public routes
 const publicRoutes = [
+    { path : '/home/profile', component: Profile, layout: DefaultLayout},
     { path : '/home/notifications', component: Notification, layout: DefaultLayout},
     { path : '/home', component: Home, layout: DefaultLayout},
     { path : '/account', component: Account, layout: DefaultLayout},
