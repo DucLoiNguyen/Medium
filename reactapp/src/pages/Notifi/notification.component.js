@@ -36,10 +36,10 @@ function Notification() {
           </div>
           <div className="mt-12">
             <div className="mx-6">
-              {/* For you */}
+              {/* All */}
               {activeTab === '1' && <h1>Hello</h1>}
 
-              {/* Following */}
+              {/* Responese */}
               {activeTab === '2' && <h1>Bye</h1>}
             </div>
           </div>

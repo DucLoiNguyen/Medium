@@ -1,11 +1,11 @@
 import Header from "~/components/partial/Header/header.component";
 import Footer from "~/components/partial/Footer/footer.component";
-import Sidebar from "~/components/partial/Sidebar/sidebar.component";
-import defaultlayout from "./defaultlayout.module.scss";
+import ProfileSidebar from "~/components/partial/Profile_sidebar/profile_sidebar.component";
+import profileLayout from "./profilelayout.module.scss";
 import clsx from "clsx";
 
-function DefaultLayout({ children }) {
-    const classNames = clsx(defaultlayout.main, 'sm:w-full');
+function ProfileLayout({ children }) {
+    const classNames = clsx(profileLayout.main, 'sm:w-full');
     return (
         <div>
             <Header />
@@ -13,11 +13,11 @@ function DefaultLayout({ children }) {
                 <div className={classNames}>
                     {children}
                 </div>
-                <Sidebar />
+                <ProfileSidebar />
             </div>
             <Footer/>
         </div>
     );
 }
 
-export default DefaultLayout;
+export default ProfileLayout;

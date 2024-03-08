@@ -1,4 +1,4 @@
-function Header2() {
+function StartHeader() {
     return (
         <>
         <nav className="sticky top-0 z-40 flex justify-end w-full h-20 px-12 border-b border-black bg-[#ffc017]">
@@ -43,4 +43,4 @@ function Header2() {
     );
 }
 
-export default Header2;
+export default StartHeader;
