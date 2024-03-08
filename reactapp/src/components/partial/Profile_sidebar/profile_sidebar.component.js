@@ -18,7 +18,7 @@ function ProfileSidebar() {
             </a>
           </div>
           <div className="mt-6 mb-[46px]">
-            <button className="text-[#419d3f] hover:text-black"><span className="mr-4 text-[13px]">Edit the avatar</span></button>
+            <button className="text-[#419d3f] hover:text-black"><span className="mr-4 text-[13px]">Edit profile</span></button>
           </div>
         </div>
       </div>

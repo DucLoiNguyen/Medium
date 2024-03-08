@@ -10,7 +10,7 @@ function Draft() {
           <div className="max-w-lg">
             <div>
               <a href="/#">
-                <h2 className="font-bold text-[20px]">
+                <h2 className="text-base font-bold">
                   Reading list
                 </h2>
               </a>
