@@ -1,6 +1,6 @@
-import { ClassNames } from '~/util'
-import { Fragment } from 'react'
-import { Menu, Transition } from '@headlessui/react'
+import { ClassNames } from "~/util";
+import { Fragment } from "react";
+import { Menu, Transition } from "@headlessui/react";
 
 function Draft() {
   return (
@@ -10,9 +10,7 @@ function Draft() {
           <div className="max-w-lg">
             <div>
               <a href="/#">
-                <h2 className="text-base font-bold">
-                  Reading list
-                </h2>
+                <h2 className="text-base font-bold">Reading list</h2>
               </a>
             </div>
           </div>
@@ -21,7 +19,14 @@ function Draft() {
           <Menu as="div" className="relative inline-block text-left">
             <div>
               <Menu.Button className="justify-center bg-white rounded-full shadow-sm">
-                <span className="text-[#6b6b6b] hover:text-black"><svg width="21" height="21" viewBox="0 0 21 21" class="bz"><path d="M4 7.33L10.03 14l.5.55.5-.55 5.96-6.6-.98-.9-5.98 6.6h1L4.98 6.45z" fill-rule="evenodd"></path></svg></span>
+                <span className="text-[#6b6b6b] hover:text-black">
+                  <svg width="21" height="21" viewBox="0 0 21 21" class="bz">
+                    <path
+                      d="M4 7.33L10.03 14l.5.55.5-.55 5.96-6.6-.98-.9-5.98 6.6h1L4.98 6.45z"
+                      fill-rule="evenodd"
+                    ></path>
+                  </svg>
+                </span>
               </Menu.Button>
             </div>
 
@@ -41,8 +46,10 @@ function Draft() {
                       <a
                         href="/home/profile"
                         className={ClassNames(
-                          active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                          'block px-4 py-2 text-sm'
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block px-4 py-2 text-sm",
                         )}
                       >
                         <div className="flex ml-4">
@@ -56,8 +63,10 @@ function Draft() {
                       <a
                         href="/home/library"
                         className={ClassNames(
-                          active ? 'bg-gray-100 text-gray-900' : 'text-[#c94a4a]',
-                          'block px-4 py-2 text-sm'
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-[#c94a4a]",
+                          "block px-4 py-2 text-sm",
                         )}
                       >
                         <div className="flex ml-4">

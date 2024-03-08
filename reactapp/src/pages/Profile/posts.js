@@ -1,34 +1,7 @@
-function History() {
+function Post() {
   return (
     <>
-      <div className="flex justify-between mb-10">
-        <p className="text-sm">
-          You can clear your reading history for a fresh start.
-        </p>
-        <div className="text-right">
-          <button className="py-[5px] px-5 bg-[#c94a4a] rounded-full">
-            <span className="text-sm text-white">Clear history</span>
-          </button>
-        </div>
-      </div>
-      <div className="py-10">
-        <div>
-          <a href="/#">
-            <div className="flex place-items-center">
-              <img
-                alt="Poseidon"
-                className="rounded-full"
-                src="/ava.png"
-                width="24"
-                height="24"
-                loading="lazy"
-              />
-              <div className="ml-2">
-                <h4 className="text-sm">Riikka livanainen</h4>
-              </div>
-            </div>
-          </a>
-        </div>
+      <div>
         <div className="flex mt-3">
           <div className="max-w-lg">
             <div>
@@ -67,4 +40,4 @@ function History() {
   );
 }
 
-export default History;
+export default Post;

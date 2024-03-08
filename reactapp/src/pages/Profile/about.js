@@ -1,5 +1,5 @@
 function ProfileAbout() {
-  return ( 
+  return (
     <>
       <h1>about</h1>
     </>

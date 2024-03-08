@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import Post from "./posts";
+import Info from "./informations";
+import Security from "./security";
 
-function Profile() {
+function Setting() {
   const [activeTab, setActiveTab] = useState("1");
 
   const handleTabClick = (tab) => {
@@ -26,7 +27,7 @@ function Profile() {
                   />
                 </button>
               </div>
-              <h1 className="text-5xl text-bold">Poseidon</h1>
+              <h1 className="text-5xl text-bold">Setting</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">
@@ -36,9 +37,11 @@ function Profile() {
                     onClick={() => handleTabClick("1")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${activeTab === "1" ? "text-black" : "hover:text-black"}`}
+                      className={`pb-4 mr-8 ${
+                        activeTab === "1" ? "text-black" : "hover:text-black"
+                      }`}
                     >
-                      <p className="text-sm">Post</p>
+                      <p className="text-sm">Account</p>
                     </div>
                   </button>
                 </div>
@@ -48,9 +51,11 @@ function Profile() {
                     onClick={() => handleTabClick("2")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${activeTab === "2" ? "text-black" : "hover:text-black"}`}
+                      className={`pb-4 mr-8 ${
+                        activeTab === "2" ? "text-black" : "hover:text-black"
+                      }`}
                     >
-                      <p className="text-sm">About</p>
+                      <p className="text-sm">Security</p>
                     </div>
                   </button>
                 </div>
@@ -59,11 +64,11 @@ function Profile() {
           </div>
           <div className="">
             <div className="">
-              {/* Posts */}
-              {activeTab === "1" && <Post />}
+              {/* Informations */}
+              {activeTab === "1" && <Info />}
 
-              {/* About */}
-              {activeTab === "2" && <h1>About</h1>}
+              {/* Security */}
+              {activeTab === "2" && <Security />}
             </div>
           </div>
         </div>
@@ -72,4 +77,4 @@ function Profile() {
   );
 }
 
-export default Profile;
+export default Setting;

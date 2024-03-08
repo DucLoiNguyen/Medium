@@ -1,5 +1,5 @@
 function Following() {
-  return ( 
+  return (
     <>
       <div>Content for Following tab</div>
     </>
