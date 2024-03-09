@@ -10,19 +10,17 @@ import {
   DefaultLayout,
   Startlayout,
   ProfileLayout,
+  SettingLayout
 } from "~/components/layouts";
+
 
 // public routes
 const publicRoutes = [
-  { path: "/home/setting", component: Setting, layout: ProfileLayout },
+  { path: "/home/setting", component: Setting, layout: SettingLayout },
   { path: "/home/story", component: Story, layout: DefaultLayout },
   { path: "/home/library", component: Library, layout: DefaultLayout },
   { path: "/home/profile", component: Profile, layout: ProfileLayout },
-  {
-    path: "/home/notifications",
-    component: Notification,
-    layout: DefaultLayout,
-  },
+  { path: "/home/notifications", component: Notification, layout: DefaultLayout },
   { path: "/home", component: Home, layout: DefaultLayout },
   { path: "/account", component: Account, layout: DefaultLayout },
   { path: "/", component: Start, layout: Startlayout },

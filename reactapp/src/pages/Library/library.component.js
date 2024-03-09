@@ -15,10 +15,18 @@ function Library() {
         <div className="block w-full mx-6">
           <div className="mt-[52px] mb-7">
             <div className="flex justify-between mb-10">
-              <h1 className="text-5xl text-bold">Your Library</h1>
-              <div className={`right-0 ${activeTab === "1" ? "" : "hidden"}`}>
+              <h1 className="text-5xl font-bold">Your Library</h1>
+              <div className={`right-0 ml-4${activeTab === "1" ? "" : "hidden"}`}>
                 <button className="flex px-5 py-2 bg-[#1a8917] rounded-full hover:opacity-75">
-                  <p className="text-base text-white">New lists</p>
+                  <p className="hidden text-base text-white md:block">New lists</p>
+                  <p className="text-base text-white md:hidden">
+                    <svg width="19" height="19" fill="currentColor">
+                      <path
+                        d="M9 9H3v1h6v6h1v-6h6V9h-6V3H9v6z"
+                        fillRule="evenodd"
+                      ></path>
+                    </svg>
+                  </p>
                 </button>
               </div>
             </div>

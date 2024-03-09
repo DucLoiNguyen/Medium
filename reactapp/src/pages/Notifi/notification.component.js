@@ -13,7 +13,7 @@ function Notification() {
         <div className="block w-full mx-6">
           <div className="mt-[52px] mb-7">
             <div className="mb-10">
-              <h1 className="text-5xl text-bold">Notifications</h1>
+              <h1 className="text-5xl font-bold">Notifications</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">

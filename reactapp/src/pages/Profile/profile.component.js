@@ -26,7 +26,7 @@ function Profile() {
                   />
                 </button>
               </div>
-              <h1 className="text-5xl text-bold">Poseidon</h1>
+              <h1 className="text-5xl font-bold">Poseidon</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">
@@ -38,7 +38,7 @@ function Profile() {
                     <div
                       className={`pb-4 mr-8 ${activeTab === "1" ? "text-black" : "hover:text-black"}`}
                     >
-                      <p className="text-sm">Post</p>
+                      <p className="text-sm">Posts</p>
                     </div>
                   </button>
                 </div>

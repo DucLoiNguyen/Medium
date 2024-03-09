@@ -27,7 +27,7 @@ function Setting() {
                   />
                 </button>
               </div>
-              <h1 className="text-5xl text-bold">Setting</h1>
+              <h1 className="text-5xl font-bold">Setting</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">
