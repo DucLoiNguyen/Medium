@@ -6,16 +6,19 @@ import Profile from "~/pages/Profile/profile.component";
 import Library from "~/pages/Library/library.component";
 import Story from "~/pages/Stories/stories.component";
 import Setting from "~/pages/Setting/setting.component";
+import Explore from "~/pages/Topic/explore.component";
 import {
   DefaultLayout,
   Startlayout,
   ProfileLayout,
-  SettingLayout
-} from "~/components/layouts";
+  SettingLayout,
+  TopicLayout
+} from "~/components/partial";
 
 
 // public routes
 const publicRoutes = [
+  { path: "/home/explore", component: Explore, layout: TopicLayout },
   { path: "/home/setting", component: Setting, layout: SettingLayout },
   { path: "/home/story", component: Story, layout: DefaultLayout },
   { path: "/home/library", component: Library, layout: DefaultLayout },

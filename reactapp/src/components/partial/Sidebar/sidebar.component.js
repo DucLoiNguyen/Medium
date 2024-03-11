@@ -114,7 +114,7 @@ function Sidebar() {
             </div>
           </div>
           <p className="pt-3 text-sm">
-            <a className="text-[#419d3f] hover:text-black" href="/#">
+            <a className="text-[#419d3f] hover:text-black" href="/home/explore">
               See more topics
             </a>
           </p>
