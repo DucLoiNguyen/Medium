@@ -264,6 +264,42 @@ function Header() {
                   </Menu.Item>
                 </div>
                 <div className="px-6 py-4">
+                  <Menu.Item>
+                    {({ active }) => (
+                      <a
+                        href="/#"
+                        className={ClassNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block w-full py-2 text-sm text-left",
+                        )}
+                      >
+                        <div className="flex">
+                          <p className="text-sm max-h-5">Refine recommendations</p>
+                        </div>
+                      </a>
+                    )}
+                  </Menu.Item>
+                  <Menu.Item>
+                    {({ active }) => (
+                      <a
+                        href="/home/setting"
+                        className={ClassNames(
+                          active
+                            ? "bg-gray-100 text-gray-900"
+                            : "text-gray-700",
+                          "block w-full py-2 text-sm text-left",
+                        )}
+                      >
+                        <div className="flex">
+                          <p className="text-sm max-h-5">Settings</p>
+                        </div>
+                      </a>
+                    )}
+                  </Menu.Item>
+                </div>
+                <div className="px-6 py-4">
                   <form method="POST" action="/#">
                     <Menu.Item>
                       {({ active }) => (
@@ -273,7 +309,7 @@ function Header() {
                             active
                               ? "bg-gray-100 text-gray-900"
                               : "text-gray-700",
-                            "block w-full px-4 py-2 text-left text-sm",
+                            "block w-full py-2 text-left text-sm",
                           )}
                         >
                           Sign out
