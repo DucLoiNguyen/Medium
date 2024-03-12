@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Follow from "./follow";
 import Suggestion from "./suggestions";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
 function Refine() {
   const [activeTab, setActiveTab] = useState("following");
   const params = useParams();
 
   useEffect(() => {
-    setActiveTab(params.id);
+    setActiveTab(params.id ? params.id : "following");
   }, [params]);
 
   const handleTabClick = (tab) => {
@@ -43,8 +43,11 @@ function Refine() {
                     onClick={() => handleTabClick("following")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${activeTab === "following" ? "text-black" : "hover:text-black"
-                        }`}
+                      className={`pb-4 mr-8 ${
+                        activeTab === "following"
+                          ? "text-black"
+                          : "hover:text-black"
+                      }`}
                     >
                       <p className="text-sm">Following</p>
                     </div>
@@ -56,8 +59,11 @@ function Refine() {
                     onClick={() => handleTabClick("suggestion")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${activeTab === "suggestion" ? "text-black" : "hover:text-black"
-                        }`}
+                      className={`pb-4 mr-8 ${
+                        activeTab === "suggestion"
+                          ? "text-black"
+                          : "hover:text-black"
+                      }`}
                     >
                       <p className="text-sm">Suggestions</p>
                     </div>
