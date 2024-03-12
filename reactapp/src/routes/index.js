@@ -6,7 +6,9 @@ import Profile from "~/pages/Profile/profile.component";
 import Library from "~/pages/Library/library.component";
 import Story from "~/pages/Stories/stories.component";
 import Setting from "~/pages/Setting/setting.component";
+import Refine from "~/pages/Refine/refine.component";
 import Explore from "~/pages/Topic/explore.component";
+import Tag from "~/pages/Tag/tag.component"
 import {
   DefaultLayout,
   Startlayout,
@@ -18,7 +20,10 @@ import {
 
 // public routes
 const publicRoutes = [
+  { path: "/home/tag", component: Tag, layout: TopicLayout },
   { path: "/home/explore", component: Explore, layout: TopicLayout },
+  { path: "/home/refine/:id", component: Refine, layout: SettingLayout },
+  { path: "/home/refine/", component: Refine, layout: SettingLayout },
   { path: "/home/setting", component: Setting, layout: SettingLayout },
   { path: "/home/story", component: Story, layout: DefaultLayout },
   { path: "/home/library", component: Library, layout: DefaultLayout },

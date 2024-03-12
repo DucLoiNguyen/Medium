@@ -224,7 +224,7 @@ function Sidebar() {
             </button>
           </div>
           <p className="pt-6 text-sm">
-            <a className="text-[#419d3f] hover:text-black" href="/#">
+            <a className="text-[#419d3f] hover:text-black" href="/home/refine/suggestion">
               See more suggestions
             </a>
           </p>

@@ -267,7 +267,7 @@ function Header() {
                   <Menu.Item>
                     {({ active }) => (
                       <a
-                        href="/#"
+                        href="/home/refine"
                         className={ClassNames(
                           active
                             ? "bg-gray-100 text-gray-900"
