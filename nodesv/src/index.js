@@ -1,8 +1,10 @@
 import express from "express";
 import morgan from "morgan";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
-const port = 3030;
+const port = process.env.PORT;
 
 app.use(morgan("combined"));
 
