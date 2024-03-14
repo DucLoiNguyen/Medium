@@ -1,7 +1,7 @@
 // import React from 'react';
 // import ScrollContainer from './scrollcontainer';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 
 function Account() {
   const [data, setData] = useState(null);
@@ -10,7 +10,7 @@ function Account() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3030/api/');
+        const response = await fetch("http://localhost:3030/api/");
         const json = await response.json();
         console.log(json);
         setData(json);
@@ -23,7 +23,6 @@ function Account() {
 
     fetchData();
   }, []);
-
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
@@ -45,9 +44,7 @@ function Account() {
     //   </ScrollContainer>
     // </div>
     <>
-      <div>
-
-      </div>
+      <div>{data.hello}</div>
     </>
   );
 }
