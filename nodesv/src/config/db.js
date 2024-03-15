@@ -1,16 +1,21 @@
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
+dotenv.config();
 
-const url = 'mongodb+srv://loi120765:0uRyhoE9BWdpOCVA@medium.ivvwbok.mongodb.net/?retryWrites=true&w=majority&appName=Medium&tls=true&authMechanism=DEFAULT&readPreference=primary'; // Thay đổi 'localhost' thành địa chỉ MongoDB của bạn
+const url = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@medium.ivvwbok.mongodb.net/?retryWrites=true&w=majority&appName=Medium`;
 const client = new MongoClient(url);
 
-async function run() {
+async function connect() {
   try {
     await client.connect();
-    console.log('<<<< Kết nối với MongoDB thành công! >>>>');
+    console.log("<<<< Kết nối với MongoDB thành công! >>>>");
+    const data1 = await client.db("test").collection("test1").find().toArray();
+    console.log(data1);
+
     await client.close();
   } catch (error) {
-    console.error('Lỗi kết nối:', error);
+    console.error("Lỗi kết nối:", error);
   }
-};
+}
 
-export default run;
+export default connect;
