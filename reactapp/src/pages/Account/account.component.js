@@ -14,7 +14,7 @@ function Account() {
         console.log(d);
       })
       .catch((error) => setError(error))
-      .finally(() => setLoading(false))
+      .finally(() => setLoading(false));
   };
 
   useEffect(() => {
@@ -25,7 +25,7 @@ function Account() {
 
   const scroll = (s) => {
     scrollRef.current.scrollBy({
-      left: s
+      left: s,
     });
   };
 
@@ -36,8 +36,13 @@ function Account() {
       <div className="container px-4 mx-auto">
         <h1 className="mt-8 text-3xl font-bold">Content Goes Here</h1>
         <div className="flex">
-          <button onClick={() => scroll(-itemposition)} className="md:hidden">left</button>
-          <div ref={scrollRef} className="overflow-x-auto max-w-[300px] flex md:max-w-full snap-x scroll-smooth truncate">
+          <button onClick={() => scroll(-itemposition)} className="md:hidden">
+            left
+          </button>
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto max-w-[300px] flex md:max-w-full snap-x scroll-smooth truncate"
+          >
             <span className="mr-4 bg-gray-200 min-w-32">Item 1</span>
             <span className="mr-4 bg-gray-200 min-w-32">Item 2</span>
             <span className="mr-4 bg-gray-200 min-w-32">Item 3</span>
@@ -47,10 +52,12 @@ function Account() {
             <span className="mr-4 bg-gray-200 min-w-32">Item 6</span>
             <span className="mr-4 bg-gray-200 min-w-32">Item 6</span>
           </div>
-          <button onClick={() => scroll(itemposition)} className="md:hidden">right</button>
+          <button onClick={() => scroll(itemposition)} className="md:hidden">
+            right
+          </button>
         </div>
       </div>
-      <div>{data.hello}</div>
+      <div>{data[0].abc}</div>
     </>
   );
 }

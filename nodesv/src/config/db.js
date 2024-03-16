@@ -1,18 +1,14 @@
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-const url = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@medium.ivvwbok.mongodb.net/?retryWrites=true&w=majority&appName=Medium`;
-const client = new MongoClient(url);
+const url = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@medium.ivvwbok.mongodb.net/test`;
 
 async function connect() {
   try {
-    await client.connect();
-    console.log("<<<< Kết nối với MongoDB thành công! >>>>");
-    const data1 = await client.db("test").collection("test1").find().toArray();
-    console.log(data1);
-
-    await client.close();
+    await mongoose
+      .connect(url)
+      .then(() => console.log("<<<< Kết nối với MongoDB thành công! >>>>"));
   } catch (error) {
     console.error("Lỗi kết nối:", error);
   }
