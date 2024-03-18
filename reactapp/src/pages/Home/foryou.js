@@ -19,7 +19,7 @@ function Foryou() {
             </div>
           </a>
         </div>
-        <div className="flex mt-3">
+        <div className="flex mt-3 justify-between">
           <div className="max-w-lg">
             <div>
               <a href="/#">
@@ -42,7 +42,7 @@ function Foryou() {
               </a>
             </div>
           </div>
-          <div className="hidden ml-14 md:block min-w-[112px]">
+          <div className="hidden ml-14 md:block min-w-[112px] right-0">
             <img
               alt="Poseidon"
               src="./conetnt1.jpg"

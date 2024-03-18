@@ -1,24 +1,23 @@
 import React, { useState, useEffect, useRef } from "react";
+import { getPosts } from "~/api/api";
 
 function Account() {
   const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  // const [loading, setLoading] = useState(true);
+  // const [error, setError] = useState(null);
   const itemposition = 200;
 
-  const fetchData = async () => {
-    fetch("http://localhost:3030/api/")
-      .then((res) => res.json())
-      .then((d) => {
-        setData(d);
-        console.log(d);
-      })
-      .catch((error) => setError(error))
-      .finally(() => setLoading(false));
-  };
-
   useEffect(() => {
-    fetchData();
+    const fetchInitialData = async () => {
+      try {
+        const responseData = await getPosts("/api/");
+        setData(responseData);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      }
+    };
+
+    fetchInitialData();
   }, []);
 
   const scrollRef = useRef();
@@ -29,8 +28,6 @@ function Account() {
     });
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
   return (
     <>
       <div className="container px-4 mx-auto">
@@ -57,7 +54,59 @@ function Account() {
           </button>
         </div>
       </div>
-      <div>{data[0].abc}</div>
+      <div>
+        {/* Hiển thị dữ liệu từ API */}
+        {data && (
+          <ul>
+            {data.map((item) => (
+              <div key={item._id}>
+                <div>
+                  <a href="/#">
+                    <div className="flex place-items-center">
+                      <img
+                        alt="Poseidon"
+                        className="rounded-full"
+                        src="./ava.png"
+                        width="24"
+                        height="24"
+                        loading="lazy"
+                      />
+                      <div className="ml-2">
+                        <h4 className="text-sm">Riikka livanainen</h4>
+                      </div>
+                    </div>
+                  </a>
+                </div>
+                <div className="flex mt-3 justify-between">
+                  <div className="max-w-lg">
+                    <div>
+                      <a href="/#">
+                        <h2 className="font-bold">{item.header}</h2>
+                      </a>
+                    </div>
+                    <div className="">
+                      <a href="/#">
+                        <p className="h-[78px] line-clamp-3 max-w-96">
+                          {item.content}
+                        </p>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="hidden ml-14 md:block min-w-[112px] right-0">
+                    <img
+                      alt="Poseidon"
+                      src="./conetnt1.jpg"
+                      width="112"
+                      height="112"
+                      loading="lazy"
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </ul>
+        )}
+      </div>
     </>
   );
 }

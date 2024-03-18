@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-const url = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@medium.ivvwbok.mongodb.net/test`;
+const url = `mongodb+srv://${process.env.USER}:${process.env.PASSWORD}@medium.ivvwbok.mongodb.net/medium`;
 
 async function connect() {
   try {

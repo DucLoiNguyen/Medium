@@ -3,6 +3,7 @@ import header from "./header.module.scss";
 import { Fragment } from "react";
 import { Menu, Transition } from "@headlessui/react";
 import { ClassNames } from "~/util";
+import ava from "~/assets/image/ava.png";
 
 function Header() {
   const classNames = clsx(header.svg);
@@ -105,7 +106,7 @@ function Header() {
                   <img
                     alt="Poseidon"
                     className="rounded-full"
-                    src="/ava.png"
+                    src={ava}
                     width="32"
                     height="32"
                     loading="lazy"
@@ -276,7 +277,9 @@ function Header() {
                         )}
                       >
                         <div className="flex">
-                          <p className="text-sm max-h-5">Refine recommendations</p>
+                          <p className="text-sm max-h-5">
+                            Refine recommendations
+                          </p>
                         </div>
                       </a>
                     )}
