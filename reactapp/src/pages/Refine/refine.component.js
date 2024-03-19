@@ -33,7 +33,7 @@ function Refine() {
                   />
                 </button>
               </div>
-              <h1 className="text-5xl font-bold">Refine recommendations</h1>
+              <h1 className="text-5xl font-semibold font-customs">Refine recommendations</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">
@@ -43,11 +43,10 @@ function Refine() {
                     onClick={() => handleTabClick("following")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${
-                        activeTab === "following"
+                      className={`pb-4 mr-8 ${activeTab === "following"
                           ? "text-black"
                           : "hover:text-black"
-                      }`}
+                        }`}
                     >
                       <p className="text-sm">Following</p>
                     </div>
@@ -59,11 +58,10 @@ function Refine() {
                     onClick={() => handleTabClick("suggestion")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${
-                        activeTab === "suggestion"
+                      className={`pb-4 mr-8 ${activeTab === "suggestion"
                           ? "text-black"
                           : "hover:text-black"
-                      }`}
+                        }`}
                     >
                       <p className="text-sm">Suggestions</p>
                     </div>

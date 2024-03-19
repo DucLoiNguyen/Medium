@@ -10,7 +10,7 @@ function Account() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const responseData = await getPosts("/api/");
+        const responseData = await getPosts("/post/getpost");
         setData(responseData);
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -77,7 +77,7 @@ function Account() {
                     </div>
                   </a>
                 </div>
-                <div className="flex mt-3 justify-between">
+                <div className="flex justify-between mt-3">
                   <div className="max-w-lg">
                     <div>
                       <a href="/#">

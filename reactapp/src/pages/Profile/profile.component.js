@@ -26,7 +26,7 @@ function Profile() {
                   />
                 </button>
               </div>
-              <h1 className="text-5xl font-bold">Poseidon</h1>
+              <h1 className="text-5xl font-semibold font-customs">Poseidon</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">

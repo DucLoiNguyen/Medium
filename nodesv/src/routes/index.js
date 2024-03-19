@@ -1,8 +1,10 @@
 import Test1Controller from "../controllers/Test1Controller.js";
-import PostController from "../controllers/PostController.js";
+import PostRouter from "./PostRoute.js";
+import TopicRouter from "./TopicRoute.js";
 
 function route(app) {
-  app.get("/api/", PostController.index);
+  app.use("/api/post", PostRouter);
+  app.use("/api/topic", TopicRouter)
 }
 
 export default route;
