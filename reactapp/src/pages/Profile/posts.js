@@ -1,41 +1,57 @@
+import React, { useState, useEffect } from "react";
+import PostApi from "~/api/PostApi";
+
 function Post() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const responseData = await PostApi.getPostsByAuthor();
+        setData(responseData);
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      }
+    };
+
+    fetchInitialData();
+  }, []);
+
   return (
     <>
-      <div>
-        <div className="flex mt-3">
-          <div className="max-w-lg">
-            <div>
-              <a href="/#">
-                <h2 className="font-bold">
-                  The secret life of the people width high self-control(it's
-                  easier than you think)
-                </h2>
-              </a>
-            </div>
-            <div className="">
-              <a href="/#">
-                <p className="h-[78px] line-clamp-3 max-w-96">
-                  Improve your life and get ahead of your peers in 10 simple
-                  steps — The concept of habits became extremely popular in the
-                  recent years, mostly due to the personal development wave
-                  brought up by the Gen Z culture. Also, due to the books that
-                  appeared in the recent years, out of which, the most famous
-                  and a favorite of mine, Atomic Habits. Mostly…
-                </p>
-              </a>
-            </div>
-          </div>
-          <div className="hidden ml-14 md:block min-w-[112px]">
-            <img
-              alt="Poseidon"
-              src="/conetnt1.jpg"
-              width="112"
-              height="112"
-              loading="lazy"
-            />
-          </div>
+      {data && (
+        <div>
+          {data.map((item) => (
+            <div className="mb-10" key={item._id}>
+              <div className="flex mt-3">
+                <div className="max-w-lg">
+                  <div>
+                    <a href="/#">
+                      <h2 className="font-bold">
+                        {item.header}
+                      </h2>
+                    </a>
+                  </div>
+                  <div className="">
+                    <a href="/#">
+                      <p className="h-[75px] line-clamp-3 max-w-96 font-customs2">
+                        {item.content}
+                      </p>
+                    </a>
+                  </div>
+                </div>
+                <div className="hidden ml-14 md:block min-w-[112px]">
+                  <img
+                    alt="Poseidon"
+                    src="/conetnt1.jpg"
+                    width="112"
+                    height="112"
+                    loading="lazy"
+                  />
+                </div>
+              </div></div>
+          ))}
         </div>
-      </div>
+      )}
     </>
   );
 }

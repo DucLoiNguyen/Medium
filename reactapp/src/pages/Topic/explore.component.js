@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getTopics } from "~/api/api";
+import TopicApi from "~/api/TopicApi";
 
 function Explore() {
   const [menuActive, setMenuActive] = useState(false);
@@ -12,7 +12,7 @@ function Explore() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const responseData = await getTopics("/topic/gettopic");
+        const responseData = await TopicApi.getAllTopics();
         setData(responseData);
       } catch (error) {
         console.error("Error fetching initial data:", error);

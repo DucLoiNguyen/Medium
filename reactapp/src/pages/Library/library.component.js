@@ -15,7 +15,7 @@ function Library() {
         <div className="block w-full mx-6">
           <div className="mt-[52px] mb-7">
             <div className="flex justify-between mb-10">
-              <h1 className="text-5xl font-bold">Your Library</h1>
+              <h1 className="text-5xl font-bold font-customs">Your Library</h1>
               <div className={`right-0 ml-4${activeTab === "1" ? "" : "hidden"}`}>
                 <button className="flex px-5 py-2 bg-[#1a8917] rounded-full hover:opacity-75">
                   <p className="hidden text-base text-white md:block">New lists</p>

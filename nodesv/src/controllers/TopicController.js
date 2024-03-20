@@ -1,7 +1,7 @@
 import topic from "../models/TopicModel.js";
 
 class TopicController {
-  index(req, res, next) {
+  GetAll(req, res, next) {
     topic
       .find({})
       .then((data) => res.send(data))

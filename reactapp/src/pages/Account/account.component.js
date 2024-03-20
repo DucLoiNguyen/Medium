@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { getPosts } from "~/api/api";
+import PostApi from "~/api/PostApi";
 
 function Account() {
   const [data, setData] = useState(null);
@@ -10,7 +10,7 @@ function Account() {
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const responseData = await getPosts("/post/getpost");
+        const responseData = await PostApi.getAllPosts();
         setData(responseData);
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -72,7 +72,7 @@ function Account() {
                         loading="lazy"
                       />
                       <div className="ml-2">
-                        <h4 className="text-sm">Riikka livanainen</h4>
+                        <h4 className="text-sm">{item.author.authorName}</h4>
                       </div>
                     </div>
                   </a>

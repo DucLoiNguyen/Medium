@@ -1,8 +1,8 @@
-import post from "../models/PostModel.js";
+import user from "../models/UserModel.js";
 
-class PostController {
+class UserController {
   GetAll(req, res, next) {
-    post
+    user
       .find({})
       .then((data) => res.send(data))
       .catch((err) => next(err));
@@ -15,4 +15,4 @@ class PostController {
   }
 }
 
-export default new PostController();
+export default new UserController();
