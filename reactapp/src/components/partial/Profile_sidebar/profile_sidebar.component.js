@@ -28,7 +28,7 @@ function ProfileSidebar() {
       {data && (
         <div className={classNames}>
           {data.map((item) => (
-            <div className="mt-10">
+            <div className="mt-10" key={item._id}>
               <a rel="noopener follow" href="/home/profile/#">
                 <div>
                   <img
