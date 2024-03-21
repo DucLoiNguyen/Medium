@@ -8,18 +8,21 @@ import Story from "~/pages/Stories/stories.component";
 import Setting from "~/pages/Setting/setting.component";
 import Refine from "~/pages/Refine/refine.component";
 import Explore from "~/pages/Topic/explore.component";
-import Tag from "~/pages/Tag/tag.component"
+import Tag from "~/pages/Tag/tag.component";
+import Login from "~/pages/Authen/login";
 import {
   DefaultLayout,
   Startlayout,
   ProfileLayout,
   SettingLayout,
-  TopicLayout
-} from "~/components/partial";
+  TopicLayout,
+  AuthenLayout
+} from "~/components/layouts";
 
 
 // public routes
 const publicRoutes = [
+  { path: "/login", component: Login, layout: AuthenLayout },
   { path: "/home/tag", component: Tag, layout: TopicLayout },
   { path: "/home/explore", component: Explore, layout: TopicLayout },
   { path: "/home/refine/:id", component: Refine, layout: SettingLayout },

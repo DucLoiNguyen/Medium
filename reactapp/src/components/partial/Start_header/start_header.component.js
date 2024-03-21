@@ -35,7 +35,7 @@ function StartHeader() {
             </a>
           </div>
           <div className="hidden pr-6 sm:block">
-            <a href="/#" className="text-sm text-black">
+            <a href="/signin" className="text-sm text-black">
               <div className="mx-2">Sign in</div>
             </a>
           </div>

@@ -2,6 +2,7 @@
 module.exports = {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
+    "./node_modules/flowbite/**/*.js"
   ],
   theme: {
     extend: {},
@@ -10,6 +11,8 @@ module.exports = {
       'customs2': ['source-serif-pro', 'Georgia', 'Cambria', '"Times New Roman"', 'Times', 'serif']
     }
   },
-  plugins: [],
+  plugins: [
+    require('flowbite/plugin')
+  ],
 }
 

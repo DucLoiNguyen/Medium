@@ -27,7 +27,7 @@ function Setting() {
                   />
                 </button>
               </div>
-              <h1 className="text-5xl font-bold">Setting</h1>
+              <h1 className="text-5xl font-bold font-customs">Setting</h1>
             </div>
             <div className="bg-white">
               <div className="flex place-items-center">
@@ -37,9 +37,8 @@ function Setting() {
                     onClick={() => handleTabClick("1")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${
-                        activeTab === "1" ? "text-black" : "hover:text-black"
-                      }`}
+                      className={`pb-4 mr-8 ${activeTab === "1" ? "text-black" : "hover:text-black"
+                        }`}
                     >
                       <p className="text-sm">Account</p>
                     </div>
@@ -51,9 +50,8 @@ function Setting() {
                     onClick={() => handleTabClick("2")}
                   >
                     <div
-                      className={`pb-4 mr-8 ${
-                        activeTab === "2" ? "text-black" : "hover:text-black"
-                      }`}
+                      className={`pb-4 mr-8 ${activeTab === "2" ? "text-black" : "hover:text-black"
+                        }`}
                     >
                       <p className="text-sm">Security</p>
                     </div>

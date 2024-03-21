@@ -22,7 +22,7 @@ function Post() {
         <div>
           {data.map((item) => (
             <div className="mb-10" key={item._id}>
-              <div className="flex mt-3">
+              <div className="flex justify-between mt-3">
                 <div className="max-w-lg">
                   <div>
                     <a href="/#">
@@ -39,7 +39,7 @@ function Post() {
                     </a>
                   </div>
                 </div>
-                <div className="hidden ml-14 md:block min-w-[112px]">
+                <div className="hidden ml-14 md:block min-w-[112px] right-0">
                   <img
                     alt="Poseidon"
                     src="/conetnt1.jpg"
