@@ -13,21 +13,21 @@ function Home() {
     <>
       <div className="sticky top-0 pt-4 mt-10 bg-white border-b-2">
         <div className="flex mx-6 place-items-center">
-          <div className="pb-4 mr-6">
-            <a
-              className="rounded-full text-[#6b6b6b] hover:text-black"
-              href="/"
-            >
-              <p>
-                <svg width="19" height="19" fill="currentColor">
-                  <path
-                    d="M9 9H3v1h6v6h1v-6h6V9h-6V3H9v6z"
-                    fillRule="evenodd"
-                  ></path>
-                </svg>
-              </p>
-            </a>
-          </div>
+          {/*<div className="pb-4 mr-6">*/}
+          {/*  <a*/}
+          {/*    className="rounded-full text-[#6b6b6b] hover:text-black"*/}
+          {/*    href="/"*/}
+          {/*  >*/}
+          {/*    <p>*/}
+          {/*      <svg width="19" height="19" fill="currentColor">*/}
+          {/*        <path*/}
+          {/*          d="M9 9H3v1h6v6h1v-6h6V9h-6V3H9v6z"*/}
+          {/*          fillRule="evenodd"*/}
+          {/*        ></path>*/}
+          {/*      </svg>*/}
+          {/*    </p>*/}
+          {/*  </a>*/}
+          {/*</div>*/}
           <div>
             <button
               className="text-[#6b6b6b] hover:text-black"

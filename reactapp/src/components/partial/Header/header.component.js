@@ -54,7 +54,7 @@ function Header() {
             </a>
           </div>
           <div className="hidden pr-8 md:block">
-            <a href="/#" className="flex text-[#6b6b6b] hover:text-black">
+            <a href="/home/new-story" className="flex text-[#6b6b6b] hover:text-black">
               <svg
                 width="24"
                 height="24"

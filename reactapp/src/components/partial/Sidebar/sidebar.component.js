@@ -1,11 +1,19 @@
 import clsx from "clsx";
 import sidebar from "./sidebar.module.scss";
+import {useState} from "react";
 
 function Sidebar() {
   const classNames = clsx(
     sidebar.sidebar,
     "lg:block hidden h-full sticky top-0",
   );
+
+  const [like, setLike] = useState(false);
+
+  const toggleLike = () => {
+    setLike(!like);
+  }
+
   return (
     <>
       <div className={classNames}>
@@ -70,7 +78,7 @@ function Sidebar() {
                 </a>
               </div>
             </div>
-            <p className="text-xs">
+            <p className="text-sm">
               <a className="text-[#419d3f] hover:text-black" href="/#">
                 See the full list
               </a>
@@ -145,15 +153,15 @@ function Sidebar() {
                 </div>
                 <div>
                   <a href="/#">
-                    <p className="w-40 overflow-hidden text-sm whitespace-nowrap overflow-ellipsis">
+                    <p className="w-40 overflow-hidden whitespace-nowrap overflow-ellipsis text-xs text-[#6b6b6b]">
                       Author of Father Figure: How to Be a Feminist Dad...
                     </p>
                   </a>
                 </div>
               </div>
             </div>
-            <button className="border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm">
-              Follow
+            <button onClick={() => toggleLike()} className={`border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm ${like ? "bg-black text-white" : ""}`}>
+              {like ? "Following" : "Follow"}
             </button>
           </div>
           <div className="flex pt-4 place-items-center">
@@ -178,7 +186,7 @@ function Sidebar() {
                 </div>
                 <div>
                   <a href="/#">
-                    <p className="w-40 overflow-hidden text-sm whitespace-nowrap overflow-ellipsis">
+                    <p className="w-40 overflow-hidden whitespace-nowrap overflow-ellipsis text-xs text-[#6b6b6b]">
                       Author of Father Figure: How to Be a Feminist Dad
                       (www.FeministDadBook.com) Twitter: @jordosh
                     </p>
@@ -212,7 +220,7 @@ function Sidebar() {
                 </div>
                 <div>
                   <a href="/#">
-                    <p className="w-40 overflow-hidden text-sm whitespace-nowrap overflow-ellipsis">
+                    <p className="w-40 overflow-hidden whitespace-nowrap overflow-ellipsis text-xs text-[#6b6b6b]">
                       Author of Father Figure: How to Be a Feminist Dad...
                     </p>
                   </a>

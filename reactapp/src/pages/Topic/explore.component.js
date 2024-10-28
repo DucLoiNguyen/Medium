@@ -70,13 +70,13 @@ function Explore() {
               <>
                 {data.map((item) => (
                   <div className="md:pl-16 md:pt-[0px] pt-10" key={item._id}>
-                    <a href={`/home/explore/${item.tag}`}>
+                    <a href={`/home/tag/${item.tag}`}>
                       <h2 className="text-2xl font-semibold hover:underline font-customs">{item.topicname}</h2>
                     </a>
                     <div className="pt-8 pl-6">
                       {item.topicchilds.map((itemchild) => (
                         <div className="mb-4" key={itemchild._id}>
-                          <a href={`/home/explore/${itemchild.tag}`}>
+                          <a href={`/home/tag/${itemchild.tag}`}>
                             <p className="text-base text-[#6b6b6b] hover:text-black hover:underline">
                               {itemchild.topicchildName}
                             </p>

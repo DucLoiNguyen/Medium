@@ -23,7 +23,7 @@ function Foryou() {
           <div className="max-w-lg">
             <div>
               <a href="/#">
-                <h2 className="font-bold">
+                <h2 className="font-bold text-2xl">
                   The secret life of the people width high self-control(it's
                   easier than you think)
                 </h2>
@@ -31,7 +31,7 @@ function Foryou() {
             </div>
             <div className="">
               <a href="/#">
-                <p className="h-[78px] line-clamp-3 max-w-96">
+                <p className="h-[48px] line-clamp-2 max-w-full text-[#6b6b6b]">
                   Improve your life and get ahead of your peers in 10 simple
                   steps — The concept of habits became extremely popular in the
                   recent years, mostly due to the personal development wave

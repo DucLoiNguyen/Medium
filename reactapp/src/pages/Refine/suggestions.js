@@ -4,7 +4,7 @@ function Suggestion() {
       <div className="divide-y divide-solid">
         <div className="mb-12">
           <h2 className="font-bold text-base">Who to follow</h2>
-          <div class="mt-6 mb-12 w-full">
+          <div className="mt-6 mb-12 w-full">
             <div className="flex pt-4 place-items-center">
               <div className="flex w-full">
                 <a href="/#">
@@ -13,8 +13,8 @@ function Suggestion() {
                       alt="Poseidon"
                       className="rounded-full"
                       src="/ava.png"
-                      width="48"
-                      height="48"
+                      width="50"
+                      height="50"
                       loading="lazy"
                     />
                   </div>
@@ -34,7 +34,7 @@ function Suggestion() {
                   </div>
                 </div>
               </div>
-              <button className="border-solid border-2 border-[#1c8a19] bg-[#1a8917] hover:opacity-75 rounded-full px-3 py-[5px] text-sm right-0 text-white">
+              <button className="border-solid border-2 border-[#1c8a19] bg-[#1a8917] hover:bg-[#0f730c] rounded-full px-3 py-[5px] text-sm right-0 text-white">
                 Follow
               </button>
             </div>
@@ -47,7 +47,7 @@ function Suggestion() {
         </div>
         <div className="mb-12">
           <h2 className="font-bold text-base">Topics to follow</h2>
-          <div class="mt-6 mb-12 w-full">
+          <div className="mt-6 mb-12 w-full">
             <div className="flex pt-4 place-items-center">
               <div className="flex w-full">
                 <a href="/#">
@@ -56,8 +56,8 @@ function Suggestion() {
                       alt="Poseidon"
                       className="rounded-full"
                       src="/ava.png"
-                      width="48"
-                      height="48"
+                      width="50"
+                      height="50"
                       loading="lazy"
                     />
                   </div>
@@ -77,7 +77,7 @@ function Suggestion() {
                   </div>
                 </div>
               </div>
-              <button className="border-solid border-2 border-[#1c8a19] bg-[#1a8917] hover:opacity-75 rounded-full px-3 py-[5px] text-sm right-0 text-white">
+              <button className="border-solid border-2 border-[#1c8a19] bg-[#1a8917] hover:bg-[#0f730c] rounded-full px-3 py-[5px] text-sm right-0 text-white">
                 Follow
               </button>
             </div>

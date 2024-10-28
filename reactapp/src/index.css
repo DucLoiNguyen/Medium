@@ -1,3 +1,25 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+ul,ol {
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.ck-editor__editable {
+}
+
+.ck-content h1,
+.ck-content h2,
+.ck-content h3,
+.ck-content p,
+.ck-content ul,
+.ck-content ol,
+.ck-content li,
+.ck-content blockquote {
+    font-size: revert;
+    font-weight: revert;
+    color: revert;
+    line-height: revert;
+}

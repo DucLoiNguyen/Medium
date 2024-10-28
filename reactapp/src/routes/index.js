@@ -11,6 +11,7 @@ import Explore from "~/pages/Topic/explore.component";
 import Tag from "~/pages/Tag/tag.component";
 import Login from "~/pages/Authen/login";
 import Register from "~/pages/Authen/register";
+import CreatePost from "~/pages/Create/createpost.component";
 import {
   DefaultLayout,
   Startlayout,
@@ -18,14 +19,16 @@ import {
   SettingLayout,
   TopicLayout,
   AuthenLayout,
+  CreatePostLayout,
 } from "~/components/layouts";
 
 // public routes
 const publicRoutes = [
   { path: "/register", component: Register, layout: AuthenLayout },
   { path: "/signin", component: Login, layout: AuthenLayout },
-  { path: "/home/tag", component: Tag, layout: TopicLayout },
+  { path: "/home/tag/:id", component: Tag, layout: TopicLayout },
   { path: "/home/explore", component: Explore, layout: TopicLayout },
+  { path: "/home/new-story", component: CreatePost, layout: CreatePostLayout },
   { path: "/home/refine/:id", component: Refine, layout: SettingLayout },
   { path: "/home/refine/", component: Refine, layout: SettingLayout },
   { path: "/home/setting", component: Setting, layout: SettingLayout },
