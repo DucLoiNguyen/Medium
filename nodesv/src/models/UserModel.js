@@ -9,9 +9,9 @@ const user = new Schema(
     address: { type: String },
     phone: { type: String },
     bio: { type: String },
-    followers: { type: String },
-    following: { type: String },
-    ava: { type: String }
+    followers: { type: String, default: "0" },
+    following: { type: String, default: "0" },
+    ava: { type: String, default: "/ava.png" }
   },
   {
     timestamps: true,

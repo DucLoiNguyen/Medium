@@ -59,11 +59,13 @@
 import PostRouter from "./PostRoute.js";
 import TopicRouter from "./TopicRoute.js";
 import UserRouter from "./UserRoute.js"
+import AuthRouter from "./AuthRoute.js";
 
 function route(app) {
   app.use("/api/post", PostRouter);
   app.use("/api/topic", TopicRouter);
-  app.use("/api/user", UserRouter)
+  app.use("/api/user", UserRouter);
+  app.use("/api/auth", AuthRouter);
 }
 
 export default route;

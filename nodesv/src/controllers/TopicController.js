@@ -10,19 +10,23 @@ class TopicController {
   }
 
   GetAllTag(req, res, next) {
-    var tags = [];
-    topic
-      .find({})
-      .then((data) => {
-        tags = tags.concat(data);
-        tag
-          .find({})
-          .then((data) => {
-            tags = tags.concat(data);
-            res.send(tags);
-          })
-      })
-      .catch((err) => console.log(err))
+    // var tags = [];
+    // topic
+    //   .fin({})
+    //   .then((data) => {
+    //     tags = tags.concat(data);
+    //     tag
+    //       .find({})
+    //       .then((data) => {
+    //         tags = tags.concat(data);
+    //         res.send(tags);
+    //       })
+    //   })
+    //   .catch((err) => console.log(err))
+
+    tag.find()
+        .then((data) => res.status(200).json(data))
+        .catch((err) => res.status(500).json(err));
   }
 }
 

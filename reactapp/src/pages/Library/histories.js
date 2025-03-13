@@ -6,7 +6,7 @@ function History() {
           You can clear your reading history for a fresh start.
         </p>
         <div className="text-right">
-          <button className="py-[5px] px-5 bg-[#c94a4a] rounded-full">
+          <button className="py-[5px] px-5 bg-[#c94a4a] rounded-full hover:bg-[#b63636]">
             <span className="text-sm text-white">Clear history</span>
           </button>
         </div>

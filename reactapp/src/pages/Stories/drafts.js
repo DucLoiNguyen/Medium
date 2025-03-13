@@ -1,8 +1,18 @@
 import { ClassNames } from "~/util";
-import { Fragment } from "react";
-import { Menu, Transition } from "@headlessui/react";
+import { Fragment, useState } from "react";
+import { Menu, Transition, Dialog } from "@headlessui/react";
 
 function Draft() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  function open() {
+    setIsOpen(true);
+  }
+
+  function close() {
+    setIsOpen(false);
+  }
+
   return (
     <>
       <div className="px-6 pt-6 pb-[10px]">
@@ -50,7 +60,7 @@ function Draft() {
                           active
                             ? "bg-gray-100 text-gray-900"
                             : "text-gray-700",
-                          "block px-4 py-2 text-sm",
+                          "block px-4 py-2 text-sm"
                         )}
                       >
                         <div className="flex ml-4">
@@ -62,12 +72,12 @@ function Draft() {
                   <Menu.Item className="flex">
                     {({ active }) => (
                       <button
-                        data-modal-target="popup-modal" data-modal-toggle="popup-modal"
+                        onClick={open}
                         className={ClassNames(
                           active
                             ? "bg-gray-100 text-gray-900"
                             : "text-[#c94a4a]",
-                          "block px-4 py-2 text-sm w-full",
+                          "block px-4 py-2 text-sm w-full"
                         )}
                       >
                         <div className="flex ml-4">
@@ -80,42 +90,41 @@ function Draft() {
               </Menu.Items>
             </Transition>
           </Menu>
-        </div>
-      </div>
-      <div id="popup-modal" tabIndex="-1"
-           className="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-        <div className="relative p-4 w-full max-w-md max-h-full">
-          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
-            <button type="button"
-                    className="absolute top-3 end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
-                    data-modal-hide="popup-modal">
-              <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                   viewBox="0 0 14 14">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-              </svg>
-              <span className="sr-only">Close modal</span>
-            </button>
-            <div className="p-4 md:p-5 text-center">
-              <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true"
-                   xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-              </svg>
-              <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">Are you sure you want to delete
-                this product?</h3>
-              <button data-modal-hide="popup-modal" type="button"
-                      className="text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center">
-                Yes, I'm sure
-              </button>
-              <button data-modal-hide="popup-modal" type="button"
-                      className="py-2.5 px-5 ms-3 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">No,
-                cancel
-              </button>
+          <Dialog open={isOpen} as="div" className="relative z-10 focus:outline-none" onClose={close}>
+            <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4">
+                <Dialog.Panel
+                  transition
+                  className="w-full max-w-xl rounded-xl bg-white p-6 backdrop-blur-2xl duration-300 ease-out data-[closed]:transform-[scale(95%)] data-[closed]:opacity-0 z-50 drop-shadow-2xl"
+                >
+                  <Dialog.Title as="h1" className="font-customs font-bold text-black text-center text-3xl tracking-tight">
+                    Delete story
+                  </Dialog.Title>
+                  <p className="mt-2 text-sm/6 text-black px-6 text-center">
+                    Your payment has been successfully submitted. We’ve sent you an email with all of the details of your
+                    order.
+                  </p>
+                  <div className="mt-4 text-center">
+                    <button
+                      className="inline-flex items-center gap-2 py-1.5 px-3 mx-2 text-sm/6 font-customs border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full"
+                      onClick={close}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="inline-flex items-center gap-2 py-1.5 px-3 mx-2 text-sm/6 font-customs border-solid border-2 border-[#c94a4a] bg-[#c94a4a] hover:bg-[#b63636] rounded-full hover:border-[#b63636] text-white"
+                      onClick={close}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </div>
             </div>
-          </div>
+          </Dialog>
         </div>
       </div>
+
     </>
   );
 }

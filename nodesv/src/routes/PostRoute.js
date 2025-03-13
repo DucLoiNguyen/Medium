@@ -4,5 +4,6 @@ const router = express.Router();
 
 router.get("/getpostbyauthor", PostController.GetByAuthor);
 router.get("/getallpost", PostController.GetAll);
+router.post("/createpost", PostController.Create);
 
 export default router;

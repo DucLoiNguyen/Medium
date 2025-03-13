@@ -5,3 +5,4 @@ export { default as SettingLayout } from "./SettingLayout/settinglayout.componen
 export { default as TopicLayout } from "./TopicLayout/topiclayout.component";
 export { default as AuthenLayout } from "./AuthenLayout/authenlayout.component"
 export { default as CreatePostLayout } from "./CreatepostLayout/createpostlayout.component";
+export { default as PostLayout } from "./PostLayout/postlayout.component";

@@ -4,10 +4,10 @@ const { Schema } = mongoose;
 
 const tag = new Schema(
   {
-    topicname: { type: String },
-    topicrefer: {
-      topicreferId: { type: ObjectId },
-      topicreferName: { type: String }
+    tag: { type: String },
+    topic: {
+      topicId: { type: ObjectId },
+      topicname: { type: String }
     }
   },
   {
@@ -15,4 +15,4 @@ const tag = new Schema(
   }
 );
 
-export default mongoose.model("topicchilds", tag);
+export default mongoose.model("tags", tag);

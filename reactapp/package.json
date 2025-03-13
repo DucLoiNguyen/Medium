@@ -17,6 +17,7 @@
     "@tiptap/react": "^2.8.0",
     "@tiptap/starter-kit": "^2.8.0",
     "autoprefixer": "^10.4.17",
+    "axios": "^1.8.1",
     "ckeditor5": "^43.2.0",
     "ckeditor5-premium-features": "^43.2.0",
     "clsx": "^2.1.0",

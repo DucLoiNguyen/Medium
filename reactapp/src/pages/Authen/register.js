@@ -1,11 +1,31 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 function Register() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate(); // Khởi tạo hook useNavigate
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log(email);
+    console.log(password);
+    try {
+      await axios.post("http://localhost:3030/api/auth/register", { email: email, password: password });
+      navigate("userinfor");
+    } catch (error) {
+      alert("Đăng kí ko thành công!");
+      console.log(error);
+    }
+  }
   return (
     <>
       <div>
         <h2 className="text-center font-customs2 text-3xl">Join Medium.</h2>
       </div>
       <div className="py-11 px-14">
-        <form className="max-w-md mx-auto grid justify-items-center">
+        <form className="max-w-md mx-auto grid justify-items-center" onSubmit={handleSubmit}>
           <div className="relative z-0 w-full mb-5 group">
             <input
               type="email"
@@ -14,6 +34,7 @@ function Register() {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-black peer"
               placeholder=" "
               required
+              onChange={(e) => setEmail(e.target.value)}
             />
             <label
               htmlFor="email"
@@ -30,6 +51,7 @@ function Register() {
               className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-black peer"
               placeholder=" "
               required
+              onChange={(e) => setPassword(e.target.value)}
             />
             <label
               htmlFor="password"

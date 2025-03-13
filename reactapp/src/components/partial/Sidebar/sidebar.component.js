@@ -8,10 +8,16 @@ function Sidebar() {
     "lg:block hidden h-full sticky top-0",
   );
 
-  const [like, setLike] = useState(false);
+  const [like, setLike] = useState({
+    like1: false,
+    like2: false,
+  });
 
-  const toggleLike = () => {
-    setLike(!like);
+  const toggleLike = (name) => {
+    setLike(prevStates => ({
+      ...prevStates,
+      [name]: !prevStates[name]
+    }));
   }
 
   return (
@@ -160,8 +166,8 @@ function Sidebar() {
                 </div>
               </div>
             </div>
-            <button onClick={() => toggleLike()} className={`border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm ${like ? "bg-black text-white" : ""}`}>
-              {like ? "Following" : "Follow"}
+            <button onClick={() => toggleLike("like1")} className={`border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm ${like.like1 ? "bg-black text-white" : ""}`}>
+              {like.like1 ? "Following" : "Follow"}
             </button>
           </div>
           <div className="flex pt-4 place-items-center">
@@ -194,8 +200,9 @@ function Sidebar() {
                 </div>
               </div>
             </div>
-            <button className="border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm">
-              Follow
+            <button onClick={() => toggleLike("like2")}
+                    className={`border-solid border-2 border-[#6b6b6b] hover:border-black rounded-full px-3 py-1 text-sm ${like.like2 ? "bg-black text-white" : ""}`}>
+              {like.like2 ? "Following" : "Follow"}
             </button>
           </div>
           <div className="flex pt-4 place-items-center">

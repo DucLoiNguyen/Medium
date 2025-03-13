@@ -24,11 +24,11 @@ function CreatepostHeader() {
           </a>
         </div>
         <div className="relative flex justify-end w-full place-items-center">
-          <div className="pr-8">
-            <button data-modal-target="crud-modal" data-modal-toggle="crud-modal"
-                    className="px-2 py-1 bg-[#1a8917] rounded-full text-white text-sm hover:bg-[#0f730c]">
-              <span>Publish</span></button>
-          </div>
+          {/*<div className="pr-8">*/}
+          {/*  <button data-modal-target="crud-modal" data-modal-toggle="crud-modal"*/}
+          {/*          className="px-2 py-1 bg-[#1a8917] rounded-full text-white text-sm hover:bg-[#0f730c]">*/}
+          {/*    <span>Publish</span></button>*/}
+          {/*</div>*/}
           <div className="pr-8">
             <a
               href="/home/notifications"

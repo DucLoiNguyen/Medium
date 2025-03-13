@@ -5,13 +5,12 @@ const { Schema } = mongoose;
 const topic = new Schema(
   {
     topicname: { type: String },
-    topicchilds: [
+    tags: [
       {
-        topicchildId: { type: ObjectId },
-        topicchildName: { type: String }
+        tagId: { type: ObjectId },
+        tagName: { type: String }
       }
-    ],
-    tag: { type: String }
+    ]
   },
   {
     timestamps: true,
