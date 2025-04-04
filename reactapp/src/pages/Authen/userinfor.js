@@ -1,28 +1,30 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 
 function Userinfor() {
   const [formData, setFormData] = useState({
-    username:"",
-    address:"",
-    phone:"",
-    bio:""
+    username: "",
+    address: "",
+    phone: "",
+    bio: ""
   });
+  const [searchParams] = useSearchParams();
+  const email = searchParams.get("email") || "No email found";
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await axios.post("http://localhost:3030/api/user/createuser", formData );
+    await axios.post("http://localhost:3030/api/user/createuser", { ...formData, email: email }, { withCredentials:true });
     navigate("/home");
-  }
+  };
 
-  return(
+  return (
     <>
       <div>
         <h2 className="text-center font-customs2 text-3xl">Your information.</h2>

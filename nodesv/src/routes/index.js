@@ -56,16 +56,24 @@
  *                 $ref:'#/components/schemas/Posts'
  */
 
-import PostRouter from "./PostRoute.js";
-import TopicRouter from "./TopicRoute.js";
-import UserRouter from "./UserRoute.js"
-import AuthRouter from "./AuthRoute.js";
+import PostRouter from './PostRoute.js';
+import TopicRouter from './TopicRoute.js';
+import UserRouter from './UserRoute.js';
+import AuthRouter from './AuthRoute.js';
+import CommentRouter from './CommentRoute.js';
+import NotificationRouter from './NotiRoute.js';
+import HistoryRouter from './HistoryRoute.js';
+import TagRouter from './TagRoute.js';
 
-function route(app) {
-  app.use("/api/post", PostRouter);
-  app.use("/api/topic", TopicRouter);
-  app.use("/api/user", UserRouter);
-  app.use("/api/auth", AuthRouter);
+function route( app ) {
+    app.use('/api/post', PostRouter);
+    app.use('/api/topic', TopicRouter);
+    app.use('/api/user', UserRouter);
+    app.use('/api/auth', AuthRouter);
+    app.use('/api/comment', CommentRouter);
+    app.use('/api/notification', NotificationRouter);
+    app.use('/api/history', HistoryRouter);
+    app.use('/api/tag', TagRouter);
 }
 
 export default route;

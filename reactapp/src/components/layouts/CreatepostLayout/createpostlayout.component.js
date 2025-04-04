@@ -1,5 +1,6 @@
 import CreatePostHeaderComponent from '~/components/partial/Createpost_header/createpost_header.component';
 import Footer from '~/components/partial/Footer/footer.component';
+import { Toaster } from 'sonner';
 
 function CreatePostLayout({ children }) {
   return (
@@ -15,6 +16,7 @@ function CreatePostLayout({ children }) {
         </div>
       </div>
       <Footer />
+      <Toaster position="bottom-right" />
     </>
   );
 }

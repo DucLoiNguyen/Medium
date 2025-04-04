@@ -1,3 +1,5 @@
+import { Toaster } from 'sonner';
+
 function AuthenLayout({ children }) {
   return (
     <div className="flex place-items-center my-48">
@@ -8,6 +10,7 @@ function AuthenLayout({ children }) {
         {/*<div className="py-11 px-14">{children}</div>*/}
         {children}
       </div>
+      <Toaster position="top-center" />
     </div>
   );
 }

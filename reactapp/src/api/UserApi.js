@@ -3,7 +3,7 @@ const BASE_URL = "http://localhost:3030/api";
 class UserApi {
   getAllUsers = async () => {
     try {
-      const response = await fetch(`${BASE_URL}/user/getalluser`, { method: "GET" });
+      const response = await fetch(`${BASE_URL}/user/getalluser`, { method: "GET" }, {});
       if (!response.ok) {
         throw new Error("Failed to fetch data");
       }

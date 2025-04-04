@@ -1,20 +1,16 @@
-import StartHeader from "~/components/partial/Start_header/start_header.component";
-import Footer from "~/components/partial/Footer/footer.component";
-// import Sidebar from "~/components/partial/Sidebar/sidebar.component";
-import Banner from "~/components/partial/Banner/banner.component";
+import StartHeader from '~/components/partial/Start_header/start_header.component';
+import Footer from '~/components/partial/Footer/footer.component';
 
 function Startlayout({ children }) {
-  return (
-    <div>
-      <StartHeader />
-      <Banner />
-      <div className="container flex justify-center mx-auto">
-        <div className="">{children}</div>
-        {/* <Sidebar /> */}
-      </div>
-      <Footer />
-    </div>
-  );
+    return (
+        <div className="bg-[#f7f4ed]">
+            <StartHeader />
+            <div className="relative flex h-screen">
+                <div className="">{ children }</div>
+            </div>
+            <Footer />
+        </div>
+    );
 }
 
 export default Startlayout;

@@ -3,6 +3,7 @@ import Footer from "~/components/partial/Footer/footer.component";
 import ProfileSidebar from "~/components/partial/Profile_sidebar/profile_sidebar.component";
 import profileLayout from "./profilelayout.module.scss";
 import clsx from "clsx";
+import { Toaster } from 'sonner';
 
 function ProfileLayout({ children }) {
   const classNames = clsx(profileLayout.main, "sm:w-full");
@@ -14,6 +15,7 @@ function ProfileLayout({ children }) {
         <ProfileSidebar />
       </div>
       <Footer />
+      <Toaster position="bottom-right" />
     </div>
   );
 }

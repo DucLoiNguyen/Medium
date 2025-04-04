@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'sonner';
 
 function Register() {
   const [email, setEmail] = useState("");
@@ -12,10 +13,10 @@ function Register() {
     console.log(email);
     console.log(password);
     try {
-      await axios.post("http://localhost:3030/api/auth/register", { email: email, password: password });
-      navigate("userinfor");
+      await axios.post("http://localhost:3030/api/auth/register", { email: email, password: password }, { withCredentials:true });
+      navigate(`userinfor?email=${encodeURIComponent(email)}`);
     } catch (error) {
-      alert("Đăng kí ko thành công!");
+      toast.error(error.reponse.data.error);
       console.log(error);
     }
   }

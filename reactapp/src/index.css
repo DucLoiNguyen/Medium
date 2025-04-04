@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-ul,ol {
+ul, ol {
     padding-left: 20px;
     padding-right: 20px;
 }

@@ -1,5 +1,6 @@
 import Header from "~/components/partial/Header/header.component";
 import Footer from "~/components/partial/Footer/footer.component";
+import { Toaster } from 'sonner';
 
 function PostLayout({ children }) {
   return (
@@ -15,6 +16,7 @@ function PostLayout({ children }) {
         </div>
       </div>
       <Footer/>
+      <Toaster position="bottom-right" />
     </>
   );
 }
