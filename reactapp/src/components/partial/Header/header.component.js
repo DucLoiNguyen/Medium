@@ -8,12 +8,23 @@ import { useAuth } from '~/pages/Authen/authcontext';
 import Avatar from '~/components/partial/Avatar/avatar.component';
 import Loading_spinner from '~/components/partial/Loading_spinner/loading_spinner.component';
 import { useSocketNotifications } from '~/pages/Notifi/socketcontext';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
     const classNames = clsx(header.svg);
     const [isLoading, setIsLoading] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
     const { user } = useAuth();
     const { notifications } = useSocketNotifications();
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if ( searchTerm.trim() ) {
+            navigate(`/home/search?q=${ encodeURIComponent(searchTerm) }`);
+            console.log(searchTerm);
+        }
+    };
 
     const handleSignout = async () => {
         if ( isLoading ) return <Loading_spinner />;
@@ -42,8 +53,8 @@ function Header() {
                             </g>
                         </svg>
                     </a>
-                    <div
-                        className="relative items-center hidden mx-4 group bg-neutral-50 rounded-l-3xl rounded-r-3xl md:flex">
+                    <form onSubmit={ handleSubmit }
+                          className="relative items-center hidden mx-4 group bg-neutral-50 rounded-l-3xl rounded-r-3xl md:flex">
                         <div
                             className="flex justify-center w-10 h-10 mx-2 border-gray rounded-l-3xl bg-neutral-50 place-items-center pointer-events-non">
                             <svg
@@ -62,8 +73,10 @@ function Header() {
                         <input
                             className="w-52 h-10 border-gray p-2 rounded-r-3xl bg-neutral-50 outline-none py-2.5 pr-5 pl-0"
                             placeholder="Search"
+                            value={ searchTerm }
+                            onChange={ (e) => setSearchTerm(e.target.value) }
                         ></input>
-                    </div>
+                    </form>
                 </div>
                 <div className="relative flex justify-end w-full place-items-center">
                     <div className="pr-8">
@@ -152,7 +165,7 @@ function Header() {
                                     <Menu.Item className="flex">
                                         { ({ active }) => (
                                             <a
-                                                href="/home/profile"
+                                                href={ `/home/profile/${ user._id }` }
                                                 className={ ClassNames(
                                                     active
                                                         ? 'bg-gray-100 text-gray-900'

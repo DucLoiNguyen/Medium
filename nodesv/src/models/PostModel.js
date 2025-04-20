@@ -23,6 +23,8 @@ const post = new Schema(
         ],
         thumbnail: { type: String, default: 'conetnt1.jpg' },
         likes: { type: Number, default: 0 },
+        comments: { type: Number, default: 0 },
+        views: { type: Number, default: 0 },
         status: { type: Boolean, default: false },
         memberonly: { type: Boolean, default: false },
     },
@@ -30,5 +32,12 @@ const post = new Schema(
         timestamps: true,
     }
 );
+
+post.index({
+    tittle: 'text',
+    subtittle: 'text',
+    content: 'text',
+    'tags.tagName': 'text'
+});
 
 export default mongoose.model('posts', post);

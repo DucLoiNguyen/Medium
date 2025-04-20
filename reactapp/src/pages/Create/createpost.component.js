@@ -47,7 +47,8 @@ import {
     Underline,
     Undo,
     Base64UploadAdapter,
-    Title
+    Title,
+    CodeBlock
 } from 'ckeditor5';
 
 import 'ckeditor5/ckeditor5.css';
@@ -316,6 +317,7 @@ function CreatePost() {
                                         'mediaEmbed',
                                         'insertTable',
                                         'blockQuote',
+                                        'codeBlock',
                                         '|',
                                         'bulletedList',
                                         'numberedList',
@@ -368,10 +370,10 @@ function CreatePost() {
                                     TableToolbar,
                                     TextTransformation,
                                     TodoList,
-                                    Title,
                                     Underline,
                                     Undo,
-                                    Base64UploadAdapter
+                                    Base64UploadAdapter,
+                                    CodeBlock
                                 ],
                                 balloonToolbar: ['bold', 'italic', '|', 'link', 'insertImage', '|', 'bulletedList', 'numberedList'],
                                 blockToolbar: ['bold', 'italic', '|', 'link', 'insertImage', 'insertTable', '|', 'bulletedList', 'numberedList', 'outdent', 'indent'],
@@ -384,9 +386,6 @@ function CreatePost() {
                                         startIndex: true,
                                         reversed: true
                                     }
-                                },
-                                title: {
-                                    placeholder: 'Type the title'
                                 },
                                 placeholder: 'Start writing your post content here...',
                                 licenseKey: 'T3NUY0pxam5hL01xRVpXNVFZT1A2T2RDT2JnMnFsR1RxKy93cXNZNU9nOHVnakNaUkZtdHp1ck9IS0dPY1E9PS1NakF5TkRFeE1UUT0='
@@ -615,7 +614,7 @@ function CreatePost() {
                         <button
                             type="button"
                             onClick={ () => navigate('/home/story') }
-                            className="text-sm font-semibold text-gray-900 px-4 py-1 ring-2 ring-[#6b6b6b] hover:ring-offset-2 hover:ring-black rounded-full transition-all ease-in-out"
+                            className="text-sm text-gray-900 px-4 py-1 ring-2 ring-[#6b6b6b] hover:ring-offset-2 hover:ring-black rounded-full transition-all ease-in-out"
                         >
                             Cancel
                         </button>

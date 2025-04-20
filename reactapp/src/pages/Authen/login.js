@@ -65,12 +65,18 @@ function Login() {
                             Password
                         </label>
                     </div>
+                    <span className="text-sm w-full">
+                        <a href="/forgot-password" className="text-[#1a8917] hover:text-gray-900">Forgot password</a>
+                    </span>
                     <button
                         type="submit"
-                        className="text-white bg-black hover:opacity-75 focus:ring-4 focus:outline-none focus:ring-black font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+                        className="text-white bg-black hover:opacity-75 focus:ring-4 focus:outline-none focus:ring-black font-medium rounded-full text-sm w-full sm:w-auto px-5 py-2.5 mt-6 text-center"
                     >
-                        Submit
+                        Sign In
                     </button>
+                    <span className="mt-4 text-center text-sm">Don't hav account yet? <a href="/register"
+                                                                                         className="text-[#1a8917] hover:text-gray-900">Create here</a>
+                    </span>
                 </form>
             </div>
         </>

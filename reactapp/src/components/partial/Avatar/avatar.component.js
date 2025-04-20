@@ -1,5 +1,5 @@
-function Avatar({ username, width = 50, height = 50 }) {
-    const ava = `https://api.dicebear.com/9.x/initials/svg?seed=${ username }`;
+function Avatar({ username, avatar, width = 50, height = 50 }) {
+    const ava = avatar || `https://api.dicebear.com/9.x/initials/svg?seed=${ username }`;
     return (
         <>
             <div className="">

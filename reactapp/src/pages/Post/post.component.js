@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import CommentSection from '~/components/partial/Comments/comments.component';
 import { useAuth } from '~/pages/Authen/authcontext';
 import Avatar from '~/components/partial/Avatar/avatar.component';
 import { trackReading } from '~/util';
+import Likes from '~/components/partial/Likes/likes.component';
 
 function Post() {
     const [article, setArticle] = useState(null);
@@ -13,6 +14,41 @@ function Post() {
     const [error, setError] = useState(null);
     const params = useParams();
     const { isMember } = useAuth();
+    const [liked, setLiked] = useState(false);
+    const [hearts, setHearts] = useState([]);
+    const buttonRef = useRef(null);
+
+    const createHeart = (e) => {
+        if ( !buttonRef.current ) return;
+
+        // Toggle liked state
+        setLiked(true);
+
+        // Calculate position relative to button
+        const buttonRect = e.currentTarget.getBoundingClientRect();
+        const offsetX = e.clientX - buttonRect.left;
+        const offsetY = e.clientY - buttonRect.top;
+
+        // Create multiple hearts
+        const newHearts = Array(5).fill().map((_, i) => {
+            return {
+                id: Date.now() + i,
+                x: offsetX,
+                y: offsetY,
+                opacity: 1,
+                scale: 1,
+                rotation: Math.random() * 30 - 15
+            };
+        });
+
+        setHearts([...hearts, ...newHearts]);
+
+        // Remove hearts after animation completes
+        setTimeout(() => {
+            setHearts(hearts => hearts.filter(heart => !newHearts.find(h => h.id === heart.id)));
+        }, 1000);
+    };
+
 
     useEffect(() => {
         // Simulating API call to fetch article by ID
@@ -82,7 +118,6 @@ function Post() {
 
     return (
         <div className="bg-white min-h-screen">
-
             {/* Article Content */ }
             <div className="max-w-3xl mx-auto">
 
@@ -107,7 +142,7 @@ function Post() {
                                     year: 'numeric'
                                 }) }</span>
                                 <span className="mx-2">·</span>
-                                <span>300min</span>
+                                <span>{ Math.ceil(article.data.views / 60) } min</span>
                             </div>
                         </div>
                     </div>
@@ -115,15 +150,67 @@ function Post() {
                     {/* Share buttons */ }
                     <div className="flex space-x-4 mb-8 border-b border-gray-200 pb-8 justify-between">
                         <div className="flex space-x-5">
-                            <button className="flex items-center text-gray-500 hover:text-gray-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none"
-                                     viewBox="0 0 24 24"
-                                     stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
-                                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                                </svg>
-                                { article.claps }
-                            </button>
+                            <div className="relative">
+                                <Likes postId={ article.data._id }
+                                       initialLikes={ article.data.likes }>
+                                    { (postId, likes, handleLikes) => (
+                                        <button className="flex items-center text-gray-500 hover:text-gray-700"
+                                                ref={ buttonRef }
+                                                onClick={ (e) => {
+                                                    handleLikes();
+                                                    createHeart(e);
+                                                } }>
+                                            <svg xmlns="http://www.w3.org/2000/svg"
+                                                 className={ `h-5 w-5 mr-1 transition-colors duration-200 ${ liked ? 'text-current fill-current' : '' }` }
+                                                 fill="none"
+                                                 viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                            </svg>
+
+                                            {/* Flying hearts */ }
+                                            { hearts.map(heart => (
+                                                <div
+                                                    key={ heart.id }
+                                                    className="absolute pointer-events-none"
+                                                    style={ {
+                                                        left: `${ heart.x }px`,
+                                                        top: `${ heart.y }px`,
+                                                        transform: `translate(-50%, -50%) scale(${ heart.scale }) rotate(${ heart.rotation }deg)`,
+                                                        opacity: heart.opacity,
+                                                        animation: 'float-heart 1s ease-out forwards'
+                                                    } }
+                                                >
+                                                    <svg
+                                                        className="w-5 h-5 text-current fill-current"
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+                                                    </svg>
+                                                </div>
+                                            )) }
+
+                                            { likes }
+                                        </button>
+                                    ) }
+                                </Likes>
+
+                                <style jsx>{ `
+                                    @keyframes float-heart {
+                                        0% {
+                                            transform: translate(-50%, -50%) scale(0.7) rotate(0deg);
+                                            opacity: 1;
+                                        }
+                                        100% {
+                                            transform: translate(-50%, -150%) scale(1.4) rotate(20deg);
+                                            opacity: 0;
+                                        }
+                                    }
+                                ` }</style>
+                            </div>
                             <a href="#comment" type="button"
                                className="flex items-center text-gray-500 hover:text-gray-700">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" fill="none"

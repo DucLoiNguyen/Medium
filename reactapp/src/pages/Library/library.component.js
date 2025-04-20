@@ -31,18 +31,18 @@ function Library() {
                                         </div>
                                     </button>
                                 </div>
-                                <div>
-                                    <button
-                                        className="text-[#6b6b6b] hover:text-black"
-                                        onClick={ () => handleTabClick('2') }
-                                    >
-                                        <div
-                                            className={ `pb-4 mr-8 ${ activeTab === '2' ? 'text-black' : 'hover:text-black' }` }
-                                        >
-                                            <p className="text-sm">Saved lists</p>
-                                        </div>
-                                    </button>
-                                </div>
+                                {/*<div>*/ }
+                                {/*    <button*/ }
+                                {/*        className="text-[#6b6b6b] hover:text-black"*/ }
+                                {/*        onClick={ () => handleTabClick('2') }*/ }
+                                {/*    >*/ }
+                                {/*        <div*/ }
+                                {/*            className={ `pb-4 mr-8 ${ activeTab === '2' ? 'text-black' : 'hover:text-black' }` }*/ }
+                                {/*        >*/ }
+                                {/*            <p className="text-sm">Saved lists</p>*/ }
+                                {/*        </div>*/ }
+                                {/*    </button>*/ }
+                                {/*</div>*/ }
                                 <div>
                                     <button
                                         className="text-[#6b6b6b] hover:text-black"

@@ -14,7 +14,11 @@ class CommentController {
             });
             await newComment.save();
 
-            const posts = await post.findById(postId);
+            const posts = await post.findByIdAndUpdate(
+                postId,
+                { $inc: { comments: 1 } },
+                { new: true }
+            );
 
             const newNotification = new notification({
                 recipient: posts.author.authorId,

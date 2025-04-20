@@ -1,4 +1,5 @@
 import history from '../models/HistoryModel.js';
+import post from '../models/PostModel.js';
 import { populate } from 'dotenv';
 
 class HistoryController {
@@ -18,6 +19,14 @@ class HistoryController {
                 readingHistory.readAt = Date.now();
                 readingHistory.readDuration = Math.max(readingHistory.readDuration, readDuration || 0);
                 readingHistory.readPercentage = Math.max(readingHistory.readPercentage, readPercentage || 0);
+
+                // if ( readDuration && readDuration > 0 ) {
+                //     await post.findOneAndUpdate(
+                //         { _id: postId },
+                //         { $inc: { views: readDuration } }
+                //     );
+                //     console.log(`Đã cộng ${ readDuration } giây vào views của bài viết ${ postId }`);
+                // }
 
                 if ( isCompleted ) {
                     readingHistory.isCompleted = true;
@@ -44,35 +53,61 @@ class HistoryController {
 
     async GetReadingHistory( req, res ) {
         try {
-            const userId = req.session.user._id; // Giả định bạn đã setup authentication middleware
-            const page = parseInt(req.query.page) || 1;
+            const userId = req.session.user._id;
             const limit = parseInt(req.query.limit) || 10;
-            const skip = ( page - 1 ) * limit;
+            const cursor = req.query.cursor;
 
-            const readingHistory = await history.find({ user: userId })
-                .sort({ readAt: -1 }) // Sắp xếp theo thời gian đọc gần đây nhất
-                .skip(skip)
-                .limit(limit)
-                .populate('post', 'tittle subtittle author thumbnail likes comments') // Lấy thông tin bài viết
+            // Add validation for cursor format
+            if ( cursor && isNaN(Date.parse(cursor)) ) {
+                return res.status(400).json({
+                    success: false,
+                    error: 'Invalid cursor format. Expected ISO date string.'
+                });
+            }
+
+            // Build query with cursor if provided
+            const query = { user: userId };
+            if ( cursor ) {
+                query.readAt = { $lt: new Date(cursor) };
+            }
+
+            // Execute query with one extra item to determine if there's a next page
+            const readingHistory = await history.find(query)
+                .sort({ readAt: -1 })
+                .limit(limit + 1)
+                .populate('post', 'tittle subtittle author thumbnail likes comments')
                 .lean();
 
-            console.log(readingHistory);
+            // Check if there's a next page
+            const hasNextPage = readingHistory.length > limit;
 
-            const total = await history.countDocuments({ user: userId });
+            // Create the response data (without the extra item)
+            const data = hasNextPage ? readingHistory.slice(0, limit) : readingHistory;
+
+            // Determine the next cursor value
+            const nextCursor = hasNextPage && data.length > 0
+                ? data[data.length - 1].readAt.toISOString()
+                : null;
+
+            // Include previous cursor for potential "back" functionality
+            const prevParams = cursor ? new URLSearchParams({ cursor, limit: limit.toString() }).toString() : null;
 
             return res.status(200).json({
                 success: true,
-                data: readingHistory,
+                data,
                 pagination: {
-                    total,
-                    page,
-                    limit,
-                    pages: Math.ceil(total / limit)
+                    hasNextPage,
+                    nextCursor,
+                    prevParams,
+                    limit
                 }
             });
         } catch ( error ) {
             console.error('Error fetching reading history:', error);
-            return res.status(500).json({ success: false, error: 'Server error' });
+            return res.status(500).json({
+                success: false,
+                error: error.message || 'Server error'
+            });
         }
     }
 

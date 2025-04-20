@@ -8,11 +8,17 @@ const tag = new Schema(
         topic: {
             topicId: { type: mongoose.Schema.Types.ObjectId, ref: 'topics' },
             topicName: { type: String }
-        }
+        },
+        followers: { type: Number, default: 0 }
     },
     {
         timestamps: true,
     }
 );
+
+tag.index({
+    tag: 1,
+    'topic.topicName': 1
+});
 
 export default mongoose.model('tags', tag);

@@ -84,6 +84,42 @@ class EmailService {
             throw new Error('Không thể gửi email hủy tài khoản');
         }
     }
+
+    async sendPasswordResetEmail( email, sessionId ) {
+        try {
+            const resetLink = `http://localhost:8080/reset-password?sessionId=${ sessionId }`;
+
+            const mailOptions = {
+                from: process.env.EMAIL_USER,
+                to: email,
+                subject: 'Yêu Cầu Đặt Lại Mật Khẩu',
+                html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+          <h2>Đặt Lại Mật Khẩu</h2>
+          <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
+          <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px;">
+            <p><strong>Tên đăng nhập:</strong> ${ email }</p>
+            <p><strong>Email:</strong> ${ email }</p>
+          </div>
+          <p>Vui lòng nhấn vào nút bên dưới để đặt lại mật khẩu:</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${ resetLink }" style="background-color: #007bff; color: #fff; padding: 12px 20px; border-radius: 5px; text-decoration: none;">
+              Đặt Lại Mật Khẩu
+            </a>
+          </div>
+          <p>Nếu bạn không yêu cầu điều này, hãy bỏ qua email này.</p>
+          <p>Trân trọng,<br/>Đội ngũ hỗ trợ</p>
+        </div>
+      `
+            };
+
+            await this.transporter.sendMail(mailOptions);
+            console.log(`Email reset password đã gửi tới ${ email }`);
+        } catch ( error ) {
+            console.error('Lỗi gửi email reset password:', error);
+            throw new Error('Không thể gửi email đặt lại mật khẩu');
+        }
+    }
 }
 
 export default new EmailService();

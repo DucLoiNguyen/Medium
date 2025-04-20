@@ -1,9 +1,9 @@
-function ProfileAbout() {
-  return (
-    <>
-      <h1>about</h1>
-    </>
-  );
+function ProfileAbout({ bio }) {
+    return (
+        <>
+            <h1>{ bio }</h1>
+        </>
+    );
 }
 
 export default ProfileAbout;

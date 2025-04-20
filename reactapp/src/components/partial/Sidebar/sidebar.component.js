@@ -14,6 +14,7 @@ function Sidebar() {
 
     const [data, setData] = useState(null);
     const [follow, setFollow] = useState({});
+    const [dataRecomTopic, setDataRecomTopic] = useState(null);
     const { user } = useAuth();
 
     const toggleLike = (id) => {
@@ -52,7 +53,12 @@ function Sidebar() {
                 }, {});
                 setFollow(initialFollowState);
 
+                const resdata = await axios.get('http://localhost:3030/api/topic/gettopicrecommend', { withCredentials: true });
+                setDataRecomTopic(resdata.data);
+
             } catch ( error ) {
+                setData(null);
+                setFollow({});
                 console.error('Error fetching initial data:', error);
             }
         };
@@ -152,47 +158,19 @@ function Sidebar() {
                         </p>
                     </div>
                 </div>
-                <div className="mt-10">
+                <div className="mt-10 h-fit">
                     <div className="pb-4">
                         <h2 className="text-base font-bold">Recommended topics</h2>
                     </div>
-                    <div className="relative flex flex-wrap">
-                        <div
-                            className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2">
-                            <a className="text-sm" href="/#">
-                                Programming
-                            </a>
-                        </div>
-                        <div
-                            className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2">
-                            <a className="text-sm" href="/#">
-                                Data Science
-                            </a>
-                        </div>
-                        <div
-                            className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2">
-                            <a className="text-sm" href="/#">
-                                Technology
-                            </a>
-                        </div>
-                        <div
-                            className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2">
-                            <a className="text-sm" href="/#">
-                                Writing
-                            </a>
-                        </div>
-                        <div
-                            className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2">
-                            <a className="text-sm" href="/#">
-                                Relationships
-                            </a>
-                        </div>
-                        <div
-                            className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2">
-                            <a className="text-sm" href="/#">
-                                Machine Learning
-                            </a>
-                        </div>
+                    <div className="relative flex flex-wrap max-h-40 overflow-y-hidden p-2">
+                        { dataRecomTopic && dataRecomTopic.map((item) => (
+                            <div key={ item._id }
+                                 className="rounded-full w-fit px-4 py-2 mb-3 mr-2 hover:shadow-2xl transition-shadow hover:ring-2 hover:ring-gray-300 hover:ring-offset-2 z-10">
+                                <a className="text-sm" href={ `/home/tag/${ item.tag }` }>
+                                    { item.tag }
+                                </a>
+                            </div>
+                        )) }
                     </div>
                     <p className="pt-3 text-sm">
                         <a className="text-[#419d3f] hover:text-black" href="/home/explore">
@@ -200,47 +178,50 @@ function Sidebar() {
                         </a>
                     </p>
                 </div>
-                <div className="mt-10">
+                <div className="mt-10 h-fit">
                     <div className="">
                         <h2 className="text-base font-bold">who to follow</h2>
                     </div>
-                    { data && (
-                        <>
-                            {
-                                data
-                                    .map((item, index) => (
-                                        <div className="flex pt-4 place-items-center" key={ index }>
-                                            <div className="flex mr-2">
-                                                <a href="/#">
-                                                    <div className="w-8 h-auto">
-                                                        <Avatar username={ item.username } width={ 32 } height={ 32 } />
-                                                    </div>
-                                                </a>
-                                                <div className="ml-4 mr-2">
-                                                    <div>
-                                                        <a href="/#">
-                                                            <h2 className="text-base font-bold">{ item.username }</h2>
-                                                        </a>
-                                                    </div>
-                                                    <div>
-                                                        <a href="/#">
-                                                            <p
-                                                                className="w-40 overflow-hidden whitespace-nowrap overflow-ellipsis text-xs text-[#6b6b6b]">
-                                                                { item.bio }
-                                                            </p>
-                                                        </a>
+                    <div className="max-h-36 overflow-y-hidden w-fit p-1">
+                        { data && (
+                            <>
+                                {
+                                    data
+                                        .map((item, index) => (
+                                            <div className="flex pt-4 place-items-center" key={ index }>
+                                                <div className="flex mr-2">
+                                                    <a href={ `/home/profile/${ item._id }` }>
+                                                        <div className="w-8 h-auto">
+                                                            <Avatar username={ item.username } width={ 32 }
+                                                                    height={ 32 } />
+                                                        </div>
+                                                    </a>
+                                                    <div className="ml-4 mr-2">
+                                                        <div>
+                                                            <a href={ `/home/profile/${ item._id }` }>
+                                                                <h2 className="text-base font-bold truncate">{ item.username }</h2>
+                                                            </a>
+                                                        </div>
+                                                        <div>
+                                                            <a href={ `/home/profile/${ item._id }` }>
+                                                                <p
+                                                                    className="w-40 overflow-hidden whitespace-nowrap overflow-ellipsis text-xs text-[#6b6b6b]">
+                                                                    { item.bio }
+                                                                </p>
+                                                            </a>
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <button
+                                                    onClick={ () => toggleLike(`${ item._id }`) }
+                                                    className={ `ring-2 ring-[#6b6b6b] hover:ring-offset-2 hover:ring-black rounded-full px-3 py-1 text-sm transition-all ease-in-out ${ follow[item._id] ? 'bg-black text-white' : '' }` }>
+                                                    { follow[item._id] ? 'Following' : 'Follow' }
+                                                </button>
                                             </div>
-                                            <button
-                                                onClick={ () => toggleLike(`${ item._id }`) }
-                                                className={ `ring-2 ring-[#6b6b6b] hover:ring-offset-2 hover:ring-black rounded-full px-3 py-1 text-sm transition-all ease-in-out ${ follow[item._id] ? 'bg-black text-white' : '' }` }>
-                                                { follow[item._id] ? 'Following' : 'Follow' }
-                                            </button>
-                                        </div>
-                                    )) }
-                        </>
-                    ) }
+                                        )) }
+                            </>
+                        ) }
+                    </div>
                     <p className="pt-6 text-sm">
                         <a className="text-[#419d3f] hover:text-black" href="/home/refine/suggestion">
                             See more suggestions

@@ -16,7 +16,7 @@ const CommentItem = ({ comment, postId, fetchComments }) => {
 
     return (
         <>
-            <div className="comment-item bg-white p-4 rounded-lg shadow-sm mb-4 space-y-4">
+            <div className="comment-item bg-white p-4 rounded-lg shadow-sm mb-4 space-y-4 font-customs">
                 <div className="flex justify-between">
                     <div className="flex items-center space-x-4">
                         {/* Avatar người comment */ }

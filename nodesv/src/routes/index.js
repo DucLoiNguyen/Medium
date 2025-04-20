@@ -64,6 +64,7 @@ import CommentRouter from './CommentRoute.js';
 import NotificationRouter from './NotiRoute.js';
 import HistoryRouter from './HistoryRoute.js';
 import TagRouter from './TagRoute.js';
+import RecommendationRouter from './RecommendationRoute.js';
 
 function route( app ) {
     app.use('/api/post', PostRouter);
@@ -74,6 +75,7 @@ function route( app ) {
     app.use('/api/notification', NotificationRouter);
     app.use('/api/history', HistoryRouter);
     app.use('/api/tag', TagRouter);
+    app.use('/api/recommendation', RecommendationRouter);
 }
 
 export default route;

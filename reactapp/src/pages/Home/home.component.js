@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import Following from './following';
 import Foryou from './foryou';
+import RecommendationFeed from '~/pages/Home/recommendation';
 
 function Home() {
     const [activeTab, setActiveTab] = useState('1');
@@ -52,6 +53,18 @@ function Home() {
                             </div>
                         </button>
                     </div>
+                    <div>
+                        <button
+                            className="text-[#6b6b6b] hover:text-black"
+                            onClick={ () => handleTabClick('3') }
+                        >
+                            <div
+                                className={ `pb-4 mr-8 ${ activeTab === '3' ? 'border-b-2 border-black text-black' : 'hover:border-b-2 hover:border-black' }` }
+                            >
+                                <p className="text-sm">Recommendations</p>
+                            </div>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className="mt-12">
@@ -61,6 +74,8 @@ function Home() {
 
                     {/* Following */ }
                     { activeTab === '2' && <Following /> }
+
+                    { activeTab === '3' && <RecommendationFeed /> }
                 </div>
             </div>
         </>

@@ -97,7 +97,7 @@ function Explore() {
                                 { data.map((item) => (
                                     <div className="mb-8 bg-white rounded-lg shadow-md lg:hidden" key={ item._id }>
                                         <div className="container flex items-center justify-between px-6 mx-auto">
-                                            <a href={ `/home/explore/${ item.tag }` }
+                                            <a href={ `/home/tag/${ item.tag }` }
                                                className="text-xl font-semibold text-[#6b6b6b] font-customs">
                                                 { item.topicname }
                                             </a>
@@ -118,7 +118,7 @@ function Explore() {
                                         </div>
                                         <div className={ menuActive ? 'block' : 'hidden' }>
                                             <div className="pt-4 pl-4">
-                                                <a href={ `/home/explore/${ item.tag }` }>
+                                                <a href={ `/home/tag/${ item.tag }` }>
                                                     <h2 className="text-2xl font-semibold hover:underline font-customs">{ item.topicname }</h2>
                                                 </a>
                                                 <div className="py-4 pl-6">

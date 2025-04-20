@@ -8,28 +8,51 @@ import { toast } from 'sonner';
 function History() {
     const [history, setHistory] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [pagination, setPagination] = useState({
-        page: 1,
-        limit: 2,
-        total: 0,
-        pages: 1
+        hasNextPage: false,
+        nextCursor: null,
+        limit: 5
     });
 
-    const fetchHistory = async (page = 1) => {
-        setLoading(true);
+    const fetchHistory = async (cursor = null) => {
         try {
-            const response = await axios.get(`http://localhost:3030/api/history?page=${ page }&limit=${ pagination.limit }`, {
+            // Nếu không có cursor (lần đầu load), set loading full page
+            // Nếu có cursor (load more), chỉ hiển thị loading ở nút "Load more"
+            if ( !cursor ) {
+                setLoading(true);
+            } else {
+                setLoadingMore(true);
+            }
+
+            // Xây dựng URL với cursor nếu có
+            const url = cursor
+                ? `http://localhost:3030/api/history?cursor=${ cursor }&limit=${ pagination.limit }`
+                : `http://localhost:3030/api/history?limit=${ pagination.limit }`;
+
+            const response = await axios.get(url, {
                 withCredentials: true
             });
 
             if ( !response ) throw new Error('Failed to fetch reading history');
 
-            setHistory(prevHistory => [...prevHistory, ...response.data.data]);
-            setPagination(response.data.pagination);
+            // Nếu không có cursor, reset history, nếu có cursor thì append thêm data
+            if ( !cursor ) {
+                setHistory(response.data.data);
+            } else {
+                setHistory(prevHistory => [...prevHistory, ...response.data.data]);
+            }
+
+            setPagination({
+                hasNextPage: response.data.pagination.hasNextPage,
+                nextCursor: response.data.pagination.nextCursor,
+                limit: response.data.pagination.limit
+            });
         } catch ( error ) {
             console.error('Error fetching reading history:', error);
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
     };
 
@@ -37,8 +60,10 @@ function History() {
         fetchHistory();
     }, []);
 
-    const handlePageChange = (newPage) => {
-        fetchHistory(newPage);
+    const handleLoadMore = () => {
+        if ( pagination.nextCursor ) {
+            fetchHistory(pagination.nextCursor);
+        }
     };
 
     const handleRemoveItem = async (id) => {
@@ -65,7 +90,11 @@ function History() {
             if ( !response ) throw new Error('Failed to clear history');
 
             setHistory([]);
-            setPagination({ ...pagination, total: 0, pages: 1 });
+            setPagination({
+                hasNextPage: false,
+                nextCursor: null,
+                limit: pagination.limit
+            });
         } catch ( error ) {
             console.error('Error clearing reading history:', error);
         }
@@ -83,18 +112,17 @@ function History() {
     };
 
     if ( loading ) {
-        return (
-            <Loading_spinner />
-        );
+        return <Loading_spinner />;
     }
+
     return (
         <>
-            { history.length === 0 ? (<>
+            { history.length === 0 ? (
                 <div className="w-full text-center space-y-6 font-customs">
-                    <h2 className="text-base font-semibold">You haven’t read any stories yet</h2>
-                    <p className="text-sm">Stories you’ve read on Medium will appear here.</p>
+                    <h2 className="text-base font-semibold">You haven't read any stories yet</h2>
+                    <p className="text-sm">Stories you've read on Medium will appear here.</p>
                 </div>
-            </>) : (
+            ) : (
                 <>
                     <div className="flex justify-between mb-10">
                         <p className="text-sm">
@@ -201,7 +229,7 @@ function History() {
                                                 <img
                                                     className="object-cover w-[112px] h-[112px] object-center"
                                                     alt="Thumbnail"
-                                                    src={ item.post.thumbnail === '' ? 'content1.jpg' : `http://localhost:3030${ item.post.thumbnail }` }
+                                                    src={ item.post.thumbnail === '' ? '/content1.jpg' : `http://localhost:3030${ item.post.thumbnail }` }
                                                     width="112"
                                                     height="112"
                                                     loading="lazy"
@@ -217,12 +245,6 @@ function History() {
                                                 <path strokeLinecap="round" strokeLinejoin="round"
                                                       d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
                                             </svg>
-                                            {/*<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"*/ }
-                                            {/*     className="size-5 hover:fill-black">*/ }
-                                            {/*    <path fillRule="evenodd"*/ }
-                                            {/*          d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"*/ }
-                                            {/*          clipRule="evenodd" />*/ }
-                                            {/*</svg>*/ }
                                         </button>
                                         <button onClick={ () => handleRemoveItem(item._id) }>
                                             <svg xmlns="http://www.w3.org/2000/svg" fill="none"
@@ -254,55 +276,35 @@ function History() {
                         )) }
                     </div>
 
-                    {/* Phân trang */ }
-                    { pagination.pages > 1 && (
+                    {/* Load more button */ }
+                    { pagination.hasNextPage && (
                         <div className="flex justify-center mt-8">
-                            <nav className="flex items-center space-x-2">
-                                <button
-                                    onClick={ () => handlePageChange(pagination.page - 1) }
-                                    disabled={ pagination.page === 1 }
-                                    className={ `px-3 rounded hidden ${
-                                        pagination.page === 1
-                                            ? 'text-gray-400 cursor-not-allowed'
-                                            : 'text-gray-700 hover:bg-gray-100'
-                                    }` }
-                                >
-                                    Trước
-                                </button>
-
-                                { [...Array(pagination.pages)].map((_, index) => (
-                                    <button
-                                        key={ index }
-                                        onClick={ () => handlePageChange(index + 1) }
-                                        className={ `px-3 rounded hidden ${
-                                            pagination.page === index + 1
-                                                ? 'bg-blue-600 text-white'
-                                                : 'text-gray-700 hover:bg-gray-100'
-                                        }` }
-                                    >
-                                        { index + 1 }
-                                    </button>
-                                )) }
-
-                                <button
-                                    onClick={ () => handlePageChange(pagination.page + 1) }
-                                    disabled={ pagination.page === pagination.pages }
-                                    className={ `px-3 ring-1 ring-[#419d3f] rounded-full ${
-                                        pagination.page === pagination.pages
-                                            ? `hidden`
-                                            : 'text-[#419d3f] hover:ring-offset-2'
-                                    }` }
-                                >
-                                    more
-                                </button>
-                            </nav>
+                            <button
+                                onClick={ handleLoadMore }
+                                disabled={ loadingMore }
+                                className="px-4 py-2 ring-1 ring-[#419d3f] rounded-full text-[#419d3f] hover:ring-offset-2 transition duration-200 text-sm"
+                            >
+                                { loadingMore ? (
+                                    <span className="flex items-center">
+                                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-[#419d3f]"
+                                             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                                    strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor"
+                                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Loading...
+                                    </span>
+                                ) : (
+                                    'Load more histories'
+                                ) }
+                            </button>
                         </div>
                     ) }
                 </>
             ) }
         </>
-    )
-        ;
+    );
 }
 
 export default History;

@@ -1,23 +1,50 @@
 import mongoose from 'mongoose';
 
-const {Schema} = mongoose;
+const { Schema } = mongoose;
 
 const user = new Schema(
     {
-        username: {type: String},
-        email: {type: String},
-        address: {type: String},
-        phone: {type: String},
-        bio: {type: String},
-        followers: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}],
-        following: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}],
-        ava: {type: String, default: '/ava.png'},
-        stripeCustomerId: {type: String},
-        isMember: {type: Boolean, default: false},
+        username: { type: String },
+        email: { type: String },
+        address: { type: String },
+        phone: { type: String },
+        bio: { type: String, default: '' },
+        followers: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+        following: [{ type: mongoose.Schema.Types.ObjectId, ref: 'users' }],
+        topicFollowing: [{ type: mongoose.Schema.Types.ObjectId, ref: 'topics' }],
+        tagFollowing: [{ type: mongoose.Schema.Types.ObjectId, ref: 'tags' }],
+        subdomain: { type: String, unique: true },
+        ava: { type: String, default: '/ava.png' },
+        stripeCustomerId: { type: String },
+        isMember: { type: Boolean, default: false },
+        hiddenStories: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'posts'
+        }],
+        hiddenAuthors: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'users'
+        }],
+        savedLists: [
+            {
+                name: { type: String, required: true },
+                description: { type: String, default: '' },
+                posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'posts' }],
+                isDefault: { type: Boolean, default: false },
+                createdAt: { type: Date, default: Date.now }
+            }
+        ]
     },
     {
         timestamps: true,
     }
 );
+
+user.index({
+    username: 'text',
+    email: 'text',
+    phone: 'text',
+    bio: 'text',
+});
 
 export default mongoose.model('users', user);
