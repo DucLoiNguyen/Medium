@@ -14,9 +14,12 @@ const user = new Schema(
         topicFollowing: [{ type: mongoose.Schema.Types.ObjectId, ref: 'topics' }],
         tagFollowing: [{ type: mongoose.Schema.Types.ObjectId, ref: 'tags' }],
         subdomain: { type: String, unique: true },
-        ava: { type: String, default: '/ava.png' },
+        ava: { type: String, default: '' },
         stripeCustomerId: { type: String },
         isMember: { type: Boolean, default: false },
+        subscriptionId: { type: String }, // Thêm trường lưu ID subscription
+        subscriptionEndDate: { type: Date }, // Thêm trường lưu ngày hết hạn subscription
+        subscriptionStatus: { type: String, default: 'inactive' }, // 'active', 'canceled', 'inactive'
         hiddenStories: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'posts'

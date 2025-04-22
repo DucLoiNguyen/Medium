@@ -4,6 +4,7 @@ import Avatar from '~/components/partial/Avatar/avatar.component';
 import moment from 'moment/moment';
 import Likes from '~/components/partial/Likes/likes.component';
 import { toast } from 'sonner';
+import SaveListButton from '~/components/partial/Bookmark/savelistbutton.component';
 
 function Following() {
     const [posts, setPosts] = useState([]);
@@ -174,32 +175,27 @@ function Following() {
                                         </div>
                                     </div>
                                 </a>
-                                <div className="absolute bottom-0 right-[150px] space-x-4 text-[#6b6b6b]">
-                                    <button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                             strokeWidth={ 1.5 } stroke="currentColor"
-                                             className="size-5 hover:stroke-black">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                                        </svg>
-                                    </button>
-                                    <button onClick={ () => {
-                                        toast('Hide this story?', {
-                                            action: {
-                                                label: 'confirm and hide',
-                                                onClick: () => {
-                                                    handleShowless(item._id);
+                                <div className="absolute bottom-0 right-[150px] text-[#6b6b6b]">
+                                    <div className="flex space-x-4">
+                                        <SaveListButton postId={ item._id } />
+                                        <button onClick={ () => {
+                                            toast('Hide this story?', {
+                                                action: {
+                                                    label: 'confirm and hide',
+                                                    onClick: () => {
+                                                        handleShowless(item._id);
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    } }>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                             viewBox="0 0 24 24" strokeWidth={ 1.5 } stroke="currentColor"
-                                             className="size-5 hover:stroke-red-700">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
+                                            });
+                                        } }>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                 viewBox="0 0 24 24" strokeWidth={ 1.5 } stroke="currentColor"
+                                                 className="size-5 hover:stroke-red-700">
+                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                      d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>

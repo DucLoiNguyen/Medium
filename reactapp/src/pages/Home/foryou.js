@@ -4,6 +4,7 @@ import Avatar from '~/components/partial/Avatar/avatar.component';
 import Likes from '~/components/partial/Likes/likes.component';
 import axios from 'axios';
 import SaveListButton from '~/components/partial/Bookmark/savelistbutton.component';
+import { toast } from 'sonner';
 
 function Foryou() {
     const [posts, setPosts] = useState([]);
@@ -78,6 +79,19 @@ function Foryou() {
             }
         };
     }, []);
+
+    const handleShowless = async (id) => {
+        try {
+            await axios.patch('http://localhost:3030/api/user/hidestories',
+                { postId: id },
+                { withCredentials: true }
+            );
+            setPosts(prev => prev.filter(item => item._id !== id));
+        } catch ( error ) {
+            console.error('Error hiding post:', error);
+            toast.error('Failed to hide the post');
+        }
+    };
 
     return (
         <>
@@ -193,20 +207,21 @@ function Foryou() {
                             <div className="absolute bottom-0 right-[150px] text-[#6b6b6b]">
                                 <div className="flex space-x-4">
                                     <SaveListButton postId={ item._id } />
-                                    <button>
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={ 1.5 }
-                                            stroke="currentColor"
-                                            className="size-5 hover:stroke-red-700"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                                            />
+                                    <button onClick={ () => {
+                                        toast('Hide this story?', {
+                                            action: {
+                                                label: 'confirm and hide',
+                                                onClick: () => {
+                                                    handleShowless(item._id);
+                                                }
+                                            }
+                                        });
+                                    } }>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                             viewBox="0 0 24 24" strokeWidth={ 1.5 } stroke="currentColor"
+                                             className="size-5 hover:stroke-red-700">
+                                            <path strokeLinecap="round" strokeLinejoin="round"
+                                                  d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
                                         </svg>
                                     </button>
                                 </div>

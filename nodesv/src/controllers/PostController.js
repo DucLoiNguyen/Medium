@@ -487,28 +487,61 @@ class PostController {
 
     async Like( req, res, next ) {
         try {
-            const LIMIT_LIKES_PER_10_MINUTES = 5;
-            const LIKE_WINDOW_MS = 10 * 60 * 1000;
             const postId = req.params.id;
             const userId = req.session.user._id;
+            const ONE_DAY = 24 * 60 * 60 * 1000; // 1 ngày tính bằng mili giây
+            const DAILY_LIMIT = 5; // Giới hạn 10 lần like một bài viết trong 1 ngày
 
-            const existingLike = await like.findOne({ post: postId, user: userId });
+            // Lấy thời điểm hiện tại
+            const now = new Date();
 
-            if ( !existingLike ) {
-                const newLike = new like({
-                    post: postId,
-                    user: userId
+            // Tính thời điểm bắt đầu của ngày hiện tại (00:00:00)
+            const startOfDay = new Date(now);
+            startOfDay.setHours(0, 0, 0, 0);
+
+            // Tìm tất cả các like của người dùng cho bài viết cụ thể này trong ngày hiện tại
+            const dailyLikes = await like.find({
+                post: postId,
+                user: userId,
+                createdAt: { $gte: startOfDay }
+            });
+
+            // Kiểm tra số lượng like trong ngày cho bài viết cụ thể này
+            if ( dailyLikes.length >= DAILY_LIMIT ) {
+                // Tính thời gian còn lại đến ngày mới (00:00:00 ngày mai)
+                const tomorrow = new Date(startOfDay);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const remainingMilliseconds = tomorrow.getTime() - now.getTime();
+                const remainingHours = Math.floor(remainingMilliseconds / ( 60 * 60 * 1000 ));
+                const remainingMinutes = Math.floor(( remainingMilliseconds % ( 60 * 60 * 1000 ) ) / ( 60 * 1000 ));
+
+                return res.status(429).json({
+                    message: `You've reached the daily limit of ${ DAILY_LIMIT } likes for this post.`,
+                    remainingTime: `${ remainingHours }h ${ remainingMinutes }m until reset`,
+                    resetTime: tomorrow.toISOString()
                 });
-
-                newLike.save();
             }
 
-            await post.updateOne({ _id: req.params.id }, { $inc: { likes: 1 } });
+            // Tạo like mới với timestamp
+            const newLike = new like({
+                post: postId,
+                user: userId,
+            });
 
-            res.status(200).json({ message: 'You liked this post' });
+            await newLike.save();
+
+            // Tăng số lượng like cho bài viết
+            await post.updateOne({ _id: postId }, { $inc: { likes: 1 } });
+
+            res.status(200).json({
+                message: 'You liked this post',
+                likesToday: dailyLikes.length + 1,
+                remainingLikes: DAILY_LIMIT - dailyLikes.length - 1,
+                dailyLimit: DAILY_LIMIT
+            });
         } catch ( err ) {
             console.log(err);
-            res.status(500).json(err);
+            res.status(500).json({ message: 'Server error', error: err.message });
         }
     }
 

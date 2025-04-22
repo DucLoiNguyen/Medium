@@ -3,6 +3,7 @@ import { useAuth } from '~/pages/Authen/authcontext';
 import axios from 'axios';
 import Avatar from '~/components/partial/Avatar/avatar.component';
 import ProfileInfoModal from '~/pages/Setting/updateinfomodal';
+import Loading_spinner from '~/components/partial/Loading_spinner/loading_spinner.component';
 
 function Info() {
     const [data, setData] = useState(null);
@@ -10,6 +11,7 @@ function Info() {
         open: false,
         type: null
     });
+    const [isLoading, setIsLoading] = useState(false);
     const { user } = useAuth();
 
     useEffect(() => {
@@ -27,6 +29,20 @@ function Info() {
 
         fetchInitialData();
     }, [user._id]);
+
+    const handleSignout = async () => {
+        if ( isLoading ) return <Loading_spinner />;
+
+        setIsLoading(true);
+        try {
+            await axios.get('http://localhost:3030/api/auth/logout', { withCredentials: true });
+        } catch ( error ) {
+            console.error('Lỗi khi đăng xuất:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     return (
         <>
             { data && (
@@ -58,7 +74,7 @@ function Info() {
                             <span className="truncate max-w-[100px] md:max-w-[250px] flex">
                                 <span>Poseidon</span>
                                 <span className="ml-3">
-                                  <Avatar username={ data.username } width={ 24 } height={ 24 } />
+                                  <Avatar username={ data.username } width={ 24 } height={ 24 } avatar={ data.ava } />
                                 </span>
                             </span>
                         </button>
@@ -86,7 +102,8 @@ function Info() {
                         </button>
                     </div>
                     <div className="my-14">
-                        <button className="text-[#c94a4a] hover:text-red my-8 text-right flex justify-between text-sm">
+                        <button className="text-[#c94a4a] hover:text-red my-8 text-right flex justify-between text-sm"
+                                onClick={ handleSignout }>
                             <span className="mr-4">Sign out</span>
                         </button>
                     </div>

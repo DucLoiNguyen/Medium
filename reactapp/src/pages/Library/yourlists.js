@@ -149,7 +149,7 @@ const YourList = () => {
     if ( error ) {
         return (
             <div className="text-center py-10">
-                <p className="text-red-500">{ error }</p>
+                <p className="text-red-500 text-sm">{ error }</p>
             </div>
         );
     }
@@ -182,13 +182,13 @@ const YourList = () => {
             ) : (
                 <>
                     <div className="space-y-6">
-                        { savedLists.map((list) => (
-                            <div className="w-full bg-[#f9f9f9] flex">
+                        { savedLists.map((list, index) => (
+                            <div className="w-full bg-[#f9f9f9] flex" key={ index }>
                                 <div className="relative w-1/2">
                                     <a href={ `/home/saved-lists/${ list._id }` }
                                        className="h-36 w-full p-6 flex items-center">
                                         <div className="space-y-2 w-full">
-                                            <h2 className="text-xl font-semibold font-customs truncate">{ list.name }</h2>
+                                            <h2 className="text-xl font-semibold font-customs truncate w-full">{ list.name }</h2>
                                             <div className="flex items-center space-x-2 text-sm text-gray-500">
                                                 <span>{ list.posts?.length || 0 } { list.posts?.length === 1 ? 'story' : 'stories' }</span>
                                                 { list.isDefault &&

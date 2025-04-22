@@ -2,13 +2,14 @@ import { Fragment, useEffect, useState } from 'react';
 import axios from 'axios';
 import Avatar from '~/components/partial/Avatar/avatar.component';
 import moment from 'moment';
-import { Menu, Transition } from '@headlessui/react';
-import { ClassNames } from '~/util';
 import { useAuth } from '~/pages/Authen/authcontext';
+import { XIcon } from '@heroicons/react/outline';
 
-const CommentItem = ({ comment, postId, fetchComments }) => {
+const CommentItem = ({ comment, postId, fetchComments, depth = 0 }) => {
     // Render chi tiết của một comment
     const [isReply, setIsReply] = useState(false);
+    // Thêm biến depth để kiểm soát độ sâu của các replies
+    const MAX_DEPTH = 3; // Giới hạn độ sâu tối đa cho các replies
 
     const handleShowReply = () => {
         setIsReply(!isReply);
@@ -33,7 +34,7 @@ const CommentItem = ({ comment, postId, fetchComments }) => {
 
                     <div>
                         <button>
-                            x
+                            <XIcon className="w-4 h-4 text-gray-500" />
                         </button>
                     </div>
                 </div>
@@ -43,28 +44,45 @@ const CommentItem = ({ comment, postId, fetchComments }) => {
 
                 {/* Các action như reply, like */ }
                 <div className="mt-2 font-customs text-[#6b6b6b] hover:text-black text-sm transition-all">
-                    <button className="mr-3" onClick={ handleShowReply }>
-                        <span className="">Reply ({ comment.replies.length })</span>
-                    </button>
+                    {/* Chỉ hiển thị nút Reply nếu chưa đạt đến độ sâu tối đa */ }
+                    { depth < MAX_DEPTH && (
+                        <button className="mr-3" onClick={ handleShowReply }>
+                            <span className="">Reply ({ comment.replies?.length || 0 })</span>
+                        </button>
+                    ) }
                 </div>
 
                 {
                     !isReply ? null : (
                         <>
-                            <CommentForm postId={ postId } parentCommentId={ comment.id }
-                                         fetchComments={ fetchComments } />
-                            {/* Render replies nếu có */ }
-                            { comment.replies && comment.replies.length > 0 && (
+                            {/* Chỉ hiển thị form reply nếu chưa đạt đến độ sâu tối đa */ }
+                            { depth < MAX_DEPTH && (
+                                <CommentForm
+                                    postId={ postId }
+                                    parentCommentId={ comment.id }
+                                    fetchComments={ fetchComments }
+                                />
+                            ) }
+
+                            {/* Render replies nếu có và chưa đạt đến độ sâu tối đa */ }
+                            { comment.replies && comment.replies.length > 0 && depth < MAX_DEPTH && (
                                 <div className="replies ml-10 mt-4 font-customs">
                                     { comment.replies.map(reply => (
                                         <CommentItem
                                             key={ reply._id }
                                             comment={ reply }
                                             postId={ postId }
-                                            parentCommentId={ comment.id }
                                             fetchComments={ fetchComments }
+                                            depth={ depth + 1 } // Tăng độ sâu khi render các replies
                                         />
                                     )) }
+                                </div>
+                            ) }
+
+                            {/* Thông báo khi đạt giới hạn độ sâu */ }
+                            { depth === MAX_DEPTH - 1 && comment.replies && comment.replies.length > 0 && (
+                                <div className="ml-10 mt-2 text-gray-500 text-sm">
+                                    No more nesting from here, but you can still reply and stay connected!
                                 </div>
                             ) }
                         </>
@@ -141,13 +159,13 @@ const CommentSection = ({ postId }) => {
                 <>
                     <CommentForm postId={ postId } fetchComments={ fetchComments } />
 
-
                     { comments.map(comment => (
                         <CommentItem
                             key={ comment._id }
                             comment={ comment }
                             postId={ postId }
                             fetchComments={ fetchComments }
+                            depth={ 0 } // Bắt đầu với độ sâu 0 cho comment chính
                         />
                     )) }
                 </> :

@@ -80,6 +80,36 @@ class UserController {
         }
     }
 
+    async GetUserFollower( req, res, next ) {
+        try {
+            const { userId } = req.query;
+            const User = await user.findById(userId)
+                .select('followers')
+                .populate({
+                    path: 'followers',
+                    select: 'username email bio ava subdomain',
+                })
+                .lean();
+
+            if ( !User ) {
+                throw new Error('Không tìm thấy người dùng');
+            }
+
+            return res.status(200).json({
+                success: true,
+                followingCount: User.followers.length,
+                followingUsers: User.followers
+            });
+        } catch ( error ) {
+            console.error('Lỗi khi lấy danh sách followers:', error);
+            return res.status(500).json({
+                success: false,
+                message: error.message || 'Có lỗi xảy ra khi lấy danh sách followers',
+                error: error
+            });
+        }
+    }
+
     async GetTopicFollowing( req, res ) {
         try {
             const { userId } = req.query;
@@ -136,18 +166,42 @@ class UserController {
 
     async Update( req, res, next ) {
         const { username, email, address, phone, bio, ava, subdomain } = req.body;
-        if ( bio ) {
-            try {
-                await user.updateOne({ _id: req.session.user._id }, { $set: { username, bio, ava } });
-            } catch ( err ) {
-                res.status(500).json({ message: err.message });
+
+        try {
+            if ( bio ) {
+                // Profile information update
+                await user.updateOne(
+                    { _id: req.session.user._id },
+                    { $set: { username, bio, ava } }
+                );
+
+                // Send success response with updated data
+                res.status(200).json({
+                    success: true,
+                    message: 'Profile updated successfully',
+                    data: { username, bio, ava }
+                });
+            } else {
+                // Other information update
+                await user.updateOne(
+                    { _id: req.session.user._id },
+                    { $set: { subdomain, email, address, phone } }
+                );
+
+                // Send success response with updated data
+                res.status(200).json({
+                    success: true,
+                    message: 'Information updated successfully',
+                    data: { subdomain, email, address, phone }
+                });
             }
-        } else {
-            try {
-                await user.updateOne({ _id: req.session.user._id }, { $set: { subdomain, email, address, phone } });
-            } catch ( err ) {
-                res.status(500).json({ message: err.message });
-            }
+        } catch ( err ) {
+            // Error handling
+            console.error('Update error:', err);
+            res.status(500).json({
+                success: false,
+                message: err.message || 'An error occurred during update'
+            });
         }
     }
 

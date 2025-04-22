@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Info from './informations';
 import Security from './security';
 import Avatar from '~/components/partial/Avatar/avatar.component';

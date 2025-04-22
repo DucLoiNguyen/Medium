@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
-import transporter from 'nodemailer/lib/smtp-pool/index.js';
 
 dotenv.config();
 
@@ -23,29 +22,46 @@ class EmailService {
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: user.email,
-                subject: 'Đăng Ký Tài Khoản Thành Công',
+                subject: 'Subscription Membership',
                 html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2>Chào mừng ${ user.username }!</h2>
-            <p>Bạn đã đăng ký tài khoản thành công trên nền tảng của chúng tôi.</p>
-            <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px;">
-              <strong>Thông tin tài khoản:</strong>
-              <p>Tên đăng nhập: ${ user.username }</p>
-              <p>Email: ${ user.email }</p>
-            </div>
-            <p>Cảm ơn bạn đã gia nhập cộng đồng của chúng tôi!</p>
-            <a href="https://yourwebsite.com/login" style="
-              display: inline-block; 
-              background-color: #4CAF50; 
-              color: white; 
-              padding: 10px 20px; 
-              text-decoration: none; 
-              border-radius: 5px;
-            ">
-              Đăng Nhập Ngay
-            </a>
-          </div>
-        `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <div style="background-color: #1E88E5; color: white; padding: 20px; text-align: center;">
+      <h1>🥳 Membership Activated!</h1>
+    </div>
+    <div style="padding: 24px;">
+      <p>Hi <strong>${ user.username }</strong>,</p>
+      <p>We're excited to let you know that your account has been successfully upgraded to a <strong>Member</strong> status.</p>
+
+      <div style="background-color: #f1f1f1; padding: 15px; border-left: 4px solid #1E88E5; margin: 20px 0; border-radius: 5px;">
+        <h3 style="margin-top: 0;">🔒 Membership Details</h3>
+        <p><strong>Email:</strong> ${ user.email }</p>
+        <p><strong>Status:</strong> Active Member</p>
+        <p><strong>Expiration Date:</strong> ${ user.subscriptionEndDate.toLocaleDateString() }</p>
+      </div>
+
+      <p>As a member, you now have full access to exclusive features, premium content, and more. 🎉</p>
+      
+      <p>If you have any questions or need assistance, feel free to contact our support team anytime.</p>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="http://localhost:8080/home" style="
+          background-color: #1E88E5;
+          color: white;
+          padding: 12px 24px;
+          text-decoration: none;
+          font-weight: bold;
+          border-radius: 5px;
+          display: inline-block;
+        ">
+          Go to Your Dashboard
+        </a>
+      </div>
+
+      <p style="margin-top: 40px; font-size: 12px; color: #888; text-align: center;">
+        Thank you for being a part of our community!
+      </p>
+    </div>
+  </div>`
             };
 
             await this.transporter.sendMail(mailOptions);
@@ -61,20 +77,48 @@ class EmailService {
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: user.email,
-                subject: 'Thông Báo Hủy Tài Khoản',
+                subject: 'Cancle Membership',
                 html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <h2>Xác Nhận Hủy Tài Khoản</h2>
-            <p>Tài khoản của bạn đã được hủy thành công.</p>
-            <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px;">
-              <strong>Thông tin tài khoản:</strong>
-              <p>Tên đăng nhập: ${ user.username }</p>
-              <p>Email: ${ user.email }</p>
-              <p>Ngày hủy: ${ new Date().toLocaleDateString() }</p>
-            </div>
-            <p>Chúng tôi rất tiếc về quyết định của bạn. Nếu có bất kỳ vấn đề gì, hãy liên hệ với chúng tôi.</p>
-          </div>
-        `
+  <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+    <div style="background-color: #f44336; color: white; padding: 20px; text-align: center;">
+      <h1>Membership Cancelled</h1>
+    </div>
+    <div style="padding: 24px;">
+      <p>Hi <strong>${ user.username }</strong>,</p>
+
+      <p>We're writing to confirm that your <strong>membership</strong> has been successfully cancelled.</p>
+
+      <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #f44336; margin: 20px 0; border-radius: 5px;">
+        <h3 style="margin-top: 0;">🗓 Final Membership Details</h3>
+        <p><strong>Email:</strong> ${ user.email }</p>
+        <p><strong>Membership Ended On:</strong> ${ user.endDate.toLocaleDateString() }</p>
+        <p><strong>Status:</strong> Inactive</p>
+      </div>
+
+      <p>You will retain access to member-only features until the end of your billing period. After that, your account will revert to a standard user status.</p>
+
+      <p>If this was a mistake or you change your mind, you can re-subscribe anytime from your dashboard.</p>
+
+      <div style="text-align: center; margin-top: 30px;">
+        <a href="http://localhost:8080/home/your-plan" style="
+          background-color: #f44336;
+          color: white;
+          padding: 12px 24px;
+          text-decoration: none;
+          font-weight: bold;
+          border-radius: 5px;
+          display: inline-block;
+        ">
+          Renew Membership
+        </a>
+      </div>
+
+      <p style="margin-top: 40px; font-size: 12px; color: #888; text-align: center;">
+        Thank you for being with us. We hope to see you again soon!
+      </p>
+    </div>
+  </div>
+`
             };
 
             await this.transporter.sendMail(mailOptions);
@@ -92,23 +136,40 @@ class EmailService {
             const mailOptions = {
                 from: process.env.EMAIL_USER,
                 to: email,
-                subject: 'Yêu Cầu Đặt Lại Mật Khẩu',
+                subject: 'Password Reset Request',
                 html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2>Đặt Lại Mật Khẩu</h2>
-          <p>Chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
-          <div style="background-color: #f4f4f4; padding: 15px; border-radius: 5px;">
-            <p><strong>Tên đăng nhập:</strong> ${ email }</p>
-            <p><strong>Email:</strong> ${ email }</p>
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+          <div style="background-color: #007bff; color: white; padding: 20px; text-align: center;">
+            <h1>Password Reset</h1>
           </div>
-          <p>Vui lòng nhấn vào nút bên dưới để đặt lại mật khẩu:</p>
-          <div style="text-align: center; margin: 20px 0;">
-            <a href="${ resetLink }" style="background-color: #007bff; color: #fff; padding: 12px 20px; border-radius: 5px; text-decoration: none;">
-              Đặt Lại Mật Khẩu
-            </a>
+          <div style="padding: 24px;">
+            <p>Hello,</p>
+            <p>We received a request to reset your password for the account associated with this email address.</p>
+
+            <div style="background-color: #f9f9f9; padding: 15px; border-left: 4px solid #007bff; margin: 20px 0; border-radius: 5px;">
+              <p><strong>Email:</strong> ${ email }</p>
+            </div>
+
+            <p>Please click the button below to reset your password:</p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${ resetLink }" style="
+                background-color: #007bff;
+                color: white;
+                padding: 12px 24px;
+                text-decoration: none;
+                font-weight: bold;
+                border-radius: 5px;
+                display: inline-block;
+              ">
+                Reset Password
+              </a>
+            </div>
+
+            <p>If you did not request a password reset, please ignore this email. Your account will remain secure.</p>
+
+            <p>Thank you,<br>The Support Team</p>
           </div>
-          <p>Nếu bạn không yêu cầu điều này, hãy bỏ qua email này.</p>
-          <p>Trân trọng,<br/>Đội ngũ hỗ trợ</p>
         </div>
       `
             };

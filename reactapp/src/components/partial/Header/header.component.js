@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import header from './header.module.scss';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ClassNames } from '~/util';
 import axios from 'axios';
@@ -14,6 +14,7 @@ function Header() {
     const classNames = clsx(header.svg);
     const [isLoading, setIsLoading] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
+    const [CurrentUser, setCurrentUser] = useState(null);
     const navigate = useNavigate();
     const { user } = useAuth();
     const { notifications } = useSocketNotifications();
@@ -38,6 +39,19 @@ function Header() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const currentUser = await axios.get('http://localhost:3030/api/user/getbyid', {
+                params: { id: user._id },
+                withCredentials: true
+            });
+
+            setCurrentUser(currentUser.data);
+        };
+
+        fetchData();
+    }, [user]);
 
     return (
         <>
@@ -145,7 +159,8 @@ function Header() {
                         <div>
                             <Menu.Button className="justify-center bg-white rounded-full shadow-sm">
                                 <div className="w-8">
-                                    <Avatar username={ user.username } width={ 32 } height={ 32 } />
+                                    <Avatar username={ CurrentUser && CurrentUser.username } width={ 32 } height={ 32 }
+                                            avatar={ CurrentUser && CurrentUser.ava } />
                                 </div>
                             </Menu.Button>
                         </div>

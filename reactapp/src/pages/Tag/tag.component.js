@@ -5,12 +5,15 @@ import Likes from '~/components/partial/Likes/likes.component';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import axios from 'axios';
+import { useAuth } from '~/pages/Authen/authcontext';
 
 function Tag() {
     const tagname = useParams();
     const [dataRecommend, setDataRecommend] = useState(null);
     const [dataRecent, setDataRecent] = useState(null);
     const [dataTag, setDataTag] = useState(null);
+    const [topicFollowed, setTopicFollowed] = useState(false);
+    const { user } = useAuth();
 
     useEffect(() => {
         const fetchInitialData = async () => {
@@ -37,15 +40,42 @@ function Tag() {
                     }, withCredentials: true
                 });
                 setDataTag(responseDataTag.data);
+
+                const currentUser = await axios.get('http://localhost:3030/api/user/getbyid', {
+                    params: { id: user._id },
+                    withCredentials: true
+                });
+
+                let topictagfollowing = [...currentUser.data.topicFollowing, ...currentUser.data.tagFollowing];
+                const initialTopicFollowState = topictagfollowing.includes(responseDataTag.data[0]._id);
+                setTopicFollowed(initialTopicFollowState);
+
             } catch ( e ) {
                 setDataRecommend(null);
                 setDataRecent(null);
                 setDataTag(null);
+                setTopicFollowed(false);
                 toast.error(e.response.data.message);
             }
         };
         fetchInitialData();
-    }, [tagname]);
+    }, [tagname, user]);
+
+    const toggleTopicFollow = (id) => {
+        const isCurrentlyFollowed = topicFollowed;
+        const apiUrl = isCurrentlyFollowed
+            ? 'http://localhost:3030/api/tag/unfollow'
+            : 'http://localhost:3030/api/tag/follow';
+
+        axios.post(apiUrl, { topicId: id, tagId: id }, { withCredentials: true })
+            .then((response) => {
+                toast.success(response.data.message);
+                setTopicFollowed(!isCurrentlyFollowed);
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            });
+    };
 
     return (
         <>
@@ -57,9 +87,17 @@ function Tag() {
                     <span className="px-4 text-base text-[#6b6b6b]">{ dataRecent && dataRecent.length } Stories</span>
                 </div>
                 <div className="flex justify-center">
-                    <button className="px-4 py-2 bg-black rounded-full hover:opacity-75">
-                        <span className="text-white">Follow</span>
-                    </button>
+                    { dataTag && topicFollowed ?
+                        <button onClick={ () => toggleTopicFollow(dataTag[0]._id) }
+                                className="px-4 py-2 ring-2 ring-black rounded-full hover:ring-offset-2 transition-all">
+                            <span className="text-black">Following</span>
+                        </button>
+                        :
+                        <button onClick={ () => toggleTopicFollow(dataTag[0]._id) }
+                                className="px-4 py-2 bg-black rounded-full ring-2 ring-black hover:ring-offset-2 transition-all">
+                            <span className="text-white">Follow</span>
+                        </button>
+                    }
                 </div>
             </div>
             <div className="space-y-20 mt-20">

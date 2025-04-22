@@ -13,6 +13,7 @@ router.get('/search', UserController.Search);
 router.patch('/updateuser', UserController.Update);
 router.get('/getbydomaib', UserController.GetByDomain);
 router.get('/getuserfollowing', UserController.GetUserFollowing);
+router.get('/getuserfollower', UserController.GetUserFollower);
 router.get('/gettopicfollowing', UserController.GetTopicFollowing);
 router.patch('/hidestories', UserController.HideStories);
 router.patch('/hideauthors', UserController.HideAuthor);

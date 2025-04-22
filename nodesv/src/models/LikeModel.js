@@ -11,6 +11,8 @@ const like = new Schema({
         ref: 'users',
         required: true
     }
+}, {
+    timestamps: true
 });
 
 export default mongoose.model('likes', like);

@@ -6,6 +6,7 @@ import { useAuth } from '~/pages/Authen/authcontext';
 import Avatar from '~/components/partial/Avatar/avatar.component';
 import { trackReading } from '~/util';
 import Likes from '~/components/partial/Likes/likes.component';
+import { toast } from 'sonner';
 
 function Post() {
     const [article, setArticle] = useState(null);
@@ -13,7 +14,7 @@ function Post() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const params = useParams();
-    const { isMember } = useAuth();
+    const { isMember, user } = useAuth();
     const [liked, setLiked] = useState(false);
     const [hearts, setHearts] = useState([]);
     const buttonRef = useRef(null);
@@ -55,19 +56,30 @@ function Post() {
         const fetchArticle = async () => {
             try {
                 setLoading(true);
+
                 const mockArticle = await axios.get(`http://localhost:3030/api/post/getpostbyid/${ params.id }`);
                 setArticle(mockArticle);
-                console.log(mockArticle);
+
+                const currentUser = await axios.get('http://localhost:3030/api/user/getbyid', {
+                    params: { id: user._id },
+                    withCredentials: true
+                });
+
+                const initialUserFollowState = currentUser.data.following.includes(mockArticle.data.author.authorId);
+                setFollow(initialUserFollowState);
+
                 setLoading(false);
 
             } catch ( err ) {
+                setArticle(null);
+                setFollow(false);
                 setError(err.message);
                 setLoading(false);
             }
         };
 
         fetchArticle();
-    }, [params.id]);
+    }, [params.id, user]);
 
     useEffect(() => {
         // Bắt đầu theo dõi khi bài viết được tải xong
@@ -82,8 +94,20 @@ function Post() {
         }
     }, [article]);
 
-    const toggleFollow = () => {
-        setFollow(!follow);
+    const toggleUserFollow = (id) => {
+        const isCurrentlyFollowed = follow;
+        const apiUrl = isCurrentlyFollowed
+            ? 'http://localhost:3030/api/user/unfollow'
+            : 'http://localhost:3030/api/user/follow';
+
+        axios.post(apiUrl, { anotherUserId: id }, { withCredentials: true })
+            .then((response) => {
+                toast.success(response.data.message);
+                setFollow(!isCurrentlyFollowed); // Chỉ toggle boolean
+            })
+            .catch((err) => {
+                toast.error(err.message);
+            });
     };
 
     if ( loading ) {
@@ -133,7 +157,7 @@ function Post() {
                             <div className="flex items-center">
                                 <span className="font-medium mr-2">{ article.data.author?.authorName }</span>
                                 <button className="text-green-600 text-sm font-medium"
-                                        onClick={ toggleFollow }>{ follow ? 'Following' : 'Follow' }</button>
+                                        onClick={ () => toggleUserFollow(article.data.author?.authorId) }>{ follow ? 'Following' : 'Follow' }</button>
                             </div>
                             <div className="text-gray-500 text-sm flex items-center mt-1">
                                 <span>{ new Date(article.data.createdAt).toLocaleDateString('vi-VN', {

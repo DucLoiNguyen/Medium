@@ -54,7 +54,7 @@ const CurrentPassForm = ({ close }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:3030/api/auth/checkpass', {
+            const response = await axios.post('http://localhost:3030/api/auth/check-pass', {
                 email, password: currentPassword
             }, { withCredentials: true });
             setCheckPassword(response.data.exist);
@@ -81,11 +81,8 @@ const CurrentPassForm = ({ close }) => {
                     value={ currentPassword }
                     onChange={ (e) => setCurrentPassword(e.target.value) }
                     className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
-                    placeholder="Your name"
+                    placeholder="Your current password"
                 />
-                <div className="mt-1">
-                    <span className="text-xs text-gray-500">You can sign into Medium with this email address.</span>
-                </div>
             </div>
 
             {/* Action Buttons */ }
@@ -101,7 +98,7 @@ const CurrentPassForm = ({ close }) => {
                     type="submit"
                     className="px-4 py-1 bg-[#1a8917] rounded-full text-sm text-white hover:bg-[#0f730c] ring-2 ring-[#1a8917] hover:ring-offset-2 hover:ring-[#0f730c] transition-all ease-in-out"
                 >
-                    Save
+                    submit
                 </button>
             </div>
         </form>
@@ -155,11 +152,8 @@ const NewPasswordForm = ({ close }) => {
                     value={ newPass }
                     onChange={ (e) => setNewPass(e.target.value) }
                     className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
-                    placeholder="Your name"
+                    placeholder="Your new password"
                 />
-                <div className="mt-1">
-                    <span className="text-xs text-gray-500">You can sign into Medium with this email address.</span>
-                </div>
             </div>
 
             {/* New Password Field */ }
@@ -172,11 +166,8 @@ const NewPasswordForm = ({ close }) => {
                     value={ newPassConfirm }
                     onChange={ (e) => setNewPassConfirm(e.target.value) }
                     className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
-                    placeholder="Your name"
+                    placeholder="Confirm your new password"
                 />
-                <div className="mt-1">
-                    <span className="text-xs text-gray-500">You can sign into Medium with this email address.</span>
-                </div>
             </div>
 
             {/* Action Buttons */ }

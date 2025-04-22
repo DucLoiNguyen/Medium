@@ -90,74 +90,74 @@ function Sidebar() {
     return (
         <>
             <div className={ classNames }>
-                <div className="mt-10">
-                    <div className="mb-5">
-                        <a href="/#">
-                            <h2 className="text-base font-bold">Staff Picks</h2>
-                        </a>
-                    </div>
-                    <div className="">
-                        <div className="pb-5">
-                            <div className="mb-2">
-                                <a href="/#">
-                                    <div className="flex">
-                                        <img
-                                            alt="Poseidon"
-                                            className="rounded-full"
-                                            src="/ava.png"
-                                            width="20"
-                                            height="20"
-                                            loading="lazy"
-                                        />
-                                        <div className="ml-2">
-                                            <h4 className="text-xs">Riikka livanainen</h4>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div>
-                                <a href="/#">
-                                    <h2 className="font-bold">
-                                        The secret life of the people width high self-control(it's
-                                        easier than you think)
-                                    </h2>
-                                </a>
-                            </div>
-                        </div>
-                        <div className="pb-5">
-                            <div className="mb-2">
-                                <a href="/#">
-                                    <div className="flex">
-                                        <img
-                                            alt="Poseidon"
-                                            className="rounded-full"
-                                            src="/ava.png"
-                                            width="20"
-                                            height="20"
-                                            loading="lazy"
-                                        />
-                                        <div className="ml-2">
-                                            <h4 className="text-xs">Riikka livanainen</h4>
-                                        </div>
-                                    </div>
-                                </a>
-                            </div>
-                            <div>
-                                <a href="/#">
-                                    <h2 className="font-bold">
-                                        The secret life of the people width high self-control(it's
-                                        easier than you think)
-                                    </h2>
-                                </a>
-                            </div>
-                        </div>
-                        <p className="text-sm">
-                            <a className="text-[#419d3f] hover:text-black" href="/#">
-                                See the full list
-                            </a>
-                        </p>
-                    </div>
-                </div>
+                {/*<div className="mt-10">*/ }
+                {/*    <div className="mb-5">*/ }
+                {/*        <a href="/#">*/ }
+                {/*            <h2 className="text-base font-bold">Staff Picks</h2>*/ }
+                {/*        </a>*/ }
+                {/*    </div>*/ }
+                {/*    <div className="">*/ }
+                {/*        <div className="pb-5">*/ }
+                {/*            <div className="mb-2">*/ }
+                {/*                <a href="/#">*/ }
+                {/*                    <div className="flex">*/ }
+                {/*                        <img*/ }
+                {/*                            alt="Poseidon"*/ }
+                {/*                            className="rounded-full"*/ }
+                {/*                            src="/ava.png"*/ }
+                {/*                            width="20"*/ }
+                {/*                            height="20"*/ }
+                {/*                            loading="lazy"*/ }
+                {/*                        />*/ }
+                {/*                        <div className="ml-2">*/ }
+                {/*                            <h4 className="text-xs">Riikka livanainen</h4>*/ }
+                {/*                        </div>*/ }
+                {/*                    </div>*/ }
+                {/*                </a>*/ }
+                {/*            </div>*/ }
+                {/*            <div>*/ }
+                {/*                <a href="/#">*/ }
+                {/*                    <h2 className="font-bold">*/ }
+                {/*                        The secret life of the people width high self-control(it's*/ }
+                {/*                        easier than you think)*/ }
+                {/*                    </h2>*/ }
+                {/*                </a>*/ }
+                {/*            </div>*/ }
+                {/*        </div>*/ }
+                {/*        <div className="pb-5">*/ }
+                {/*            <div className="mb-2">*/ }
+                {/*                <a href="/#">*/ }
+                {/*                    <div className="flex">*/ }
+                {/*                        <img*/ }
+                {/*                            alt="Poseidon"*/ }
+                {/*                            className="rounded-full"*/ }
+                {/*                            src="/ava.png"*/ }
+                {/*                            width="20"*/ }
+                {/*                            height="20"*/ }
+                {/*                            loading="lazy"*/ }
+                {/*                        />*/ }
+                {/*                        <div className="ml-2">*/ }
+                {/*                            <h4 className="text-xs">Riikka livanainen</h4>*/ }
+                {/*                        </div>*/ }
+                {/*                    </div>*/ }
+                {/*                </a>*/ }
+                {/*            </div>*/ }
+                {/*            <div>*/ }
+                {/*                <a href="/#">*/ }
+                {/*                    <h2 className="font-bold">*/ }
+                {/*                        The secret life of the people width high self-control(it's*/ }
+                {/*                        easier than you think)*/ }
+                {/*                    </h2>*/ }
+                {/*                </a>*/ }
+                {/*            </div>*/ }
+                {/*        </div>*/ }
+                {/*        <p className="text-sm">*/ }
+                {/*            <a className="text-[#419d3f] hover:text-black" href="/#">*/ }
+                {/*                See the full list*/ }
+                {/*            </a>*/ }
+                {/*        </p>*/ }
+                {/*    </div>*/ }
+                {/*</div>*/ }
                 <div className="mt-10 h-fit">
                     <div className="pb-4">
                         <h2 className="text-base font-bold">Recommended topics</h2>
@@ -182,7 +182,7 @@ function Sidebar() {
                     <div className="">
                         <h2 className="text-base font-bold">who to follow</h2>
                     </div>
-                    <div className="max-h-36 overflow-y-hidden w-fit p-1">
+                    <div className="max-h-44 overflow-y-hidden w-fit p-1">
                         { data && (
                             <>
                                 {
