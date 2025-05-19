@@ -78,7 +78,7 @@ export const ProtectedRoute = ({ children }) => {
     }
 
     if ( !isAuthenticated ) {
-        return <Navigate to="/" replace />; // Assuming you have React Router
+        return <Navigate to="/sign-in" replace />; // Assuming you have React Router
     }
 
     return children;

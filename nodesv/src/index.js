@@ -9,6 +9,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import session from 'express-session';
+import MongoStore from 'connect-mongo';
 import stripePackage from 'stripe';
 import User from './models/UserModel.js';
 import { Server } from 'socket.io';
@@ -25,7 +26,15 @@ const sessionMiddleware = session({
     secret: 'my_flower',
     resave: false,
     saveUninitialized: false,
-    cookie: { secure: false, httpOnly: true, maxAge: 3600000 }
+    store: MongoStore.create({
+        mongoUrl: `mongodb+srv://${ process.env.USER }:${ process.env.PASSWORD }@medium.ivvwbok.mongodb.net/medium`,
+        ttl: 30 * 24 * 60 * 60
+    }),
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Only use secure in production
+        httpOnly: true,
+        maxAge: 30 * 24 * 60 * 60 * 1000
+    }
 });
 
 const io = new Server(server, {

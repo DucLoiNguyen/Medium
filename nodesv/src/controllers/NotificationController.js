@@ -1,4 +1,5 @@
 import notification from '../models/NotificationModel.js';
+import mongoose from 'mongoose';
 
 class NotificationController {
     async createNotification( req, res ) {
@@ -30,7 +31,7 @@ class NotificationController {
                 .limit(20)
                 .populate({
                     path: 'sender',
-                    select: 'username email'
+                    select: 'username email ava'
                 })
                 .populate('relatedEntity');
 

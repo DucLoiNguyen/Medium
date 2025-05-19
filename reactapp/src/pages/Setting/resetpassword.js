@@ -77,7 +77,7 @@ const CurrentPassForm = ({ close }) => {
                     Current password<span className="text-red-500">*</span>
                 </label>
                 <input
-                    type="text"
+                    type="password"
                     value={ currentPassword }
                     onChange={ (e) => setCurrentPassword(e.target.value) }
                     className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
@@ -148,7 +148,7 @@ const NewPasswordForm = ({ close }) => {
                     New password<span className="text-red-500">*</span>
                 </label>
                 <input
-                    type="text"
+                    type="password"
                     value={ newPass }
                     onChange={ (e) => setNewPass(e.target.value) }
                     className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
@@ -162,7 +162,7 @@ const NewPasswordForm = ({ close }) => {
                     Confirm new password<span className="text-red-500">*</span>
                 </label>
                 <input
-                    type="text"
+                    type="password"
                     value={ newPassConfirm }
                     onChange={ (e) => setNewPassConfirm(e.target.value) }
                     className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"

@@ -1,53 +1,114 @@
 import user from '../models/UserModel.js';
 import post from '../models/PostModel.js';
 import notification from '../models/NotificationModel.js';
+import mongoose from 'mongoose';
 import slugify from 'slugify';
 import { nanoid } from 'nanoid';
 
 class UserController {
-    GetAll( req, res, next ) {
-        user
-            .find({})
-            .then(( data ) => res.send(
-                data.filter(item => item._id.toString() !== req.session.user._id.toString()).sort(() => 0.5 - Math.random()).slice(0, 3)
-            ))
-            .catch(( err ) => next(err));
-    }
+    async GetAll( req, res, next ) {
+        try {
+            const currentUserId = req.session?.user?._id;
 
-    GetById( req, res, next ) {
-        const { id } = req.query;
-        user
-            .findById(id)
-            .then(( data ) => res.send(data))
-            .catch(( err ) => console.log(err.message));
-    }
+            if ( !currentUserId ) {
+                return res.status(401).json({ error: 'User not authenticated' });
+            }
 
-    GetByDomain( req, res, next ) {
-        const { subdomain } = req.query;
-        user
-            .find({ subdomain: subdomain })
-            .then(( data ) => res.send(data))
-            .catch(( err ) => console.log(err.message));
-    }
+            // Use aggregation pipeline for better performance
+            const randomUsers = await user.aggregate([
+                {
+                    $match: {
+                        isAdmin: false,
+                        _id: { $ne: currentUserId }
+                    }
+                },
+                { $sample: { size: 3 } } // MongoDB's built-in random sampling
+            ]);
 
-    GetByEmail( req, res, next ) {
-        const { email } = req.query; // Lấy email từ query params
-
-        if ( !email ) {
-            return res.status(400).json({ error: 'Email is required' });
+            res.json(randomUsers);
+        } catch ( err ) {
+            console.error('❌ Error fetching users:', err);
+            next(err);
         }
+    }
 
-        user.findOne({ email })
-            .then(( data ) => {
-                if ( !data ) {
-                    return res.status(404).json({ error: 'User not found' });
-                }
-                res.json(data);
-            })
-            .catch(( err ) => {
-                console.error('❌ Error fetching user:', err);
-                next(err);
-            });
+    async GetById( req, res, next ) {
+        try {
+            const { id } = req.query;
+
+            if ( !id ) {
+                return res.status(400).json({ error: 'User ID is required' });
+            }
+
+            // Validate and convert to ObjectId
+            if ( !mongoose.Types.ObjectId.isValid(id) ) {
+                return res.status(400).json({ error: 'Invalid user ID format' });
+            }
+
+            const userData = await user.findById(id).lean(); // Use lean() for better performance
+
+            if ( !userData ) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            res.json(userData);
+        } catch ( err ) {
+            console.error('❌ Error fetching user by ID:', err);
+            next(err);
+        }
+    }
+
+    async GetByDomain( req, res, next ) {
+        try {
+            const { subdomain } = req.query;
+
+            if ( !subdomain ) {
+                return res.status(400).json({ error: 'Subdomain is required' });
+            }
+
+            // Add index on subdomain field in MongoDB for better performance
+            const users = await user.find({ subdomain }).lean();
+
+            if ( users.length === 0 ) {
+                return res.status(404).json({ error: 'No users found for this subdomain' });
+            }
+
+            res.json(users);
+        } catch ( err ) {
+            console.error('❌ Error fetching users by domain:', err);
+            next(err);
+        }
+    }
+
+
+    async GetByEmail( req, res, next ) {
+        try {
+            const { email } = req.query;
+
+            if ( !email ) {
+                return res.status(400).json({ error: 'Email is required' });
+            }
+
+            // Basic email format validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if ( !emailRegex.test(email) ) {
+                return res.status(400).json({ error: 'Invalid email format' });
+            }
+
+            // Use case-insensitive search and lean() for performance
+            const userData = await user.findOne({
+                email: { $regex: new RegExp(`^${email}$`, 'i') }
+            }).lean();
+
+            if ( !userData ) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            res.json(userData);
+        } catch ( err ) {
+            console.error('❌ Error fetching user by email:', err);
+            next(err);
+        }
     }
 
     async GetUserFollowing( req, res, next ) {
@@ -166,13 +227,39 @@ class UserController {
 
     async Update( req, res, next ) {
         const { username, email, address, phone, bio, ava, subdomain } = req.body;
+        const session = await mongoose.startSession();
 
         try {
+            session.startTransaction();
+
+            // Check if email is being updated and verify it's unique
+            if ( email && email !== req.session.user.email ) {
+                const existingEmail = await user.findOne({ email, _id: { $ne: req.session.user._id } });
+                if ( existingEmail ) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Email already exists'
+                    });
+                }
+            }
+
+            // Check if subdomain is being updated and verify it's unique
+            if ( subdomain && subdomain !== req.session.user.subdomain ) {
+                const existingSubdomain = await user.findOne({ subdomain, _id: { $ne: req.session.user._id } });
+                if ( existingSubdomain ) {
+                    return res.status(400).json({
+                        success: false,
+                        message: 'Subdomain already exists'
+                    });
+                }
+            }
+
             if ( bio ) {
                 // Profile information update
                 await user.updateOne(
                     { _id: req.session.user._id },
-                    { $set: { username, bio, ava } }
+                    { $set: { username, bio, ava } },
+                    { session }
                 );
 
                 // Send success response with updated data
@@ -185,7 +272,8 @@ class UserController {
                 // Other information update
                 await user.updateOne(
                     { _id: req.session.user._id },
-                    { $set: { subdomain, email, address, phone } }
+                    { $set: { subdomain, email, address, phone } },
+                    { session }
                 );
 
                 // Send success response with updated data
@@ -195,101 +283,137 @@ class UserController {
                     data: { subdomain, email, address, phone }
                 });
             }
+
+            await session.commitTransaction();
         } catch ( err ) {
+            // Abort transaction in case of error
+            await session.abortTransaction();
+
             // Error handling
             console.error('Update error:', err);
             res.status(500).json({
                 success: false,
                 message: err.message || 'An error occurred during update'
             });
+        } finally {
+            session.endSession();
         }
     }
 
     async Follow( req, res, next ) {
+        const session = await mongoose.startSession();
+
         try {
+            session.startTransaction();
+
             const { anotherUserId } = req.body;
 
-            const userToFollow = await user.findById(anotherUserId);
+            const userToFollow = await user.findById(anotherUserId).session(session);
             if ( !userToFollow ) {
-                return res.status(404).json({ message: 'Người dùng không tồn tại' });
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(404).json({ message: 'User does not exist' });
             }
 
-            const currentUser = await user.findById(req.session.user._id);
+            const currentUser = await user.findById(req.session.user._id).session(session);
 
             const alreadyFollowing = currentUser.following.includes(anotherUserId);
 
             if ( alreadyFollowing ) {
-                return res.status(400).json({ message: 'Bạn đã theo dõi người dùng này' });
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ message: 'You are already following this user' });
             }
 
             currentUser.following.push(anotherUserId);
-            await currentUser.save();
+            await currentUser.save({ session });
 
             userToFollow.followers.push(req.session.user._id);
-            await userToFollow.save();
+            await userToFollow.save({ session });
 
             const newNotification = new notification({
                 recipient: anotherUserId,
                 sender: req.session.user._id,
                 type: 'FOLLOW',
-                content: `${ req.session.user.username } đã follow bạn`
+                content: `${ req.session.user.username } started following you`
             });
 
-            await newNotification.save();
+            await newNotification.save({ session });
 
+            await session.commitTransaction();
+
+            // Send real-time notification after successful transaction
             req.io.to(anotherUserId.toString()).emit('newNotification', {
                 newNotification,
-                message: `${ req.session.user.username } follow you`
+                message: `${ req.session.user.username } started following you`
             });
 
             return res.json({
                 success: true,
-                message: `Bạn đã theo dõi ${ userToFollow.username }`,
+                message: `You are now following ${ userToFollow.username }`,
                 followerCount: currentUser.followers.length
             });
         } catch ( error ) {
+            await session.abortTransaction();
             console.error(error.message);
-            return res.status(500).json({ message: 'Lỗi máy chủ' });
+            return res.status(500).json({ message: 'Server error' });
+        } finally {
+            session.endSession();
         }
     }
 
     async Unfollow( req, res, next ) {
+        const session = await mongoose.startSession();
+
         try {
+            session.startTransaction();
+
             const { anotherUserId } = req.body;
 
-            const userToUnfollow = await user.findById(anotherUserId);
+            const userToUnfollow = await user.findById(anotherUserId).session(session);
             if ( !userToUnfollow ) {
-                return res.status(404).json({ message: 'Người dùng không tồn tại' });
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(404).json({ message: 'User does not exist' });
             }
 
-            const currentUser = await user.findById(req.session.user._id);
+            const currentUser = await user.findById(req.session.user._id).session(session);
 
             if ( !currentUser.following.includes(anotherUserId) ) {
-                return res.status(400).json({ message: 'Bạn chưa theo dõi người dùng này' });
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ message: 'You are not following this user' });
             }
 
             const followingIndex = currentUser.following.indexOf(anotherUserId);
             if ( followingIndex === -1 ) {
-                return res.status(400).json({ message: 'Bạn chưa theo dõi người dùng này' });
+                await session.abortTransaction();
+                session.endSession();
+                return res.status(400).json({ message: 'You are not following this user' });
             }
 
             currentUser.following.splice(followingIndex, 1);
-            await currentUser.save();
+            await currentUser.save({ session });
 
             const followerIndex = userToUnfollow.followers.indexOf(req.session.user._id);
             if ( followerIndex !== -1 ) {
                 userToUnfollow.followers.splice(followerIndex, 1);
-                await userToUnfollow.save();
+                await userToUnfollow.save({ session });
             }
+
+            await session.commitTransaction();
 
             return res.json({
                 success: true,
-                message: `Bạn đã bỏ theo dõi ${ userToUnfollow.username }`,
+                message: `You have unfollowed ${ userToUnfollow.username }`,
                 followerCount: currentUser.followers.length
             });
         } catch ( err ) {
+            await session.abortTransaction();
             console.error(err.message);
-            return res.status(500).json({ message: 'Lỗi máy chủ' });
+            return res.status(500).json({ message: 'Server error' });
+        } finally {
+            session.endSession();
         }
     }
 
@@ -299,7 +423,10 @@ class UserController {
             const skip = ( page - 1 ) * limit;
 
             // Xây dựng query
-            const query = {};
+            const query = {
+                isAdmin: { $ne: true },
+                _id: { $ne: req.session.user._id }
+            };
 
             // Tìm kiếm gần đúng sử dụng regex thay vì $text
             if ( q ) {

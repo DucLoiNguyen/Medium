@@ -1,5 +1,4 @@
 import Home from '~/pages/Home/home.component';
-import Account from '~/pages/Account/account.component';
 import Start from '~/pages/Start/Start.component';
 import Notification from '~/pages/Notifi/notification.component';
 import Profile from '~/pages/Profile/profile.component';
@@ -31,6 +30,9 @@ import Forgotpassword from '~/pages/Authen/forgotpassword';
 import Resetforgotpassword from '~/pages/Authen/resetforgotpassword';
 import SeeMore from '~/pages/Tag/seemore';
 import SavedListDetail from '~/pages/Library/savelistdetail';
+import AdminDashboard from '~/pages/Admin/admin.component';
+import Pricinglayout from '~/components/layouts/PricingLayout/pricinglayout.component';
+import Account from '~/pages/Account/account.component';
 
 // public routes
 const publicRoutes = [
@@ -59,10 +61,11 @@ const privateRoutes = [
     { path: '/home/saved-lists/:listId', component: SavedListDetail, layout: DefaultLayout },
     { path: '/home/profile/:id', component: Profile, layout: ProfileLayout },
     { path: '/home/notifications', component: Notification, layout: DefaultLayout },
-    { path: '/account', component: Account, layout: DefaultLayout },
     { path: '/home/your-plan', component: Pricing, layout: SettingLayout },
     { path: '/home/subscription', component: Subscription, layout: SettingLayout },
-    { path: '/home/search', component: SearchResults, layout: SettingLayout }
+    { path: '/home/search', component: SearchResults, layout: SettingLayout },
+    { path: '/admin', component: AdminDashboard, layout: Pricinglayout },
+    { path: '/account', component: Account, layout: CreatePostLayout }
 ];
 
 export { privateRoutes, publicRoutes };

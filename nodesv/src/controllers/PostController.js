@@ -49,6 +49,19 @@ class PostController {
                 },
                 {
                     $lookup: {
+                        from: 'users',
+                        localField: 'author.authorId',
+                        foreignField: '_id',
+                        as: 'authorDetails'
+                    }
+                },
+                {
+                    $addFields: {
+                        'author.ava': { $arrayElemAt: ['$authorDetails.ava', 0] }
+                    }
+                },
+                {
+                    $lookup: {
                         from: 'comments',
                         localField: '_id',
                         foreignField: 'post',
@@ -62,7 +75,8 @@ class PostController {
                 },
                 {
                     $project: {
-                        comments: 0
+                        comments: 0,
+                        authorDetails: 0
                     }
                 }
             ]);
@@ -105,14 +119,27 @@ class PostController {
                 ...( cursor && cursorCondition )
             };
 
-            // Execute the query with pagination
+            // Execute the query with pagination and include author avatar
             const data = await post.find(query)
                 .sort({ _id: -1 })
-                .limit(limit + 1);
+                .limit(limit + 1)
+                .populate({
+                    path: 'author.authorId',
+                    select: 'username ava',
+                    model: 'users'
+                });
+
+            // Add author avatar to each post
+            const paginatedData = data.slice(0, Math.min(limit, data.length)).map(post => {
+                const postObj = post.toObject();
+                if ( post.author && post.author.authorId ) {
+                    postObj.author.ava = post.author.authorId.ava || '';
+                }
+                return postObj;
+            });
 
             // Check if there are more results
             const hasMore = data.length > limit;
-            const paginatedData = data.slice(0, limit);
 
             // Create next cursor if there are more results
             let nextCursor = null;
@@ -131,32 +158,7 @@ class PostController {
         } catch ( error ) {
             next(error);
         }
-
-        await post.updateMany(
-            { 'author.authorId': { $type: 'string' } }, // chỉ update nếu đang là string
-            [
-                {
-                    $set: {
-                        'author.authorId': { $toObjectId: '$author.authorId' }
-                    }
-                }
-            ]
-        );
-
-        await post.updateMany(
-            { 'topic.topicId': { $type: 'string' } }, // chỉ update nếu đang là string
-            [
-                {
-                    $set: {
-                        'topic.topicId': { $toObjectId: '$topic.topicId' }
-                    }
-                }
-            ]
-        );
-
-        await updateTagIdsToObjectId();
     }
-
 
     async GetMyPublish( req, res, next ) {
         try {
@@ -180,14 +182,27 @@ class PostController {
                 ...( cursor && cursorCondition )
             };
 
-            // Execute the query with pagination
+            // Execute the query with pagination and include author avatar
             const data = await post.find(query)
                 .sort({ _id: -1 })
-                .limit(limit + 1);
+                .limit(limit + 1)
+                .populate({
+                    path: 'author.authorId',
+                    select: 'username ava',
+                    model: 'users'
+                });
+
+            // Add author avatar to each post
+            const paginatedData = data.slice(0, Math.min(limit, data.length)).map(post => {
+                const postObj = post.toObject();
+                if ( post.author && post.author.authorId ) {
+                    postObj.author.ava = post.author.authorId.ava || '';
+                }
+                return postObj;
+            });
 
             // Check if there are more results
             const hasMore = data.length > limit;
-            const paginatedData = data.slice(0, limit);
 
             // Create next cursor if there are more results
             let nextCursor = null;
@@ -228,10 +243,24 @@ class PostController {
                 ...cursorCondition
             };
 
-            const data = await post
-                .find(query)
+            // Get posts and populate author info including avatar
+            const posts = await post.find(query)
                 .sort({ _id: -1 }) // sort theo _id mới nhất
-                .limit(limit + 1);
+                .limit(limit + 1)
+                .populate({
+                    path: 'author.authorId',
+                    select: 'username ava',
+                    model: 'users'
+                });
+
+            // Transform data to include author avatar
+            const data = posts.map(post => {
+                const postObj = post.toObject();
+                if ( post.author && post.author.authorId ) {
+                    postObj.author.ava = post.author.authorId.ava || '';
+                }
+                return postObj;
+            });
 
             const hasMore = data.length > limit;
             const paginatedData = data.slice(0, limit);
@@ -261,6 +290,19 @@ class PostController {
                 { $match: { _id: new mongoose.Types.ObjectId(postId) } },
                 {
                     $lookup: {
+                        from: 'users',
+                        localField: 'author.authorId',
+                        foreignField: '_id',
+                        as: 'authorDetails'
+                    }
+                },
+                {
+                    $addFields: {
+                        'author.ava': { $arrayElemAt: ['$authorDetails.ava', 0] }
+                    }
+                },
+                {
+                    $lookup: {
                         from: 'histories', // tên collection (plural)
                         localField: '_id',
                         foreignField: 'post',
@@ -276,7 +318,8 @@ class PostController {
                 },
                 {
                     $project: {
-                        readingHistory: 0 // không trả về danh sách lịch sử đọc
+                        readingHistory: 0, // không trả về danh sách lịch sử đọc
+                        authorDetails: 0 // không trả về chi tiết author (đã lấy ava)
                     }
                 }
             ]);
@@ -310,13 +353,9 @@ class PostController {
             // Prepare cursor condition if cursor is provided
             let cursorCondition = {};
             if ( cursor ) {
-                const [createdAt, postId] = cursor.split('_');
+                const postId = cursor;
                 cursorCondition = {
-                    $or: [
-                        {
-                            _id: { $lt: postId }
-                        }
-                    ]
+                    _id: { $lt: new mongoose.Types.ObjectId(postId) }
                 };
             }
 
@@ -326,23 +365,43 @@ class PostController {
                 ...cursorCondition
             };
 
-            // Execute queries
-            const followingPosts = await post.find({
+            // Apply find with appropriate population for author avatar
+            const findWithAuthorAva = async ( query ) => {
+                const posts = await post.find(query)
+                    .sort({ _id: -1 })
+                    .limit(limit + 1)
+                    .populate({
+                        path: 'author.authorId',
+                        select: 'username ava',
+                        model: 'users'
+                    });
+
+                return posts.map(post => {
+                    const postObj = post.toObject();
+                    if ( post.author && post.author.authorId ) {
+                        postObj.author.ava = post.author.authorId.ava || '';
+                    }
+                    return postObj;
+                });
+            };
+
+            // Execute queries with author avatar population
+            const followingPosts = await findWithAuthorAva({
                 'author.authorId': { $in: users.following },
                 ...baseQuery
-            }).sort({ _id: -1 }).limit(limit + 1);
+            });
 
-            const topicFollowingPosts = await post.find({
+            const topicFollowingPosts = await findWithAuthorAva({
                 'topic.topicId': { $in: users.topicFollowing },
                 'author.authorId': { $nin: userId },
                 ...baseQuery
-            }).sort({ _id: -1 }).limit(limit + 1);
+            });
 
-            const tagFollowingPosts = await post.find({
+            const tagFollowingPosts = await findWithAuthorAva({
                 'tags.tagId': { $in: users.tagFollowing },
                 'author.authorId': { $nin: userId },
                 ...baseQuery
-            }).sort({ _id: -1 }).limit(limit + 1);
+            });
 
             // Combine all posts and remove duplicates
             const combinedPosts = [
@@ -476,12 +535,90 @@ class PostController {
                     break;
             }
 
+            // Add lookup stage to get author avatar
+            pipeline.push(
+                {
+                    $lookup: {
+                        from: 'users',
+                        localField: 'author.authorId',
+                        foreignField: '_id',
+                        as: 'authorDetails'
+                    }
+                },
+                {
+                    $addFields: {
+                        'author.ava': { $arrayElemAt: ['$authorDetails.ava', 0] }
+                    }
+                },
+                {
+                    $project: {
+                        authorDetails: 0 // Remove the authorDetails array
+                    }
+                }
+            );
+
             const data = await post.aggregate(pipeline);
 
             res.status(200).json(data);
         } catch ( error ) {
             console.log(error);
             res.status(500).json({ error: error.message });
+        }
+    }
+
+    async GetStaffPick( req, res, next ) {
+        try {
+            // Create query for featured posts
+            const query = { isFeatured: true };
+
+            // Check if we need to filter by additional criteria (optional)
+            if ( req.query.topic ) {
+                query['topic.topicId'] = req.query.topic;
+            }
+
+            // Optional limit parameter
+            const limit = req.query.limit ? parseInt(req.query.limit) : undefined;
+
+            // Fetch featured posts with more detailed author info including avatar
+            let featuredPostsQuery = post.find(query)
+                .populate({
+                    path: 'author.authorId',
+                    select: 'username ava',
+                    model: 'users'
+                })
+                .populate('topic.topicId', 'name')
+                .sort({ createdAt: -1 })
+                .lean();
+
+            // Apply limit if provided
+            if ( limit ) {
+                featuredPostsQuery = featuredPostsQuery.limit(limit);
+            }
+
+            // Execute query
+            const featuredPosts = await featuredPostsQuery;
+
+            // Process posts to include avatar directly in author object
+            const processedPosts = featuredPosts.map(post => {
+                if ( post.author && post.author.authorId ) {
+                    post.author.ava = post.author.authorId.ava || '';
+                }
+                return post;
+            });
+
+            // Return formatted response
+            return res.status(200).json({
+                success: true,
+                data: processedPosts,
+                count: processedPosts.length
+            });
+        } catch ( error ) {
+            console.error('Error fetching staff picks:', error);
+            return res.status(500).json({
+                success: false,
+                message: 'Failed to fetch featured posts',
+                error: process.env.NODE_ENV === 'development' ? error.message : undefined
+            });
         }
     }
 
@@ -545,20 +682,105 @@ class PostController {
         }
     }
 
-    Create( req, res, next ) {
-        const newPost = new post(req.body);
-        newPost.save()
-            .then(( data ) => res.status(200).send('save successfully'))
-            .catch(( err ) => res.status(500).send(err));
+    async Create( req, res, next ) {
+        // Start a session for transaction
+        const session = await mongoose.startSession();
+
+        try {
+            // Start transaction
+            session.startTransaction();
+
+            const newPost = new post(req.body);
+            await newPost.save({ session });
+
+            // If the post is published
+            if ( newPost.status === true ) {
+                await this.createNotificationsForFollowers(newPost, session);
+            }
+
+            // Commit the transaction
+            await session.commitTransaction();
+
+            res.status(200).json({ message: 'Post created successfully' });
+        } catch ( err ) {
+            // Abort transaction in case of error
+            await session.abortTransaction();
+            res.status(500).json({ message: 'Error creating post', error: err.message });
+        } finally {
+            // End session
+            session.endSession();
+        }
     }
 
-    Update( req, res, next ) {
-        post.updateOne(req.body)
-            .where('_id')
-            .equals(req.params.id)
-            .exec()
-            .then(() => res.status(200).send('update successfully'))
-            .catch(( err ) => res.status(500).send(err));
+    async Update( req, res, next ) {
+        // Start a session for transaction
+        const session = await mongoose.startSession();
+
+        try {
+            // Start transaction
+            session.startTransaction();
+
+            // Get post information before update
+            const oldPost = await post.findById(req.params.id).session(session);
+
+            if ( !oldPost ) {
+                throw new Error('Post not found');
+            }
+
+            // Update the post
+            await post.updateOne(req.body)
+                .where('_id')
+                .equals(req.params.id)
+                .session(session)
+                .exec();
+
+            // Check if post status changed from draft to published
+            if ( !oldPost.status && req.body.status === true ) {
+                // Get updated post to have the latest information
+                const updatedPost = await post.findById(req.params.id).session(session);
+                await this.createNotificationsForFollowers(updatedPost, session);
+            }
+
+            // Commit the transaction
+            await session.commitTransaction();
+
+            res.status(200).json({ message: 'Post updated successfully' });
+        } catch ( err ) {
+            // Abort transaction in case of error
+            await session.abortTransaction();
+            res.status(500).json({ message: 'Error updating post', error: err.message });
+        } finally {
+            // End session
+            session.endSession();
+        }
+    }
+
+    // Function to create notifications for followers
+    async createNotificationsForFollowers( postData, session ) {
+        try {
+            // Get the list of author's followers
+            const author = await user.findById(postData.author.authorId).session(session);
+            if ( !author || !author.followers || author.followers.length === 0 ) {
+                return;
+            }
+
+            // Create notifications for each follower
+            const notifications = author.followers.map(followerId => ( {
+                recipient: followerId,
+                sender: postData.author.authorId,
+                type: 'ARTICLE_PUBLISHED',
+                content: `${ author.username } has published a new article: ${ postData.tittle }`,
+                relatedEntity: postData._id,
+                entityModel: 'posts',
+                isRead: false
+            } ));
+
+            // Save all notifications to database using the same session
+            await notification.insertMany(notifications, { session });
+        } catch ( error ) {
+            console.error('Error creating notifications:', error);
+            throw error; // Rethrow to ensure transaction is aborted
+        }
     }
 
     async Search( req, res, next ) {
@@ -607,19 +829,32 @@ class PostController {
                 sort = { createdAt: -1 }; // Thay thế bằng trường khác phù hợp
             }
 
-            // Thực hiện truy vấn với phân trang
+            // Tìm kiếm bài viết và populate thông tin author bao gồm avatar
             const posts = await post.find(query)
                 .sort(sort)
+                .populate({
+                    path: 'author.authorId',
+                    select: 'username ava',
+                    model: 'users'
+                })
                 .populate('tags.tagName')
-                .populate('author', 'username ava') // Populate thêm thông tin tác giả nếu cần
                 .skip(skip)
-                .limit(parseInt(limit));
+                .limit(parseInt(limit))
+                .lean();
+
+            // Xử lý kết quả để đưa avatar vào trực tiếp trong đối tượng author
+            const processedPosts = posts.map(post => {
+                if ( post.author && post.author.authorId ) {
+                    post.author.ava = post.author.authorId.ava || '';
+                }
+                return post;
+            });
 
             // Đếm tổng số kết quả
             const total = await post.countDocuments(query);
 
             res.json({
-                posts,
+                posts: processedPosts,
                 total,
                 currentPage: parseInt(page),
                 totalPages: Math.ceil(total / limit)

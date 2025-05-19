@@ -18,10 +18,12 @@ const notification = new mongoose.Schema({
                 'LIKE',
                 'FOLLOW',
                 'ARTICLE_PUBLISHED',
-                'MENTION'
+                'MENTION',
+                'POST_APPROVED',
+                'POST_REJECTED'
             ]
         },
-        content: String,
+        content: { type: String },
         relatedEntity: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'entityModel'

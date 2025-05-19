@@ -21,7 +21,8 @@ const CommentItem = ({ comment, postId, fetchComments, depth = 0 }) => {
                 <div className="flex justify-between">
                     <div className="flex items-center space-x-4">
                         {/* Avatar người comment */ }
-                        <Avatar username={ comment.author.username } width={ 30 } height={ 30 } />
+                        <Avatar username={ comment.author.username } width={ 30 } height={ 30 }
+                                avatar={ comment.author.ava } />
 
                         {/* Thông tin người comment */ }
                         <div className="flex items-center space-x-4">

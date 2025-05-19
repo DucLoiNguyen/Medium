@@ -23,13 +23,13 @@ const NotificationDropdown = ({ type }) => {
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-3">
                                             <div className="flex space-x-3">
-                                                <Avatar username={ notification.sender.username } width={ 30 }
-                                                        height={ 30 } />
+                                                <Avatar username={ notification.sender?.username } width={ 30 }
+                                                        height={ 30 } avatar={ notification.sender.ava } />
                                                 <div>
                                                     <p className="text-sm">
                                                         { notification.content }
                                                     </p>
-                                                    <p className="text-xs text-gray-500 mt-1">{ moment(notification.CreatedAt).fromNow() }</p>
+                                                    <p className="text-xs text-gray-500 mt-1">{ moment(notification.createdAt).fromNow() }</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -50,8 +50,8 @@ const NotificationDropdown = ({ type }) => {
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center space-x-3">
                                             <div className="flex space-x-3">
-                                                <Avatar username={ notification.sender.username } width={ 30 }
-                                                        height={ 30 } />
+                                                <Avatar username={ notification.sender?.username } width={ 30 }
+                                                        height={ 30 } avatar={ notification.sender.ava } />
                                                 <div>
                                                     <p className="text-sm">
                                                         {/*<span className="font-semibold">{ notification.user.name }</span>{ ' ' }*/ }
@@ -61,7 +61,7 @@ const NotificationDropdown = ({ type }) => {
                                                         {/*) }*/ }
                                                         { notification.content }
                                                     </p>
-                                                    <p className="text-xs text-gray-500 mt-1">{ moment(notification.CreatedAt).fromNow() }</p>
+                                                    <p className="text-xs text-gray-500 mt-1">{ moment(notification.createdAt).fromNow() }</p>
                                                 </div>
                                             </div>
                                         </div>

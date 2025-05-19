@@ -116,6 +116,7 @@ function SeeMore() {
                                                             username={ item.author?.authorName }
                                                             width={ 24 }
                                                             height={ 24 }
+                                                            avatar={ item.author.ava }
                                                         />
                                                         <div className="ml-2">
                                                             <h4 className="text-sm">{ item.author?.authorName }</h4>

@@ -1,10 +1,11 @@
 // components/RecommendationFeed.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Likes from '~/components/partial/Likes/likes.component';
 import moment from 'moment';
 import { toast } from 'sonner';
 import Avatar from '~/components/partial/Avatar/avatar.component';
+import SaveListButton from '~/components/partial/Bookmark/savelistbutton.component';
 
 const RecommendationFeed = () => {
     const [data, setData] = useState(null);
@@ -12,10 +13,25 @@ const RecommendationFeed = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('all');
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         fetchRecommendations();
     }, [activeTab]);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if ( dropdownRef.current && !dropdownRef.current.contains(event.target) ) {
+                setIsDropdownOpen(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [dropdownRef]);
 
     const fetchRecommendations = async () => {
         try {
@@ -31,10 +47,10 @@ const RecommendationFeed = () => {
             if ( response.data.success ) {
                 setRecommendations(response.data.recommendations);
             } else {
-                setError('Không thể tải bài viết gợi ý');
+                setError('Unable to load recommended posts');
             }
         } catch ( err ) {
-            setError(err.message || 'Đã xảy ra lỗi khi tải gợi ý');
+            setError(err.message || 'An error occurred while loading recommendations');
         } finally {
             setLoading(false);
         }
@@ -49,17 +65,17 @@ const RecommendationFeed = () => {
     const getReasonText = (reason) => {
         switch ( reason ) {
             case 'content':
-                return 'Dựa trên bài viết bạn đã đọc';
+                return 'Based on posts you\'ve read';
             case 'collaborative':
-                return 'Người dùng tương tự bạn cũng đọc';
+                return 'Similar users also read';
             case 'trending':
-                return 'Đang thịnh hành';
+                return 'Trending now';
             case 'topic_follow':
-                return 'Từ chủ đề bạn theo dõi';
+                return 'From topics you follow';
             case 'author_follow':
-                return 'Từ tác giả bạn theo dõi';
+                return 'From authors you follow';
             default:
-                return 'Gợi ý cho bạn';
+                return 'Recommended for you';
         }
     };
 
@@ -79,7 +95,7 @@ const RecommendationFeed = () => {
                     onClick={ fetchRecommendations }
                     className="mt-2 px-4 py-2 bg-gray-200 rounded hover:bg-gray-300"
                 >
-                    Thử lại
+                    Try again
                 </button>
             </div>
         );
@@ -88,34 +104,68 @@ const RecommendationFeed = () => {
     return (
         <div className="w-full max-w-4xl mx-auto px-4">
             <div className="mb-6">
-                <h2 className="text-2xl font-bold mb-4">Bài viết được gợi ý cho bạn</h2>
+                <div className="flex justify-end items-center mb-4">
+                    {/*<h2 className="text-2xl font-bold font-customs">Recommended posts for you</h2>*/ }
 
-                {/* Tabs */ }
-                <div className="flex border-b">
-                    <button
-                        className={ `px-4 py-2 ${ activeTab === 'all' ? 'border-b-2 border-green-500 font-medium' : 'text-gray-600' }` }
-                        onClick={ () => setActiveTab('all') }
-                    >
-                        Tất cả
-                    </button>
-                    <button
-                        className={ `px-4 py-2 ${ activeTab === 'content-based' ? 'border-b-2 border-green-500 font-medium' : 'text-gray-600' }` }
-                        onClick={ () => setActiveTab('content-based') }
-                    >
-                        Theo nội dung
-                    </button>
-                    <button
-                        className={ `px-4 py-2 ${ activeTab === 'collaborative' ? 'border-b-2 border-green-500 font-medium' : 'text-gray-600' }` }
-                        onClick={ () => setActiveTab('collaborative') }
-                    >
-                        Phổ biến
-                    </button>
-                    <button
-                        className={ `px-4 py-2 ${ activeTab === 'trending' ? 'border-b-2 border-green-500 font-medium' : 'text-gray-600' }` }
-                        onClick={ () => setActiveTab('trending') }
-                    >
-                        Thịnh hành
-                    </button>
+                    {/* Dropdown */ }
+                    <div className="relative" ref={ dropdownRef }>
+                        <button
+                            className="flex items-center justify-between px-4 py-2 text-sm border rounded-md w-36 bg-white hover:bg-gray-50"
+                            onClick={ () => setIsDropdownOpen(!isDropdownOpen) }
+                        >
+                            { activeTab === 'all' && 'All' }
+                            { activeTab === 'content-based' && 'By content' }
+                            { activeTab === 'collaborative' && 'Popular' }
+                            { activeTab === 'trending' && 'Trending' }
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-2" fill="none"
+                                 viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={ 2 }
+                                      d="M19 9l-7 7-7-7" />
+                            </svg>
+                        </button>
+
+                        { isDropdownOpen && (
+                            <div
+                                className="absolute right-0 mt-1 w-36 bg-white border rounded-md shadow-lg z-10 font-customs">
+                                <button
+                                    className={ `w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${ activeTab === 'all' ? 'text-black font-medium' : '' }` }
+                                    onClick={ () => {
+                                        setActiveTab('all');
+                                        setIsDropdownOpen(false);
+                                    } }
+                                >
+                                    All
+                                </button>
+                                <button
+                                    className={ `w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${ activeTab === 'content-based' ? 'text-black font-medium' : '' }` }
+                                    onClick={ () => {
+                                        setActiveTab('content-based');
+                                        setIsDropdownOpen(false);
+                                    } }
+                                >
+                                    By content
+                                </button>
+                                <button
+                                    className={ `w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${ activeTab === 'collaborative' ? 'text-black font-medium' : '' }` }
+                                    onClick={ () => {
+                                        setActiveTab('collaborative');
+                                        setIsDropdownOpen(false);
+                                    } }
+                                >
+                                    Popular
+                                </button>
+                                <button
+                                    className={ `w-full text-left px-4 py-2 text-sm hover:bg-gray-100 ${ activeTab === 'trending' ? 'text-black font-medium' : '' }` }
+                                    onClick={ () => {
+                                        setActiveTab('trending');
+                                        setIsDropdownOpen(false);
+                                    } }
+                                >
+                                    Trending
+                                </button>
+                            </div>
+                        ) }
+                    </div>
                 </div>
             </div>
 
@@ -215,38 +265,27 @@ const RecommendationFeed = () => {
                                         </div>
                                     </div>
                                 </a>
-                                <div className="absolute bottom-0 right-[150px] space-x-4 text-[#6b6b6b]">
-                                    <button>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                             strokeWidth={ 1.5 } stroke="currentColor"
-                                             className="size-5 hover:stroke-black">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z" />
-                                        </svg>
-                                        {/*<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"*/ }
-                                        {/*     className="size-5 hover:fill-black">*/ }
-                                        {/*    <path fillRule="evenodd"*/ }
-                                        {/*          d="M6.32 2.577a49.255 49.255 0 0 1 11.36 0c1.497.174 2.57 1.46 2.57 2.93V21a.75.75 0 0 1-1.085.67L12 18.089l-7.165 3.583A.75.75 0 0 1 3.75 21V5.507c0-1.47 1.073-2.756 2.57-2.93Z"*/ }
-                                        {/*          clipRule="evenodd" />*/ }
-                                        {/*</svg>*/ }
-                                    </button>
-                                    <button onClick={ () => {
-                                        toast('Hide this story?', {
-                                            action: {
-                                                label: 'confirm and hide',
-                                                onClick: () => {
-                                                    handleShowless(item.post._id);
+                                <div className="absolute bottom-0 right-[150px] text-[#6b6b6b]">
+                                    <div className="flex space-x-4">
+                                        <SaveListButton postId={ item.post._id } />
+                                        <button onClick={ () => {
+                                            toast('Hide this story?', {
+                                                action: {
+                                                    label: 'confirm and hide',
+                                                    onClick: () => {
+                                                        handleShowless(item.post._id);
+                                                    }
                                                 }
-                                            }
-                                        });
-                                    } }>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none"
-                                             viewBox="0 0 24 24" strokeWidth={ 1.5 } stroke="currentColor"
-                                             className="size-5 hover:stroke-red-700">
-                                            <path strokeLinecap="round" strokeLinejoin="round"
-                                                  d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                        </svg>
-                                    </button>
+                                            });
+                                        } }>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                 viewBox="0 0 24 24" strokeWidth={ 1.5 } stroke="currentColor"
+                                                 className="size-5 hover:stroke-red-700">
+                                                <path strokeLinecap="round" strokeLinejoin="round"
+                                                      d="M15 12H9m12 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                                            </svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
 
@@ -255,7 +294,7 @@ const RecommendationFeed = () => {
                 </div>
             ) : (
                 <div className="text-center py-8 text-gray-500">
-                    <p>Không có bài viết gợi ý nào. Hãy đọc thêm bài viết để nhận gợi ý phù hợp hơn.</p>
+                    <p>No recommended posts available. Read more posts to receive better recommendations.</p>
                 </div>
             ) }
         </div>

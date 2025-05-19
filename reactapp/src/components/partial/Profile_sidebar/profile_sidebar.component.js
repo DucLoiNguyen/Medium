@@ -120,9 +120,9 @@ function ProfileSidebar() {
                                 <h2 className="text-sm">{ formatNumber(data.following.length) } Following</h2>
                             </button>
                         </div>
-                        <div className="mt-3">
-                            <p className="text-sm text-[#6b6b6b]">{ data.bio }</p>
-                        </div>
+                        {/*<div className="mt-3">*/ }
+                        {/*    <p className="text-sm text-[#6b6b6b]">{ data.bio }</p>*/ }
+                        {/*</div>*/ }
                         {
                             user._id === data._id ? (
                                 <></>

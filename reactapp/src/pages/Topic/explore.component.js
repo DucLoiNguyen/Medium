@@ -1,12 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import TopicApi from '~/api/TopicApi';
+import { useNavigate } from 'react-router-dom';
 
 function Explore() {
     const [menuActive, setMenuActive] = useState(false);
+    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate();
     const [data, setData] = useState(null);
 
     const toggleMenu = () => {
         setMenuActive(!menuActive);
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if ( searchTerm.trim() ) {
+            navigate(`/home/search?q=${ encodeURIComponent(searchTerm) }`);
+            console.log(searchTerm);
+        }
     };
 
     useEffect(() => {
@@ -40,8 +51,8 @@ function Explore() {
                     <span className=" font-customs">Explore topics</span>
                 </h2>
                 <div className="flex justify-center my-6">
-                    <div
-                        className="relative flex items-center justify-center mx-4 group bg-neutral-50 rounded-l-3xl rounded-r-3xl md:w-6/12 w-80">
+                    <form onSubmit={ handleSubmit }
+                          className="relative flex items-center justify-center mx-4 group bg-neutral-50 rounded-l-3xl rounded-r-3xl md:w-6/12 w-80">
                         <div
                             className="flex justify-center w-16 h-16 mx-2 border-gray rounded-l-3xl bg-neutral-50 place-items-center">
                             <svg
@@ -60,8 +71,10 @@ function Explore() {
                         <input
                             className="w-full h-16 border-gray p-2 rounded-r-3xl bg-neutral-50 outline-none py-2.5 pr-5 pl-0"
                             placeholder="Search all topics"
+                            value={ searchTerm }
+                            onChange={ (e) => setSearchTerm(e.target.value) }
                         ></input>
-                    </div>
+                    </form>
                 </div>
             </div>
             <div className="mt-16 mb-20">

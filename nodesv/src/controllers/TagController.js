@@ -1,6 +1,7 @@
 import tag from '../models/TagModel.js';
 import topic from '../models/TopicModel.js';
 import user from '../models/UserModel.js';
+import mongoose from 'mongoose';
 
 class TagController {
 

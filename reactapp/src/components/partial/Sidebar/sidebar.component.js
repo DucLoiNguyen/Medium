@@ -15,6 +15,7 @@ function Sidebar() {
     const [data, setData] = useState(null);
     const [follow, setFollow] = useState({});
     const [dataRecomTopic, setDataRecomTopic] = useState(null);
+    const [dataStaffPick, setDataStaffPick] = useState(null);
     const { user } = useAuth();
 
     const toggleLike = (id) => {
@@ -56,9 +57,13 @@ function Sidebar() {
                 const resdata = await axios.get('http://localhost:3030/api/topic/gettopicrecommend', { withCredentials: true });
                 setDataRecomTopic(resdata.data);
 
+                const { data } = await axios.get('http://localhost:3030/api/post/getstaffpick', { withCredentials: true });
+                setDataStaffPick(data.data);
+
             } catch ( error ) {
                 setData(null);
                 setFollow({});
+                setDataStaffPick(null);
                 console.error('Error fetching initial data:', error);
             }
         };
@@ -90,74 +95,40 @@ function Sidebar() {
     return (
         <>
             <div className={ classNames }>
-                {/*<div className="mt-10">*/ }
-                {/*    <div className="mb-5">*/ }
-                {/*        <a href="/#">*/ }
-                {/*            <h2 className="text-base font-bold">Staff Picks</h2>*/ }
-                {/*        </a>*/ }
-                {/*    </div>*/ }
-                {/*    <div className="">*/ }
-                {/*        <div className="pb-5">*/ }
-                {/*            <div className="mb-2">*/ }
-                {/*                <a href="/#">*/ }
-                {/*                    <div className="flex">*/ }
-                {/*                        <img*/ }
-                {/*                            alt="Poseidon"*/ }
-                {/*                            className="rounded-full"*/ }
-                {/*                            src="/ava.png"*/ }
-                {/*                            width="20"*/ }
-                {/*                            height="20"*/ }
-                {/*                            loading="lazy"*/ }
-                {/*                        />*/ }
-                {/*                        <div className="ml-2">*/ }
-                {/*                            <h4 className="text-xs">Riikka livanainen</h4>*/ }
-                {/*                        </div>*/ }
-                {/*                    </div>*/ }
-                {/*                </a>*/ }
-                {/*            </div>*/ }
-                {/*            <div>*/ }
-                {/*                <a href="/#">*/ }
-                {/*                    <h2 className="font-bold">*/ }
-                {/*                        The secret life of the people width high self-control(it's*/ }
-                {/*                        easier than you think)*/ }
-                {/*                    </h2>*/ }
-                {/*                </a>*/ }
-                {/*            </div>*/ }
-                {/*        </div>*/ }
-                {/*        <div className="pb-5">*/ }
-                {/*            <div className="mb-2">*/ }
-                {/*                <a href="/#">*/ }
-                {/*                    <div className="flex">*/ }
-                {/*                        <img*/ }
-                {/*                            alt="Poseidon"*/ }
-                {/*                            className="rounded-full"*/ }
-                {/*                            src="/ava.png"*/ }
-                {/*                            width="20"*/ }
-                {/*                            height="20"*/ }
-                {/*                            loading="lazy"*/ }
-                {/*                        />*/ }
-                {/*                        <div className="ml-2">*/ }
-                {/*                            <h4 className="text-xs">Riikka livanainen</h4>*/ }
-                {/*                        </div>*/ }
-                {/*                    </div>*/ }
-                {/*                </a>*/ }
-                {/*            </div>*/ }
-                {/*            <div>*/ }
-                {/*                <a href="/#">*/ }
-                {/*                    <h2 className="font-bold">*/ }
-                {/*                        The secret life of the people width high self-control(it's*/ }
-                {/*                        easier than you think)*/ }
-                {/*                    </h2>*/ }
-                {/*                </a>*/ }
-                {/*            </div>*/ }
-                {/*        </div>*/ }
-                {/*        <p className="text-sm">*/ }
-                {/*            <a className="text-[#419d3f] hover:text-black" href="/#">*/ }
-                {/*                See the full list*/ }
-                {/*            </a>*/ }
-                {/*        </p>*/ }
-                {/*    </div>*/ }
-                {/*</div>*/ }
+                <div className="mt-10">
+                    <div className="mb-5">
+                        <h2 className="text-base font-bold">Staff Picks</h2>
+                    </div>
+                    <div className="">
+                        { dataStaffPick && dataStaffPick.slice(0, 2).map((item, index) => (
+                            <div className="pb-5" key={ index }>
+                                <div className="mb-2">
+                                    <a href={ `/home/profile/${ item.author.authorId._id }` }>
+                                        <div className="flex">
+                                            <Avatar avatar={ item.author.authorId.ava }
+                                                    username={ item.author.authorName } height={ 20 } width={ 20 } />
+                                            <div className="ml-2">
+                                                <h4 className="text-xs">{ item.author.authorName }</h4>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div>
+                                    <a href={ `/home/post/${ item._id }` }>
+                                        <h2 className="font-bold">
+                                            { item.tittle }
+                                        </h2>
+                                    </a>
+                                </div>
+                            </div>
+                        )) }
+                        {/*<p className="text-sm">*/ }
+                        {/*    <a className="text-[#419d3f] hover:text-black" href="/#">*/ }
+                        {/*        See the full list*/ }
+                        {/*    </a>*/ }
+                        {/*</p>*/ }
+                    </div>
+                </div>
                 <div className="mt-10 h-fit">
                     <div className="pb-4">
                         <h2 className="text-base font-bold">Recommended topics</h2>

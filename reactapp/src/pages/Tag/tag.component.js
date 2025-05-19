@@ -122,7 +122,7 @@ function Tag() {
                                             <div>
                                                 <div className="hidden max-w-full sm:block">
                                                     <img
-                                                        className="bg-[#f9f9f9] object-cover object-[position:-1%_-1%] aspect-[1.5/1] w-full"
+                                                        className="bg-[#f9f9f9] object-cover object-[-1%_-1%] aspect-[1.5/1] w-full"
                                                         alt="Thumbnail"
                                                         src={ item.thumbnail === '' ? '/content1.jpg' : `http://localhost:3030${ item.thumbnail }` }
                                                         width="112"
@@ -138,6 +138,7 @@ function Tag() {
                                                             username={ item.author?.authorName }
                                                             width={ 24 }
                                                             height={ 24 }
+                                                            avatar={ item.author.ava }
                                                         />
                                                         <div className="ml-2">
                                                             <h4 className="text-sm">{ item.author?.authorName }</h4>

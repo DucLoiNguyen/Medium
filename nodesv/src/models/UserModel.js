@@ -36,7 +36,10 @@ const user = new Schema(
                 isDefault: { type: Boolean, default: false },
                 createdAt: { type: Date, default: Date.now }
             }
-        ]
+        ],
+        isAdmin: { type: Boolean, default: false },
+        isBanned: { type: Boolean, default: false },
+        banReason: { type: String },
     },
     {
         timestamps: true,

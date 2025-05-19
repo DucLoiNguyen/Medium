@@ -1,7 +1,4 @@
-// src/components/SaveListButton.jsx
 import { useState, useEffect, useRef } from 'react';
-import { BookmarkIcon } from '@heroicons/react/outline';
-import { BookmarkIcon as BookmarkSolidIcon } from '@heroicons/react/solid';
 import { LockClosedIcon } from '@heroicons/react/solid';
 import axios from 'axios';
 
@@ -15,7 +12,7 @@ const SaveListButton = ({ postId }) => {
     const dropdownRef = useRef(null);
 
     useEffect(() => {
-        // Xử lý click ra ngoài dropdown
+        // Handle clicking outside dropdown
         const handleClickOutside = (event) => {
             if ( dropdownRef.current && !dropdownRef.current.contains(event.target) ) {
                 setShowDropdown(false);
@@ -30,7 +27,7 @@ const SaveListButton = ({ postId }) => {
     }, []);
 
     useEffect(() => {
-        // Kiểm tra trạng thái lưu của bài viết
+        // Check if post is saved in any lists
         const checkSavedStatus = async () => {
             try {
                 const res = await axios.get(`http://localhost:3030/api/user/check/${ postId }`, {
@@ -46,7 +43,7 @@ const SaveListButton = ({ postId }) => {
         checkSavedStatus();
     }, [postId]);
 
-    // Lấy danh sách khi người dùng click vào nút lưu
+    // Retrieve user's saved lists when clicking the save button
     const fetchSavedLists = async () => {
         try {
             setIsLoading(true);
@@ -65,7 +62,7 @@ const SaveListButton = ({ postId }) => {
 
     const handleDropdownToggle = () => {
         if ( !showDropdown ) {
-            // Chỉ gọi API khi mở dropdown
+            // Only call API when opening dropdown
             fetchSavedLists();
         }
         setShowDropdown(!showDropdown);
@@ -76,27 +73,27 @@ const SaveListButton = ({ postId }) => {
         try {
             setIsLoading(true);
 
-            // Kiểm tra xem bài viết đã có trong danh sách chưa
+            // Check if post is already in this list
             const isInList = containingLists.some(list => list._id === listId);
 
             if ( isInList ) {
-                // Xóa bài viết khỏi danh sách
+                // Remove post from the list
                 await axios.delete(`http://localhost:3030/api/user/lists/${ listId }/posts/${ postId }`, {
                     withCredentials: true
                 });
 
-                // Cập nhật UI
+                // Update UI
                 setContainingLists(containingLists.filter(list => list._id !== listId));
             } else {
-                // Thêm bài viết vào danh sách
+                // Add post to the list
                 await axios.post(`http://localhost:3030/api/user/lists/${ listId }/posts/${ postId }`, {}, {
                     withCredentials: true
                 });
 
-                // Tìm danh sách vừa thêm
+                // Find the list that was just added
                 const addedList = savedLists.find(list => list._id === listId);
 
-                // Cập nhật UI
+                // Update UI
                 setContainingLists([...containingLists, {
                     _id: addedList._id,
                     name: addedList.name,
@@ -123,21 +120,21 @@ const SaveListButton = ({ postId }) => {
         try {
             setIsLoading(true);
 
-            // Tạo danh sách mới
+            // Create new list
             const res = await axios.post('http://localhost:3030/api/user/lists',
                 { name: newListName.trim() },
                 { withCredentials: true }
             );
 
-            // Thêm danh sách mới vào state
+            // Add new list to state
             setSavedLists([...savedLists, res.data]);
 
-            // Tự động thêm bài viết vào danh sách mới
+            // Automatically add post to the new list
             await axios.post(`http://localhost:3030/api/user/lists/${ res.data._id }/posts/${ postId }`, {}, {
                 withCredentials: true
             });
 
-            // Cập nhật UI
+            // Update UI
             setContainingLists([...containingLists, {
                 _id: res.data._id,
                 name: res.data.name,
@@ -150,7 +147,7 @@ const SaveListButton = ({ postId }) => {
             setIsLoading(false);
         } catch ( error ) {
             console.error('Error creating new list:', error);
-            alert(error.response?.data?.message || 'Không thể tạo danh sách mới');
+            alert(error.response?.data?.message || 'Unable to create new list');
             setIsLoading(false);
         }
     };
@@ -185,13 +182,12 @@ const SaveListButton = ({ postId }) => {
                             d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0 1 11.186 0Z"
                         />
                     </svg>
-
                 ) }
             </button>
 
             { showDropdown && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg z-10 border border-gray-200">
-                    {/* Danh sách đã lưu */ }
+                    {/* Saved lists */ }
                     <div className="max-h-60 overflow-y-auto py-2">
                         { savedLists.map(list => {
                             const isInList = containingLists.some(item => item._id === list._id);
@@ -221,14 +217,14 @@ const SaveListButton = ({ postId }) => {
                         }) }
                     </div>
 
-                    {/* Phần tạo danh sách mới */ }
+                    {/* Create new list section */ }
                     <div className="border-t border-gray-200 mt-1">
                         { isCreatingNewList ? (
                             <form onSubmit={ handleCreateNewList } className="p-3">
                                 <input
                                     type="text"
-                                    placeholder="Tên danh sách"
-                                    className="w-full text-sm border rounded px-2 py-2 mb-2"
+                                    placeholder="List name"
+                                    className="w-full text-sm border rounded px-2 py-2 mb-2 outline-none focus:outline-none ring-0 focus:ring-0"
                                     value={ newListName }
                                     onChange={ (e) => setNewListName(e.target.value) }
                                     autoFocus
@@ -238,7 +234,7 @@ const SaveListButton = ({ postId }) => {
                                     disabled={ isLoading || !newListName.trim() }
                                     className="w-full text-sm bg-green-600 text-white rounded py-1 disabled:bg-gray-300"
                                 >
-                                    Tạo
+                                    Create
                                 </button>
                             </form>
                         ) : (

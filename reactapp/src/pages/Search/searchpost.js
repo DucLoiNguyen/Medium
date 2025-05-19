@@ -100,7 +100,7 @@ function SearchPost({ query, tag, author, sortBy, page }) {
                                             <div>
                                                 <div className="flex place-posts-center">
                                                     <Avatar username={ post.author?.authorName } width={ 24 }
-                                                            height={ 24 } />
+                                                            height={ 24 } avatar={ post.author.ava } />
                                                     <div className="ml-2">
                                                         <h4 className="text-sm">{ post.author?.authorName }</h4>
                                                     </div>

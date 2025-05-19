@@ -11,6 +11,7 @@ router.get('/getmypublish', PostController.GetMyPublish);
 router.get('/getbyfollow', PostController.GetByFollow);
 router.get('/getpostbyid/:id', PostController.GetById);
 router.get('/getbytag', PostController.GetByTag);
+router.get('/getstaffpick', PostController.GetStaffPick);
 router.post('/createpost', PostController.Create);
 router.put('/updatepost/:id', PostController.Update);
 router.put('/like/:id', PostController.Like);

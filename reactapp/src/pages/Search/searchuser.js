@@ -135,7 +135,8 @@ function SearchUser({ query, sortBy, page }) {
                             <div key={ userResult._id }
                                  className="flex items-start p-4 border-b border-gray-200 justify-between">
                                 <div className="flex space-x-6">
-                                    <Avatar username={ userResult.username } width={ 48 } height={ 48 } />
+                                    <Avatar username={ userResult.username } width={ 48 } height={ 48 }
+                                            avatar={ userResult.ava } />
                                     <div>
                                         <h3 className="font-bold text-black">{ userResult.username }</h3>
                                         <p className="mt-1 text-sm text-gray-800 text-ellipsis overflow-hidden max-w-md h-10">{ userResult.bio }</p>

@@ -27,6 +27,7 @@ const post = new Schema(
         views: { type: Number, default: 0 },
         status: { type: Boolean, default: false },
         memberonly: { type: Boolean, default: false },
+        isFeatured: { type: Boolean, default: false }
     },
     {
         timestamps: true,

@@ -37,7 +37,7 @@ function Home() {
                             <div
                                 className={ `pb-4 mr-8 ${ activeTab === '1' ? 'border-b-2 border-black text-black' : 'hover:border-b-2 hover:border-black' }` }
                             >
-                                <p className="text-sm">For you</p>
+                                <p className="text-sm">Today</p>
                             </div>
                         </button>
                     </div>
@@ -61,7 +61,7 @@ function Home() {
                             <div
                                 className={ `pb-4 mr-8 ${ activeTab === '3' ? 'border-b-2 border-black text-black' : 'hover:border-b-2 hover:border-black' }` }
                             >
-                                <p className="text-sm">Recommendations</p>
+                                <p className="text-sm">For you</p>
                             </div>
                         </button>
                     </div>

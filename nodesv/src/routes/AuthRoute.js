@@ -13,5 +13,6 @@ router.post('/forgot-pass', AuthController.ForgotPassword);
 router.get('/validate-reset-session', AuthController.ValidateResetSession);
 router.post('/reset-pass', AuthController.ResetPassword);
 router.patch('/change-password', AuthController.ChangePassword);
+router.delete('/delete-account', AuthController.DeleteAccount);
 
 export default router;

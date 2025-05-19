@@ -1,6 +1,7 @@
 import topic from '../models/TopicModel.js';
 import tag from '../models/TagModel.js';
 import user from '../models/UserModel.js';
+import mongoose from 'mongoose';
 
 class TopicController {
     GetAll( req, res, next ) {
@@ -50,7 +51,7 @@ class TopicController {
 
     async Search( req, res, next ) {
         try {
-            const { q, page = 1, limit = 10 } = req.query;
+            const { q, page = 1, limit = 40 } = req.query;
             const skip = ( page - 1 ) * limit;
 
             if ( !q ) {

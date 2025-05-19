@@ -33,7 +33,7 @@ function Post({ id }) {
                                         <div>
                                             <div className="flex place-items-center">
                                                 <Avatar username={ item.author?.authorName } width={ 24 }
-                                                        height={ 24 } />
+                                                        height={ 24 } avatar={ item.author.ava } />
                                                 <div className="ml-2">
                                                     <h4 className="text-sm">{ item.author?.authorName }</h4>
                                                 </div>

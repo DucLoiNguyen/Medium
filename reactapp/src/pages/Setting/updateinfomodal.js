@@ -51,28 +51,29 @@ const ProfileInformationForm = ({ close }) => {
     const [ava, setAva] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [error, setError] = useState('');
+    const [fileError, setFileError] = useState('');
+    const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user } = useAuth();
 
-    // Xử lý khi chọn file
+    // Handle file selection
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setError('');
+        setFileError('');
 
         if ( !file ) return;
 
-        // Kiểm tra loại file
+        // Validate file type
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
         if ( !allowedTypes.includes(file.type) ) {
-            setError('Chỉ chấp nhận file ảnh (JPEG, JPG, PNG, GIF)');
+            setFileError('Chỉ chấp nhận file ảnh (JPEG, JPG, PNG, GIF)');
             toast.error('Invalid file type. Please select an image file (JPEG, JPG, PNG, GIF).');
             return;
         }
 
-        // Kiểm tra kích thước file (max: 50MB)
+        // Validate file size (max: 50MB)
         if ( file.size > 50 * 1024 * 1024 ) {
-            setError('Kích thước file không được vượt quá 50MB');
+            setFileError('Kích thước file không được vượt quá 50MB');
             toast.error('File size exceeds 50MB limit.');
             return;
         }
@@ -80,7 +81,7 @@ const ProfileInformationForm = ({ close }) => {
         setSelectedFile(file);
         toast.success('Image selected successfully.');
 
-        // Tạo preview cho ảnh
+        // Create image preview
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreview(reader.result);
@@ -88,19 +89,40 @@ const ProfileInformationForm = ({ close }) => {
         reader.readAsDataURL(file);
     };
 
-    // Xóa ảnh đã chọn
+    // Clear selected image
     const handleClear = () => {
         setSelectedFile(null);
         setPreview(null);
-        setError('');
+        setFileError('');
         toast.info('Image selection cleared.');
+    };
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        // Name validation
+        if ( !name.trim() ) {
+            newErrors.name = 'Name is required';
+        } else if ( name.trim().length > 50 ) {
+            newErrors.name = 'Name cannot exceed 50 characters';
+        } else if ( name.trim().length < 2 ) {
+            newErrors.name = 'Name must be at least 2 characters';
+        }
+
+        // Bio validation (optional field)
+        if ( bio && bio.length > 160 ) {
+            newErrors.bio = 'Bio cannot exceed 160 characters';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if ( !name.trim() ) {
-            toast.error('Name is required.');
+        if ( !validateForm() ) {
+            Object.values(errors).forEach(error => toast.error(error));
             return;
         }
 
@@ -131,19 +153,55 @@ const ProfileInformationForm = ({ close }) => {
                 }
             }
 
-            await axios.patch('http://localhost:3030/api/user/updateuser', {
-                username: name, bio, ava: imagePath
+            // Send profile update request with bio included to trigger profile update path
+            const response = await axios.patch('http://localhost:3030/api/user/updateuser', {
+                username: name,
+                bio,
+                ava: imagePath
             }, { withCredentials: true });
 
             toast.dismiss();
-            toast.success('Profile updated successfully!');
-            close();
+
+            if ( response.data.success ) {
+                toast.success(response.data.message || 'Profile updated successfully!');
+                close();
+            } else {
+                toast.error(response.data.message || 'Failed to update profile.');
+            }
         } catch ( err ) {
             toast.dismiss();
-            toast.error('Failed to update profile. Please try again.');
+
+            // Handle specific error responses from backend
+            if ( err.response && err.response.data ) {
+                toast.error(err.response.data.message || 'Failed to update profile.');
+
+                // Update form errors if specific fields have issues
+                if ( err.response.data.message.includes('Username already exists') ) {
+                    setErrors(prev => ({ ...prev, name: 'Username already exists' }));
+                }
+            } else {
+                toast.error('Failed to update profile. Please try again.');
+            }
+
             console.error('Profile update error:', err);
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    // Clear error when field is edited
+    const handleNameChange = (e) => {
+        setName(e.target.value);
+        if ( errors.name ) {
+            setErrors(prev => ({ ...prev, name: null }));
+        }
+    };
+
+    // Clear error when field is edited
+    const handleBioChange = (e) => {
+        setBio(e.target.value);
+        if ( errors.bio ) {
+            setErrors(prev => ({ ...prev, bio: null }));
         }
     };
 
@@ -215,8 +273,8 @@ const ProfileInformationForm = ({ close }) => {
                         <p className="text-xs text-gray-600">
                             Recommended: Square JPG, PNG, or GIF, at least 1,000 pixels per side.
                         </p>
-                        { error && (
-                            <p className="mt-1 text-sm/6 text-red-600">{ error }</p>
+                        { fileError && (
+                            <p className="mt-1 text-sm/6 text-red-600">{ fileError }</p>
                         ) }
                     </div>
                 </div>
@@ -230,11 +288,13 @@ const ProfileInformationForm = ({ close }) => {
                 <input
                     type="text"
                     value={ name }
-                    onChange={ (e) => setName(e.target.value) }
-                    className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
+                    onChange={ handleNameChange }
+                    className={ `w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50 ${ errors.name ? 'border-red-500' : '' }` }
                     placeholder="Your name"
-                    required
                 />
+                { errors.name && (
+                    <p className="mt-1 text-sm text-red-600">{ errors.name }</p>
+                ) }
                 <div className="flex justify-end mt-1">
                     <span className="text-sm text-gray-500">{ name.length }/50</span>
                 </div>
@@ -247,10 +307,13 @@ const ProfileInformationForm = ({ close }) => {
                 </label>
                 <textarea
                     value={ bio }
-                    onChange={ (e) => setBio(e.target.value) }
-                    className="w-full p-2 border border-transparent rounded-md h-24 resize-none text-sm font-custom focus:ring-0 outline-none focus:outline-none focus:border-current bg-gray-50"
+                    onChange={ handleBioChange }
+                    className={ `w-full p-2 border border-transparent rounded-md h-24 resize-none text-sm font-custom focus:ring-0 outline-none focus:outline-none focus:border-current bg-gray-50 ${ errors.bio ? 'border-red-500' : '' }` }
                     placeholder="Tell us about yourself"
                 />
+                { errors.bio && (
+                    <p className="mt-1 text-sm text-red-600">{ errors.bio }</p>
+                ) }
                 <div className="flex justify-end mt-1">
                     <span className="text-sm text-gray-500">{ bio.length }/160</span>
                 </div>
@@ -291,9 +354,10 @@ const ProfileInformationForm = ({ close }) => {
 
 const OtherForm = ({ close }) => {
     const [email, setEmail] = useState('');
-    const [subdomain, setUsername] = useState('');
+    const [subdomain, setSubdomain] = useState('');
     const [address, setAddress] = useState('');
     const [phone, setPhone] = useState('');
+    const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user } = useAuth();
 
@@ -306,7 +370,7 @@ const OtherForm = ({ close }) => {
                     withCredentials: true
                 });
                 setEmail(responseData.data.email);
-                setUsername(responseData.data.subdomain);
+                setSubdomain(responseData.data.subdomain);
                 setAddress(responseData.data.address);
                 setPhone(responseData.data.phone);
                 toast.dismiss();
@@ -320,18 +384,50 @@ const OtherForm = ({ close }) => {
         fetchInitialData();
     }, [user]);
 
+    const validateForm = () => {
+        const newErrors = {};
+
+        // Email validation
+        if ( !email.trim() ) {
+            newErrors.email = 'Email is required';
+        } else {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if ( !emailRegex.test(email) ) {
+                newErrors.email = 'Please enter a valid email address';
+            }
+        }
+
+        // Subdomain validation (if provided)
+        if ( subdomain.trim() ) {
+            // Only allow alphanumeric characters and hyphens, must start with a letter
+            const subdomainRegex = /^[a-zA-Z][a-zA-Z0-9-]*$/;
+            if ( !subdomainRegex.test(subdomain) ) {
+                newErrors.subdomain = 'Subdomain must start with a letter and contain only letters, numbers, and hyphens';
+            } else if ( subdomain.length < 3 ) {
+                newErrors.subdomain = 'Subdomain must be at least 3 characters';
+            } else if ( subdomain.length > 30 ) {
+                newErrors.subdomain = 'Subdomain cannot exceed 30 characters';
+            }
+        }
+
+        // Phone validation (if provided)
+        if ( phone && phone.trim() ) {
+            // Basic phone format check
+            const phoneRegex = /^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{1,9}$/;
+            if ( !phoneRegex.test(phone) ) {
+                newErrors.phone = 'Please enter a valid phone number';
+            }
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if ( !email.trim() ) {
-            toast.error('Email is required.');
-            return;
-        }
-
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if ( !emailRegex.test(email) ) {
-            toast.error('Please enter a valid email address.');
+        if ( !validateForm() ) {
+            Object.values(errors).forEach(error => toast.error(error));
             return;
         }
 
@@ -339,19 +435,67 @@ const OtherForm = ({ close }) => {
         toast.loading('Updating your information...');
 
         try {
-            await axios.patch('http://localhost:3030/api/user/updateuser', {
-                email, subdomain, address, phone
+            // Send other information update request without bio
+            const response = await axios.patch('http://localhost:3030/api/user/updateuser', {
+                email,
+                subdomain,
+                address,
+                phone
             }, { withCredentials: true });
 
             toast.dismiss();
-            toast.success('Information updated successfully!');
-            close();
+
+            if ( response.data.success ) {
+                toast.success(response.data.message || 'Information updated successfully!');
+                close();
+            } else {
+                toast.error(response.data.message || 'Failed to update information.');
+            }
         } catch ( err ) {
             toast.dismiss();
-            toast.error('Failed to update information. Please try again.');
+
+            // Handle specific error responses from backend like duplicate email or subdomain
+            if ( err.response && err.response.data ) {
+                toast.error(err.response.data.message || 'Failed to update information.');
+
+                // Update form errors if specific fields have issues
+                if ( err.response.data.message.includes('Email already exists') ) {
+                    setErrors(prev => ({ ...prev, email: 'Email already exists' }));
+                }
+                if ( err.response.data.message.includes('Subdomain already exists') ) {
+                    setErrors(prev => ({ ...prev, subdomain: 'Subdomain already exists' }));
+                }
+            } else {
+                toast.error('Failed to update information. Please try again.');
+            }
+
             console.error('Update error:', err);
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    // Clear error when field is edited
+    const handleEmailChange = (e) => {
+        setEmail(e.target.value);
+        if ( errors.email ) {
+            setErrors(prev => ({ ...prev, email: null }));
+        }
+    };
+
+    // Clear error when field is edited
+    const handleSubdomainChange = (e) => {
+        setSubdomain(e.target.value);
+        if ( errors.subdomain ) {
+            setErrors(prev => ({ ...prev, subdomain: null }));
+        }
+    };
+
+    // Clear error when field is edited
+    const handlePhoneChange = (e) => {
+        setPhone(e.target.value);
+        if ( errors.phone ) {
+            setErrors(prev => ({ ...prev, phone: null }));
         }
     };
 
@@ -365,11 +509,14 @@ const OtherForm = ({ close }) => {
                 <input
                     type="email"
                     value={ email }
-                    onChange={ (e) => setEmail(e.target.value) }
-                    className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
+                    onChange={ handleEmailChange }
+                    className={ `w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50 ${ errors.email ? 'border-red-500' : '' }` }
                     placeholder="Your email address"
                     required
                 />
+                { errors.email && (
+                    <p className="mt-1 text-sm text-red-600">{ errors.email }</p>
+                ) }
                 <div className="mt-1">
                     <span className="text-xs text-gray-500">You can sign into Medium with this email address.</span>
                 </div>
@@ -383,10 +530,13 @@ const OtherForm = ({ close }) => {
                 <input
                     type="text"
                     value={ subdomain }
-                    onChange={ (e) => setUsername(e.target.value) }
-                    className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
+                    onChange={ handleSubdomainChange }
+                    className={ `w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50 ${ errors.subdomain ? 'border-red-500' : '' }` }
                     placeholder="Your username"
                 />
+                { errors.subdomain && (
+                    <p className="mt-1 text-sm text-red-600">{ errors.subdomain }</p>
+                ) }
                 <div className="mt-1">
                     <span className="text-xs text-gray-500">This will be used for your profile URL.</span>
                 </div>
@@ -417,10 +567,13 @@ const OtherForm = ({ close }) => {
                 <input
                     type="tel"
                     value={ phone }
-                    onChange={ (e) => setPhone(e.target.value) }
-                    className="w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50"
+                    onChange={ handlePhoneChange }
+                    className={ `w-full p-2 border focus:border-current border-transparent rounded-md text-sm font-customs focus:ring-0 outline-none focus:outline-none bg-gray-50 ${ errors.phone ? 'border-red-500' : '' }` }
                     placeholder="Your phone number"
                 />
+                { errors.phone && (
+                    <p className="mt-1 text-sm text-red-600">{ errors.phone }</p>
+                ) }
                 <div className="mt-1">
                     <span className="text-xs text-gray-500">For account recovery and notifications.</span>
                 </div>

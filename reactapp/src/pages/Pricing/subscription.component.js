@@ -23,6 +23,7 @@ const Subscription = () => {
     });
     const [loading, setLoading] = useState(false);
     const [refreshData, setRefreshData] = useState(false);
+    const [CurrentUser, setCurrentUser] = useState(null);
     const { user } = useAuth();
     const [isOpen, setIsOpen] = useState(false);
 
@@ -48,7 +49,15 @@ const Subscription = () => {
                     subscriptionEndDate: data.subscriptionEndDate ? new Date(data.subscriptionEndDate) : null,
                     subscriptionId: data.subscriptionId
                 });
+
+                const currentUser = await axios.get('http://localhost:3030/api/user/getbyid', {
+                    params: { id: user._id },
+                    withCredentials: true
+                });
+                setCurrentUser(currentUser.data);
+
             } catch ( err ) {
+                setCurrentUser(null);
                 console.error('Error fetching subscription data:', err);
                 toast.error('Unable to fetch subscription information');
             }
@@ -141,7 +150,8 @@ const Subscription = () => {
                     <div className="border border-gray-200 rounded-lg p-6 mb-6 font-customs">
                         <div className="flex items-center mb-6">
                             <div className="relative mr-3">
-                                <Avatar username={ user.username } width={ 40 } height={ 40 } />
+                                <Avatar username={ user.username } width={ 40 } height={ 40 }
+                                        avatar={ CurrentUser?.ava } />
                                 <div className="absolute -top-1 -right-1">
                                     <span className="text-yellow-400 text-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20"
@@ -201,11 +211,6 @@ const Subscription = () => {
                                 ) : (
                                     <>
                                         <button
-                                            className="ring-2 ring-[#6b6b6b] hover:ring-offset-2 hover:ring-black rounded-full py-1 px-4 transition-all ease-in-out w-full font-customs font-semibold"
-                                        >
-                                            Manage subscription
-                                        </button>
-                                        <button
                                             className={ `ring-2 ring-[#6b6b6b] hover:ring-offset-2 hover:ring-black rounded-full py-1 px-4 transition-all ease-in-out w-full font-customs font-semibold bg-black text-white ${ loading && 'opacity-50 cursor-not-allowed' }` }
                                             onClick={ open }
                                             disabled={ loading }
@@ -225,7 +230,8 @@ const Subscription = () => {
                     <div className="border border-gray-200 rounded-lg p-6 mb-6 font-customs">
                         <div className="flex items-center mb-6">
                             <div className="relative mr-3">
-                                <Avatar username={ user.username } width={ 40 } height={ 40 } />
+                                <Avatar username={ user.username } width={ 40 } height={ 40 }
+                                        avatar={ CurrentUser?.ava } />
                                 <div className="absolute -top-1 -right-1">
                                     <span className="text-yellow-400 text-lg">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20"

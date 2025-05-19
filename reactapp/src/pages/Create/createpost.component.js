@@ -70,7 +70,12 @@ function CreatePost() {
     });
     const [selectedFile, setSelectedFile] = useState(null);
     const [preview, setPreview] = useState(null);
-    const [error, setError] = useState('');
+    const [error, setError] = useState({
+        title: '',
+        content: '',
+        thumbnail: '',
+        topic: ''
+    });
     const [isloading, setIsloading] = useState(true);
     const [dataTopic, setDataTopic] = useState(null);
     const [topic, setTopic] = useState(null);
@@ -84,11 +89,23 @@ function CreatePost() {
     const navigate = useNavigate();
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+
+        // Clear validation errors when user types
+        if ( name === 'tittle' ) {
+            setError(prev => ({ ...prev, title: '' }));
+        }
     };
 
     const handleChangeTopic = async (e) => {
-        setTopic(JSON.parse(e.target.value));
+        const selectedTopic = e.target.value ? JSON.parse(e.target.value) : null;
+        setTopic(selectedTopic);
+
+        // Clear topic error when user selects a topic
+        if ( selectedTopic ) {
+            setError(prev => ({ ...prev, topic: '' }));
+        }
     };
 
     const handleTagChange = (tag) => {
@@ -101,29 +118,29 @@ function CreatePost() {
         });
     };
 
-    // Xử lý khi chọn file
+    // Handle file selection
     const handleFileChange = (e) => {
         const file = e.target.files[0];
-        setError('');
+        setError(prev => ({ ...prev, thumbnail: '' }));
 
         if ( !file ) return;
 
-        // Kiểm tra loại file
+        // Check file type
         const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
         if ( !allowedTypes.includes(file.type) ) {
-            setError('Chỉ chấp nhận file ảnh (JPEG, JPG, PNG, GIF)');
+            setError(prev => ({ ...prev, thumbnail: 'Only image files are accepted (JPEG, JPG, PNG, GIF)' }));
             return;
         }
 
-        // Kiểm tra kích thước file (max: 50MB)
+        // Check file size (max: 50MB)
         if ( file.size > 50 * 1024 * 1024 ) {
-            setError('Kích thước file không được vượt quá 50MB');
+            setError(prev => ({ ...prev, thumbnail: 'File size must not exceed 50MB' }));
             return;
         }
 
         setSelectedFile(file);
 
-        // Tạo preview cho ảnh
+        // Create preview for the image
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreview(reader.result);
@@ -131,8 +148,55 @@ function CreatePost() {
         reader.readAsDataURL(file);
     };
 
+    const validateForm = () => {
+        let isValid = true;
+        const newErrors = {
+            title: '',
+            content: '',
+            thumbnail: '',
+            topic: ''
+        };
+
+        // Validate title
+        if ( !formData.tittle.trim() ) {
+            newErrors.title = 'Title is required';
+            isValid = false;
+        } else if ( formData.tittle.length > 100 ) {
+            newErrors.title = 'Title must be less than 100 characters';
+            isValid = false;
+        }
+
+        // Validate content
+        if ( !ckContent.trim() ) {
+            newErrors.content = 'Content is required';
+            isValid = false;
+        }
+
+        // Validate topic selection
+        if ( !topic ) {
+            newErrors.topic = 'Please select a topic';
+            isValid = false;
+        }
+
+        // Only validate thumbnail for new posts
+        if ( !isEditing && !selectedFile && !post?.thumbnail ) {
+            newErrors.thumbnail = 'Please upload a thumbnail image';
+            isValid = false;
+        }
+
+        setError(newErrors);
+        return isValid;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validate form before submission
+        if ( !validateForm() ) {
+            toast.error('Hang on! A few things still need your attention before you can submit.');
+            return;
+        }
+
         try {
             setIsloading(true);
             let imagePath = post?.thumbnail || '';
@@ -183,11 +247,11 @@ function CreatePost() {
         }
     };
 
-    // Xóa ảnh đã chọn
+    // Remove selected image
     const handleClear = () => {
         setSelectedFile(null);
         setPreview(null);
-        setError('');
+        setError(prev => ({ ...prev, thumbnail: '' }));
     };
 
     useEffect(() => {
@@ -248,7 +312,7 @@ function CreatePost() {
         fetchInitialData();
     }, [params.id]);
 
-    //Fetch tags khi topic được chọn
+    // Fetch tags when topic changes
     useEffect(() => {
         const fetchTags = async () => {
             if ( !topic ) {
@@ -269,10 +333,9 @@ function CreatePost() {
                 } else {
                     // Only reset tags when creating a new post and changing topics
                     setTags([]);
-                } // Reset selected tags when topic changes
+                }
             } catch ( error ) {
                 console.error('Error fetching tags:', error);
-            } finally {
             }
         };
 
@@ -299,6 +362,10 @@ function CreatePost() {
                             onChange={ (event, editor) => {
                                 const data = editor.getData();
                                 setCKContent(data);
+                                // Clear content error when user types
+                                if ( data.trim() ) {
+                                    setError(prev => ({ ...prev, content: '' }));
+                                }
                             } }
                             editor={ ClassicEditor }
                             config={ {
@@ -391,6 +458,9 @@ function CreatePost() {
                                 licenseKey: 'T3NUY0pxam5hL01xRVpXNVFZT1A2T2RDT2JnMnFsR1RxKy93cXNZNU9nOHVnakNaUkZtdHp1ck9IS0dPY1E9PS1NakF5TkRFeE1UUT0='
                             } }
                         />
+                        { error.content && (
+                            <p className="mt-1 text-sm/6 text-red-600">{ error.content }</p>
+                        ) }
                     </div>
 
                     <div className="space-y-12">
@@ -470,8 +540,8 @@ function CreatePost() {
                                             </div>
                                         </div>
                                     </div>
-                                    { error && (
-                                        <p className="mt-1 text-sm/6 text-red-600">{ error }</p>
+                                    { error.thumbnail && (
+                                        <p className="mt-1 text-sm/6 text-red-600">{ error.thumbnail }</p>
                                     ) }
                                 </div>
 
@@ -484,13 +554,15 @@ function CreatePost() {
                                             type="text"
                                             name="tittle"
                                             id="tittle"
-                                            placeholder="Write a preview title"
+                                            placeholder="Write a descriptive title"
                                             value={ formData.tittle }
                                             className="uppercase block w-full bg-white px-3 py-1.5 text-base text-gray-900 border-0 border-b-2 border-gray-300 sm:text-sm/6 focus:outline-none focus:ring-0 focus:border-none"
-                                            required
                                             onChange={ handleChange }
                                         />
                                     </div>
+                                    { error.title && (
+                                        <p className="mt-1 text-sm/6 text-red-600">{ error.title }</p>
+                                    ) }
                                 </div>
 
                                 <div className="col-span-full">
@@ -502,7 +574,7 @@ function CreatePost() {
                                             type="text"
                                             name="subtittle"
                                             id="subtittle"
-                                            placeholder="Write a preview subtitle..."
+                                            placeholder="Write a brief subtitle..."
                                             value={ formData.subtittle }
                                             className="block w-full bg-white px-3 py-1.5 text-base text-gray-900 border-0 border-b-2 border-gray-300 sm:text-sm/6 focus:outline-none focus:ring-0 focus:border-none"
                                             onChange={ handleChange }
@@ -510,8 +582,8 @@ function CreatePost() {
                                     </div>
                                     <p className="mt-1 text-sm/6 text-gray-600">
                                         Note: Changes here will affect how your story appears in
-                                        public places like Medium's homepage and in subscribers' inboxes — not the
-                                        contents of the story itself.
+                                        public places like the homepage and in subscribers' feeds — not the
+                                        content of the story itself.
                                     </p>
                                 </div>
 
@@ -524,13 +596,13 @@ function CreatePost() {
                                             id="topic"
                                             name="topic"
                                             onChange={ handleChangeTopic }
-                                            defaultValue={ JSON.stringify({
+                                            defaultValue={ post?.topic ? JSON.stringify({
                                                 topicId: post?.topic.topicId,
                                                 topicName: post?.topic.topicName
-                                            }) || '' }
-                                            className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                            }) : '' }
+                                            className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pl-3 pr-8 text-base outline-none focus:outline-none ring-0 focus:ring-0 text-gray-900 sm:text-sm/6"
                                         >
-                                            <option value="" disabled></option>
+                                            <option value="" disabled>Select a topic</option>
                                             { dataTopic && dataTopic.map((item) => (
                                                 <option
                                                     key={ item._id }
@@ -557,28 +629,40 @@ function CreatePost() {
                                             />
                                         </svg>
                                     </div>
+                                    { error.topic && (
+                                        <p className="mt-1 text-sm/6 text-red-600">{ error.topic }</p>
+                                    ) }
                                 </div>
 
                                 <div className="col-span-3">
-                                    { dataTag && (
-                                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                                            { dataTag.map(tag => (
-                                                <div key={ tag._id } className="">
-                                                    <input
-                                                        type="checkbox"
-                                                        id={ `tag-${ tag._id }` }
-                                                        checked={ tags.some((t) => t.tagId === tag._id) }
-                                                        onChange={ () => handleTagChange(tag) }
-                                                        className="mr-2 w-4 h-4 text-[#6b6b6b] bg-gray-100 border-gray-300 rounded-sm ring-0"
-                                                    />
-                                                    <label htmlFor={ `tag-${ tag._id }` }
-                                                           className="font-customs text-[#6b6b6b] text-sm">
-                                                        { tag.tag }
-                                                    </label>
-                                                </div>
-                                            )) }
+                                    { dataTag && dataTag.length > 0 ? (
+                                        <div>
+                                            <label className="block text-sm/6 font-medium text-gray-900 mb-2">
+                                                Tags
+                                            </label>
+                                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                { dataTag.map(tag => (
+                                                    <div key={ tag._id } className="">
+                                                        <input
+                                                            type="checkbox"
+                                                            id={ `tag-${ tag._id }` }
+                                                            checked={ tags.some((t) => t.tagId === tag._id) }
+                                                            onChange={ () => handleTagChange(tag) }
+                                                            className="mr-2 w-4 h-4 text-[#6b6b6b] bg-gray-100 border-gray-300 rounded-sm ring-0"
+                                                        />
+                                                        <label htmlFor={ `tag-${ tag._id }` }
+                                                               className="font-customs text-[#6b6b6b] text-sm">
+                                                            { tag.tag }
+                                                        </label>
+                                                    </div>
+                                                )) }
+                                            </div>
                                         </div>
-                                    ) }
+                                    ) : topic ? (
+                                        <div className="flex items-center h-full">
+                                            <p className="text-sm text-gray-500">No tags available for this topic</p>
+                                        </div>
+                                    ) : null }
                                 </div>
 
                                 <div className="col-span-full">
@@ -588,7 +672,7 @@ function CreatePost() {
                                                 id="member-only"
                                                 name="memberOnly"
                                                 type="checkbox"
-                                                checked={ post?.memberOnly || memberOnly }
+                                                checked={ memberOnly }
                                                 onChange={ () => setMemberOnly(!memberOnly) }
                                                 className="w-4 h-4 text-[#6b6b6b] bg-gray-100 border-gray-300 rounded-sm ring-0"
                                             />
@@ -598,10 +682,10 @@ function CreatePost() {
                                                 htmlFor="member-only"
                                                 className="font-medium text-gray-900 dark:text-gray-300"
                                             >
-                                                Only for membership
+                                                Members only
                                             </label>
                                             <p className="text-xs font-normal text-gray-500 dark:text-gray-300">
-                                                Only members can read your story.
+                                                Restrict access to members only
                                             </p>
                                         </div>
                                     </div>
@@ -623,7 +707,7 @@ function CreatePost() {
                             value="false"
                             className="px-4 py-1 bg-[#1a8917] rounded-full text-sm text-white hover:bg-[#0f730c] ring-2 ring-[#1a8917] hover:ring-offset-2 hover:ring-[#0f730c] transition-all ease-in-out"
                         >
-                            { isEditing ? 'Update as a draft' : 'Save as a draft' }
+                            { isEditing ? 'Update as draft' : 'Save as draft' }
                         </button>
                         <button
                             type="submit"

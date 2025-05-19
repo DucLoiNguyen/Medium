@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import createpostheader from './createpost_header.module.scss';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { ClassNames } from '~/util';
 import { useAuth } from '~/pages/Authen/authcontext';
@@ -11,6 +11,7 @@ import axios from 'axios';
 function CreatepostHeader() {
     const classNames = clsx(createpostheader.svg);
     const [isLoading, setIsLoading] = useState(false);
+    const [CurrentUser, setCurrentUser] = useState(null);
     const { user } = useAuth();
 
     const handleSignout = async () => {
@@ -25,6 +26,19 @@ function CreatepostHeader() {
             setIsLoading(false);
         }
     };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const currentUser = await axios.get('http://localhost:3030/api/user/getbyid', {
+                params: { id: user._id },
+                withCredentials: true
+            });
+
+            setCurrentUser(currentUser.data);
+        };
+
+        fetchData();
+    }, [user]);
 
     return (
         <>
@@ -76,7 +90,8 @@ function CreatepostHeader() {
                         <div>
                             <Menu.Button className="justify-center bg-white rounded-full shadow-sm">
                                 <div className="w-8">
-                                    <Avatar username={ user.username } width={ 32 } height={ 32 } />
+                                    <Avatar username={ CurrentUser?.username } width={ 32 } height={ 32 }
+                                            avatar={ CurrentUser?.ava } />
                                 </div>
                             </Menu.Button>
                         </div>

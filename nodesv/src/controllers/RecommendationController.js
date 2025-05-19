@@ -685,7 +685,7 @@ async function getUserRecommendations( userId, limit = 5 ) {
 class RecommendationController {
     async GetRecommendationsPosts( req, res ) {
         try {
-            const userId = req.session.user._id; // Giả định req.user chứa thông tin người dùng đã xác thực
+            const userId = req.session.user._id;
             const limit = parseInt(req.query.limit) || 10;
 
             const recommendations = await getRecommendationsForUser(userId, limit);
@@ -759,7 +759,7 @@ class RecommendationController {
 
     async getUserRecommendation( req, res ) {
         try {
-            const userId = req.session.user._id; // Hoặc req.user.id nếu dùng middleware auth khác
+            const userId = req.session.user._id;
             const limit = parseInt(req.query.limit) || 5;
 
             const recommendations = await getUserRecommendations(userId, limit);

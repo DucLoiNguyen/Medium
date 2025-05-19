@@ -1,6 +1,7 @@
 import history from '../models/HistoryModel.js';
 import post from '../models/PostModel.js';
 import { populate } from 'dotenv';
+import mongoose from 'mongoose';
 
 class HistoryController {
     async TrackReading( req, res ) {
