@@ -108,6 +108,86 @@ class AdminController {
         }
     }
 
+    async createAdminAccount( req, res ) {
+        try {
+            const {
+                username,
+                email,
+                password,
+                subdomain = '',
+                phone = '',
+                address = '',
+                bio = ''
+            } = req.body;
+
+            // Validate required fields
+            if ( !username || !email || !password ) {
+                return res.status(400).json({ message: 'Username, email, password are required' });
+            }
+
+            // Check if email already exists in accounts collection
+            const existingAccount = await mongoose.model('accounts').findOne({ email });
+            if ( existingAccount ) {
+                return res.status(400).json({ message: 'Email already in use' });
+            }
+
+            // Check if username or subdomain already exists in users collection
+            const existingUser = await user.findOne({
+                $or: [
+                    { username },
+                ]
+            });
+
+            if ( existingUser ) {
+                return res.status(400).json({
+                    message: existingUser.username === username
+                        ? 'Username already exists'
+                        : ''
+                });
+            }
+
+            // Create new account
+            const newAccount = await mongoose.model('accounts').create({
+                email,
+                password: password
+            });
+
+            // Create new admin user
+            const newUser = await user.create({
+                username,
+                email,
+                subdomain: username,
+                phone,
+                address,
+                bio,
+                isAdmin: true
+            });
+
+            // Create default reading list
+            newUser.savedLists.push({
+                name: 'Reading List',
+                description: 'Default reading list',
+                posts: [],
+                isDefault: true
+            });
+
+            await newUser.save();
+
+            res.status(201).json({
+                message: 'Admin account created successfully',
+                user: {
+                    _id: newUser._id,
+                    username: newUser.username,
+                    email: newUser.email,
+                    isAdmin: newUser.isAdmin
+                }
+            });
+        } catch ( error ) {
+            console.error('Error creating admin account:', error);
+            res.status(500).json({ message: 'Server error' });
+        }
+    }
+
     async getUserDetails( req, res ) {
         try {
             const { userId } = req.params;

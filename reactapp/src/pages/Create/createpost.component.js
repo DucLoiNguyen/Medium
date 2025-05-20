@@ -541,7 +541,8 @@ function CreatePost() {
                                         </div>
                                     </div>
                                     { error.thumbnail && (
-                                        <p className="mt-1 text-sm/6 text-red-600">{ error.thumbnail }</p>
+                                        <p className="mt-1 text-sm/6 text-red-600
+                                        ">{ error.thumbnail }</p>
                                     ) }
                                 </div>
 

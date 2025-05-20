@@ -34,6 +34,7 @@ router.get('/admin/dashboard/content-stats', AdminController.getContentStats);
 // User Management
 router.get('/admin/users', AdminController.getAllUsers);
 router.get('/admin/users/:userId', AdminController.getUserDetails);
+router.post('/admin/users/create-newadmin', AdminController.createAdminAccount);
 router.put('/admin/users/:userId/status', AdminController.updateUserStatus);
 
 // Content Management

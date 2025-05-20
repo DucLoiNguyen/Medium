@@ -1,6 +1,7 @@
 import post from '../models/PostModel.js';
 import user from '../models/UserModel.js';
 import like from '../models/LikeModel.js';
+import notification from '../models/NotificationModel.js';
 import mongoose from 'mongoose';
 
 class PostController {

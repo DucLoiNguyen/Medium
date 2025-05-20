@@ -1,5 +1,6 @@
 import { Dialog } from '@headlessui/react';
 import { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 
 const DeleteAccModal = ({ isOpen, close }) => {
     const [email, setEmail] = useState('');
@@ -113,8 +114,15 @@ const DeleteAccModal = ({ isOpen, close }) => {
 
             if ( response.ok ) {
                 // Success - show confirmation and redirect
-                alert('Your account has been deleted successfully');
-                window.location.href = '/';
+                toast.success('Your account has been deleted successfully', {
+                    description: 'You will be redirected to the home page',
+                    duration: 3000
+                });
+
+                // Delay redirect để user có thể đọc toast
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
             } else {
                 // Handle specific server errors
                 if ( response.status === 401 ) {

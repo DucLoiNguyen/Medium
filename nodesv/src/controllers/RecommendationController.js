@@ -218,9 +218,9 @@ async function getTrendingRecommendations( userId, limit = 5 ) {
                 $addFields: {
                     trendingScore: {
                         $add: [
-                            { $multiply: ['$views', 1] },      // Trọng số cho views
-                            { $multiply: ['$likes', 3] },      // Trọng số cho likes
-                            { $multiply: ['$comments', 5] }    // Trọng số cho comments
+                            { $multiply: ['$views', 1] },
+                            { $multiply: ['$likes', 3] },
+                            { $multiply: ['$comments', 5] }
                         ]
                     }
                 }

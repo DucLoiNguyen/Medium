@@ -463,6 +463,18 @@ function UserManagement() {
     const [showBanModal, setShowBanModal] = useState(false);
     const [banReason, setBanReason] = useState('');
     const [userToBan, setUserToBan] = useState(null);
+    const [showAdminModal, setShowAdminModal] = useState(false);
+    const [adminFormData, setAdminFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        subdomain: '',
+        phone: '',
+        address: '',
+        bio: ''
+    });
+    const [adminFormErrors, setAdminFormErrors] = useState({});
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -687,6 +699,147 @@ function UserManagement() {
         setUserToBan(null);
     };
 
+    const openAdminModal = () => {
+        setShowAdminModal(true);
+        setAdminFormData({
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            subdomain: '',
+            phone: '',
+            address: '',
+            bio: ''
+        });
+        setAdminFormErrors({});
+    };
+
+    const closeAdminModal = () => {
+        setShowAdminModal(false);
+        setAdminFormData({
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            subdomain: '',
+            phone: '',
+            address: '',
+            bio: ''
+        });
+        setAdminFormErrors({});
+    };
+
+    const handleAdminFormChange = (e) => {
+        const { name, value } = e.target;
+        setAdminFormData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+
+        // Clear error for this field when user starts typing
+        if ( adminFormErrors[name] ) {
+            setAdminFormErrors(prevErrors => ({
+                ...prevErrors,
+                [name]: ''
+            }));
+        }
+    };
+
+    const validateAdminForm = () => {
+        const errors = {};
+
+        if ( !adminFormData.username.trim() ) {
+            errors.username = 'Username is required';
+        } else if ( adminFormData.username.length < 3 ) {
+            errors.username = 'Username must be at least 3 characters long';
+        }
+
+        if ( !adminFormData.email.trim() ) {
+            errors.email = 'Email is required';
+        } else if ( !/\S+@\S+\.\S+/.test(adminFormData.email) ) {
+            errors.email = 'Email is invalid';
+        }
+
+        if ( !adminFormData.password ) {
+            errors.password = 'Password is required';
+        } else if ( adminFormData.password.length < 6 ) {
+            errors.password = 'Password must be at least 6 characters long';
+        }
+
+        if ( adminFormData.password !== adminFormData.confirmPassword ) {
+            errors.confirmPassword = 'Passwords do not match';
+        }
+
+        // if ( !adminFormData.subdomain.trim() ) {
+        //     errors.subdomain = 'Subdomain is required';
+        // } else if ( !/^[a-z0-9-]+$/.test(adminFormData.subdomain) ) {
+        //     errors.subdomain = 'Subdomain can only contain lowercase letters, numbers, and hyphens';
+        // }
+
+        return errors;
+    };
+
+    const handleCreateAdmin = async (e) => {
+        e.preventDefault();
+
+        console.log('click submit');
+
+        const formErrors = validateAdminForm();
+        if ( Object.keys(formErrors).length > 0 ) {
+            setAdminFormErrors(formErrors);
+            return;
+        }
+
+        try {
+            toast.loading('Creating admin account...');
+
+            const response = await api.post('/admin/users/create-newadmin', {
+                username: adminFormData.username,
+                email: adminFormData.email,
+                password: adminFormData.password,
+                subdomain: adminFormData.subdomain,
+                phone: adminFormData.phone,
+                address: adminFormData.address,
+                bio: adminFormData.bio
+            });
+
+            // Refresh user list
+            const { data } = await api.get('/admin/users', {
+                params: {
+                    page: pagination.currentPage,
+                    limit: pagination.itemsPerPage,
+                    sortBy,
+                    sortOrder,
+                    search
+                }
+            });
+
+            setUsers(data.users);
+            setPagination(data.pagination);
+
+            toast.dismiss();
+            toast.success('Admin account created successfully');
+            closeAdminModal();
+
+        } catch ( err ) {
+            toast.dismiss();
+            console.error('Error creating admin account:', err);
+            const errorMessage = err.response?.data?.message || 'An error occurred while creating the admin account.';
+
+            if ( errorMessage.includes('Email already in use') ) {
+                setAdminFormErrors(prev => ({ ...prev, email: 'Email already in use' }));
+            } else if ( errorMessage.includes('Username already exists') ) {
+                setAdminFormErrors(prev => ({ ...prev, username: 'Username already exists' }));
+            } else if ( errorMessage.includes('Subdomain already exists') ) {
+                setAdminFormErrors(prev => ({ ...prev, subdomain: 'Subdomain already exists' }));
+            } else {
+                toast.error('Failed to create admin account', {
+                    description: errorMessage
+                });
+            }
+        }
+    };
+
     if ( loading && users.length === 0 ) {
         return <div className="flex justify-center py-8"><p>Loading data...</p></div>;
     }
@@ -696,8 +849,18 @@ function UserManagement() {
             <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-lg font-semibold font-customs">User Management</h2>
-                    <div className="text-sm text-gray-500">
-                        Showing { users.length } / { pagination.total } users
+                    <div className="flex items-center">
+                        <button
+                            onClick={ () => {
+                                openAdminModal();
+                            } }
+                            className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-sm"
+                        >
+                            Create New Admin
+                        </button>
+                        <div className="ml-4 text-sm text-gray-500">
+                            Showing { users.length } / { pagination.total } users
+                        </div>
                     </div>
                 </div>
 
@@ -1075,6 +1238,121 @@ function UserManagement() {
                                 Confirm Ban
                             </button>
                         </div>
+                    </div>
+                </div>
+            ) }
+
+            { showAdminModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 mt-0">
+                    <div className="bg-white rounded-sm p-6 w-full max-w-md">
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-semibold font-customs">Create New Admin</h2>
+                            <button
+                                className="text-gray-600 hover:text-gray-800"
+                                onClick={ () => closeAdminModal() }
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="mb-6">
+                            <form onSubmit={ handleCreateAdmin }>
+                                <div className="space-y-4">
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Username</label>
+                                        <input
+                                            type="text"
+                                            name="username"
+                                            value={ adminFormData.username }
+                                            onChange={ handleAdminFormChange }
+                                            className="w-full border rounded-full text-sm bg-gray-50 px-3 py-2 focus:outline-none focus:ring-0"
+                                            placeholder="Enter username"
+                                        />
+                                        { adminFormErrors.username && (
+                                            <p className="text-red-500 text-sm mt-1">{ adminFormErrors.username }</p>
+                                        ) }
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-medium text-gray-700">Email</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            value={ adminFormData.email }
+                                            onChange={ handleAdminFormChange }
+                                            className="w-full border rounded-full text-sm bg-gray-50 px-3 py-2 focus:outline-none focus:ring-0"
+                                            placeholder="Enter email"
+                                        />
+                                        { adminFormErrors.email && (
+                                            <p className="text-red-500 text-sm mt-1">{ adminFormErrors.email }</p>
+                                        ) }
+                                    </div>
+
+                                    <div className="flex space-x-2">
+                                        <div className="w-1/2">
+                                            <label className="block text-sm font-medium text-gray-700">Password</label>
+                                            <input
+                                                type="password"
+                                                name="password"
+                                                value={ adminFormData.password }
+                                                onChange={ handleAdminFormChange }
+                                                className="w-full border rounded-full text-sm bg-gray-50 px-3 py-2 focus:outline-none focus:ring-0"
+                                                placeholder="Password"
+                                            />
+                                            { adminFormErrors.password && (
+                                                <p className="text-red-500 text-sm mt-1">{ adminFormErrors.password }</p>
+                                            ) }
+                                        </div>
+
+                                        <div className="w-1/2">
+                                            <label className="block text-sm font-medium text-gray-700">Confirm</label>
+                                            <input
+                                                type="password"
+                                                name="confirmPassword"
+                                                value={ adminFormData.confirmPassword }
+                                                onChange={ handleAdminFormChange }
+                                                className="w-full border rounded-full text-sm bg-gray-50 px-3 py-2 focus:outline-none focus:ring-0"
+                                                placeholder="Confirm"
+                                            />
+                                            { adminFormErrors.confirmPassword && (
+                                                <p className="text-red-500 text-sm mt-1">{ adminFormErrors.confirmPassword }</p>
+                                            ) }
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end space-x-3 mt-6">
+                                    <button
+                                        type="button"
+                                        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300 text-sm"
+                                        onClick={ closeAdminModal }
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-sm"
+                                    >
+                                        Create Admin
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        {/*<div className="flex justify-end space-x-3">*/ }
+                        {/*    <button*/ }
+                        {/*        className="bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-gray-300 text-sm"*/ }
+                        {/*        onClick={ () => closeAdminModal() }*/ }
+                        {/*    >*/ }
+                        {/*        Cancel*/ }
+                        {/*    </button>*/ }
+                        {/*    <button*/ }
+                        {/*        className="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 text-sm"*/ }
+                        {/*        // onClick={ handleCreateTopic }*/ }
+                        {/*    >*/ }
+                        {/*        Create Topic*/ }
+                        {/*    </button>*/ }
+                        {/*</div>*/ }
                     </div>
                 </div>
             ) }

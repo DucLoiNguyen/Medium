@@ -324,17 +324,14 @@ app.post('/cancel-subscription', async ( req, res ) => {
         await User.updateOne(
             { email },
             {
-                // Không cập nhật isMember thành false ngay,
-                // vì người dùng vẫn là thành viên cho đến khi hết hạn
                 subscriptionStatus: 'canceled',
-                // Vẫn giữ subscriptionEndDate để biết khi nào subscription thực sự kết thúc
             }
         );
 
         await EmailController.sendAccountCancellationConfirmation({
             email: req.session.user.email,
             username: req.session.user.username,
-            endDate: new Date(subscription.current_period_end * 1000) // Thêm ngày kết thúc vào email
+            endDate: new Date(subscription.current_period_end * 1000)
         });
 
         res.json({
